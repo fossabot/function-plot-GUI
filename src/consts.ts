@@ -1,21 +1,38 @@
+import type { FunctionPlotDatum } from "function-plot";
+
 export type ValueLabel = {
   value: string;
   label: string;
 };
 
-export type FnType = ValueLabel & {
-  inputs: string[];
-  coord?: ValueLabel[];
-  notAllowedInIntervel?: boolean;
+export const inputTypeArr = ["fn", "x", "y", "r", "vector", "offset"] as const;
+
+export type InputType = {
+  value: "fn" | "x" | "y" | "r";
+  label: string;
+  title: string;
+  placeholder: string;
 };
 
-export const inputArr = [
-  { value: "fn", label: "函数" },
-  { value: "r", label: "半径" },
-  { value: "x", label: "x" },
-  { value: "y", label: "y" },
-  { value: "text", label: "文本" },
-] as const satisfies ValueLabel[];
+export type CoordType = {
+  value: "vector" | "offset";
+  label: string;
+  sep: string;
+  fin: string;
+  placeholder1: string;
+  placeholder2: string;
+  optional?: boolean;
+};
+
+export type FnType = {
+  value: FunctionPlotDatum["fnType"];
+  label: string;
+  inputs: InputType[];
+  coord?: CoordType[];
+  notAllowedInIntervel?: boolean;
+};
+export const getFnType = (fnType: string = "linear") =>
+  <FnType>fnTypeArr.find(({ value }) => value === fnType);
 
 export const graphTypeArr = [
   { value: "interval", label: "默认" },
@@ -28,38 +45,61 @@ export const fnTypeArr = [
   {
     value: "linear",
     label: "一般",
-    inputs: ["fn"],
+    inputs: [{ value: "fn", label: "函数", title: "y=", placeholder: "f(x)" }],
   },
   {
     value: "implicit",
     label: "隐函数",
-    inputs: ["fn"],
+    inputs: [
+      { value: "fn", label: "函数", title: "0=", placeholder: "f(x,y)" },
+    ],
   },
   {
     value: "parametric",
     label: "参数方程",
-    inputs: ["x", "y"],
+    inputs: [
+      { value: "x", label: "x", title: "x=", placeholder: "f(t)" },
+      { value: "y", label: "y", title: "y=", placeholder: "g(t)" },
+    ],
     notAllowedInIntervel: true,
   },
   {
     value: "polar",
     label: "极坐标",
-    inputs: ["r"],
-		notAllowedInIntervel: true,
+    inputs: [
+      { value: "r", label: "半径", title: "r=", placeholder: "f(theta)" },
+    ],
+    notAllowedInIntervel: true,
   },
-  {
-    value: "points",
-    label: "点",
-    inputs: ["x", "y"],
-		notAllowedInIntervel: true,
-  },
+  // {
+  //   value: "points",
+  //   label: "点",
+  //   inputs: [],
+  //   notAllowedInIntervel: true,
+  // },
   {
     value: "vector",
     label: "向量",
     inputs: [],
     coord: [
-      { value: "vector", label: "向量大小" },
-      { value: "offset", label: "起点" },
+      {
+        value: "vector",
+        label: "向量大小 (",
+        sep: ",",
+        fin: ")",
+        placeholder1: "x",
+        placeholder2: "y",
+      },
+      {
+        value: "offset",
+        label: "起点 (",
+        sep: ",",
+        fin: ")",
+        placeholder1: "x",
+        placeholder2: "y",
+        optional: true,
+      },
     ],
+    notAllowedInIntervel: true,
   },
 ] as const satisfies FnType[];

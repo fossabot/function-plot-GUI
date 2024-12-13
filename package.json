@@ -11,9 +11,11 @@
   },
   "dependencies": {
     "function-plot": "^2.0.0-0",
+    "lodash-es": "^4.17.21",
     "vue": "^3.5.13"
   },
   "devDependencies": {
+    "@types/lodash-es": "^4.17.12",
     "@vitejs/plugin-vue": "^5.2.1",
     "patch-package": "^8.0.0",
     "typescript": "~5.6.2",

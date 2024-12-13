@@ -2,61 +2,26 @@
   <Navbar />
   <div id="content">
     <div id="editor">
-      <div v-for="dataItem in graphData" class="plot-data">
-        <select
-          v-model="dataItem.fnType"
-          @change="
-            getFnType(dataItem.fnType).notAllowedInIntervel &&
-              !dataItem.graphType &&
-              (dataItem.graphType = 'polyline')
-          "
-        >
-          <option :value="undefined">{{ fnTypeArr[0].label }}</option>
-          <option v-for="type in fnTypeArr.slice(1)" :value="type.value">
-            {{ type.label }}
-          </option>
-        </select>
-
-        <select v-model="dataItem.graphType">
-          <option
-            v-if="!getFnType(dataItem.fnType).notAllowedInIntervel"
-            :value="undefined"
-          >
-            {{ graphTypeArr[0].label }}
-          </option>
-          <option v-for="type in graphTypeArr.slice(1)" :value="type.value">
-            {{ type.label }}
-          </option>
-        </select>
-        <div class="input-wrapper">
-          <input
-            v-for="input in inputArr.filter(({ value }) => {
-              const inputs = getFnType(dataItem.fnType).inputs;
-              if (inputs.includes(value)) return true;
-              else delete dataItem[value];
-            })"
-            type="text"
-            v-model="dataItem[input.value]"
-          />
-        </div>
-      </div>
-      <div class="add-data" @click="graphData.push({})">+ 添加</div>
-      {{ graphData }}
+      <DataBlock
+        v-for="(_dataItem, i) in graphData"
+        v-model="graphData[i]"
+        @delete="graphData.splice(i, 1)"
+      />
+      <div class="plot-data add-data" @click="graphData.push({})">+ 添加</div>
+      {{ graphData }}<br />
     </div>
-    <Graph :graphData="graphData" />
+    <Graph :graphData="graphData" ref="graphRef" />
   </div>
 </template>
 
 <script setup lang="ts">
 import Navbar from "./components/nav.vue";
 import Graph from "./components/graph.vue";
+import DataBlock from "./components/dataBlock.vue";
 import type { FunctionPlotDatum } from "function-plot";
-import { reactive } from "vue";
-import { fnTypeArr, graphTypeArr, inputArr } from "./consts";
-import type { FnType, ValueLabel } from "./consts";
+import { reactive, ref } from "vue";
+const graphRef = ref<InstanceType<typeof Graph>>();
 const graphData = reactive<FunctionPlotDatum[]>([{ fn: "x^2" }]);
-const getFnType = (fnType?: string) =>
-  <FnType>fnTypeArr.find(({ value }) => value === (fnType || "linear"));
 </script>
 
 <style>
@@ -83,9 +48,9 @@ const getFnType = (fnType?: string) =>
   background: #fff3;
   position: relative;
 }
-
 #editor {
   width: 40vw;
+  border-right: var(--c-hr) 1px solid;
 }
 #graph {
   width: 60vw;
