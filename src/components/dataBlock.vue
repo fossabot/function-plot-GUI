@@ -161,7 +161,7 @@ function handleCoordInput(
   background: var(--c-red);
 }
 .blockBtn.active {
-  background: var(--c-accent);
+  background: var(--c-bk1);
 }
 .blockBtn:hover {
   opacity: 1;
@@ -246,6 +246,7 @@ function handleCoordInput(
   align-items: center;
   gap: 10px;
   padding-left: 5px;
+  cursor: default;
 }
 
 .switch:before,
@@ -259,9 +260,6 @@ function handleCoordInput(
   height: 20px;
   border-radius: 5px;
   position: relative;
-}
-
-.switch {
   border-radius: 10px;
 }
 
