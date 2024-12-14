@@ -7,9 +7,9 @@
           {{ type.label }}
         </option>
       </select>
-      <select v-model="dataItem.graphType">
+      <select v-model="dataItem.graphType" v-if="dataItem.graphType !== 'text'">
         <option
-          v-if="!getFnType(dataItem.fnType).notAllowedInIntervel"
+          v-if="!getFnType(dataItem.fnType).notAllowedInInterval"
           :value="undefined"
         >
           {{ graphTypeArr[0].label }}
@@ -22,7 +22,14 @@
           {{ type.label }}
         </option>
       </select>
-      <button class="delete" @click="emit('delete')">删除</button>
+      <button class="delete blockBtn" @click="emit('delete')">删除</button>
+      <button
+        class="fold blockBtn"
+        :class="{ active: !blockFolded }"
+        @click="blockFolded = !blockFolded"
+      >
+        更多
+      </button>
     </div>
 
     <div class="inputs">
@@ -36,7 +43,9 @@
       </div>
       <template v-if="getFnType(dataItem.fnType).coord">
         <div
-          v-for="input in getFnType(dataItem.fnType).coord"
+          v-for="input in getFnType(dataItem.fnType).coord?.filter(
+            ({ folded }) => !(folded && blockFolded)
+          )"
           class="input-box coord"
           :class="{ optional: input.optional }"
         >
@@ -44,15 +53,35 @@
           <input
             type="number"
             @input="handleCoordInput(dataItem!, input, 0, $event)"
-            :placeholder="input.placeholder1"
+            :placeholder="input.placeholder[0]"
           />
           <span class="coord-label">{{ input.sep }}</span>
           <input
             type="number"
             @input="handleCoordInput(dataItem!, input, 1, $event)"
-            :placeholder="input.placeholder2"
+            :placeholder="input.placeholder[1]"
           />
           <span class="coord-label">{{ input.fin }}</span>
+        </div>
+      </template>
+
+      <template v-if="getFnType(dataItem.fnType).switches">
+        <div
+          v-for="input in getFnType(dataItem.fnType).switches?.filter(
+            ({ folded }) => !(folded && blockFolded)
+          )"
+          class="input-box switches"
+          @click="
+            dataItem[input.value]
+              ? delete dataItem[input.value]
+              : (dataItem[input.value] = true)
+          "
+        >
+          <span
+            class="switch"
+            :class="dataItem[input.value] ? 'on' : 'off'"
+          ></span>
+          {{ input.label }}
         </div>
       </template>
     </div>
@@ -66,14 +95,26 @@ import { ref } from "vue";
 const emit = defineEmits(["delete"]);
 const dataItem = defineModel<FunctionPlotDatum>();
 const block = ref<HTMLDivElement>();
-function fnTypeChange(dataItem: FunctionPlotDatum) {
-  if (getFnType(dataItem.fnType).notAllowedInIntervel && !dataItem.graphType)
-    dataItem.graphType = "polyline";
-  if (dataItem.fnType === "implicit") delete dataItem.graphType;
+const blockFolded = ref(true);
+function fnTypeChange(
+  dataItem:
+    | (Omit<FunctionPlotDatum, "fnType"> & {
+        fnType: "text" | FunctionPlotDatum["fnType"];
+      })
+    | FunctionPlotDatum
+) {
   inputTypeArr.forEach((key) => delete dataItem[key]);
-  if (dataItem.fnType === "vector") dataItem.vector = [0, 0];
-  if (block.value)
-    block.value.querySelectorAll("input").forEach((ele) => (ele.value = ""));
+  if (dataItem.fnType === "text") {
+    dataItem.graphType = "text";
+  } else {
+    if (dataItem.graphType === "text" || dataItem.fnType === "implicit")
+      delete dataItem.graphType;
+    if (getFnType(dataItem.fnType).notAllowedInInterval && !dataItem.graphType)
+      dataItem.graphType = "polyline";
+    if (dataItem.fnType === "vector") dataItem.vector = [0, 0];
+    if (block.value)
+      block.value.querySelectorAll("input").forEach((ele) => (ele.value = ""));
+  }
 }
 function handleCoordInput(
   dataItem: FunctionPlotDatum,
@@ -105,22 +146,27 @@ function handleCoordInput(
   position: relative;
   padding: 20px 15px;
 }
-.delete {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
+.blockBtn {
+  height: 100%;
+  float: right;
   color: var(--c-text);
   padding: 8px 15px;
   border: none;
-  background: var(--c-red);
+  background: var(--c-border);
+  margin-left: 10px;
   border-radius: 5px;
   opacity: 0.75;
 }
-.delete:hover {
+.delete {
+  background: var(--c-red);
+}
+.blockBtn.active {
+  background: var(--c-accent);
+}
+.blockBtn:hover {
   opacity: 1;
 }
-.delete:active {
+.blockBtn:active {
   opacity: 0.3;
 }
 .selectors {
@@ -194,5 +240,59 @@ function handleCoordInput(
   padding: 6px 0;
   font-size: 18px;
   flex-shrink: 1;
+}
+
+.input-box.switches {
+  align-items: center;
+  gap: 10px;
+  padding-left: 5px;
+}
+
+.switch:before,
+.switch:after {
+  position: absolute;
+  transition: all 0.2s cubic-bezier(0, 0.48, 0.27, 0.98);
+}
+
+.switch {
+  width: 40px;
+  height: 20px;
+  border-radius: 5px;
+  position: relative;
+}
+
+.switch {
+  border-radius: 10px;
+}
+
+.switch.on {
+  background: var(--c-accent);
+}
+
+.switch.off {
+  background: var(--c-border);
+}
+.switch:after {
+  content: "";
+  background: #fff;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  top: 0;
+  bottom: 0;
+  margin: auto 0;
+}
+.switch.off:after {
+  left: 4px;
+}
+.switch.on:after {
+  left: 24px;
+}
+.switch:hover {
+  filter: brightness(110%);
+}
+
+.switch:active {
+  filter: brightness(90%);
 }
 </style>

@@ -6,8 +6,7 @@
 
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, watch } from "vue";
-import functionPlot from "function-plot";
-import { throttle } from "lodash-es";
+import { throttle, cloneDeep } from "lodash-es";
 import type { FunctionPlotDatum } from "function-plot";
 import { getFnType } from "../consts";
 const { graphData } = defineProps<{ graphData: FunctionPlotDatum[] }>();
@@ -22,17 +21,18 @@ const handleResize = () => {
     height.value = shellRef.value.clientHeight;
   }
 };
-onMounted(() => {
+onMounted(async () => {
+  const functionPlot = (await import("function-plot")).default;
   handleResize();
   window.addEventListener("resize", handleResize);
   watch(
     [width, height],
     throttle(() => {
-      const data = <FunctionPlotDatum[]>JSON.parse(JSON.stringify(graphData));
+      const data = <FunctionPlotDatum[]>cloneDeep(graphData);
       let flag = 0;
       outer: for (const [index, dataItem] of data.entries()) {
         const fnType = getFnType(dataItem.fnType);
-        if (fnType.notAllowedInIntervel && !dataItem.graphType) {
+        if (fnType.notAllowedInInterval && !dataItem.graphType) {
           flag = index;
           break;
         }
@@ -72,7 +72,7 @@ onUnmounted(() => window.removeEventListener("resize", handleResize));
   right: 0;
   left: 0;
   bottom: 0;
-  filter: invert(100%) hue-rotate(210deg) brightness(133%);
+  filter: invert(100%) hue-rotate(180deg) brightness(133%);
   color: black;
   user-select: none;
 }

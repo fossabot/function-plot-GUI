@@ -15,7 +15,7 @@
         <pre>{{ formatted }}</pre>
       </div>
     </div>
-    <Graph :key="cnt" :graphData="graphData" ref="graphRef" />
+    <Graph :key="graphKey" :graphData="graphData" ref="graphRef" />
   </div>
 </template>
 
@@ -29,25 +29,25 @@ import JSON5 from "json5";
 import prettier from "prettier/standalone";
 import prettierPluginBabel from "prettier/plugins/babel";
 import prettierPluginEstree from "prettier/plugins/estree";
-import prettierPluginPostcss from "prettier/plugins/postcss";
+import { cloneDeep } from "lodash-es";
 
 const graphRef = ref<InstanceType<typeof Graph>>();
 const graphData = reactive<FunctionPlotDatum[]>([{ fn: "x^2" }]);
-const cnt = ref(0);
+const graphKey = ref(0);
 const formatted = ref("");
 watch(
   graphData,
   () => {
-    cnt.value++;
+    graphKey.value++;
+    const dataArr = cloneDeep(graphData);
+    dataArr.forEach((item) => {
+      if (item.graphType === "text") delete item.fnType;
+    });
     prettier
-      .format(JSON5.stringify({ data: graphData }), {
+      .format(JSON5.stringify({ data: dataArr }), {
         parser: "json5",
         printWidth: 40,
-        plugins: [
-          prettierPluginBabel,
-          prettierPluginEstree,
-          prettierPluginPostcss,
-        ],
+        plugins: [prettierPluginBabel, prettierPluginEstree],
       })
       .then((value) => (formatted.value = value));
   },
@@ -86,7 +86,6 @@ watch(
 #editor {
   width: 33vw;
   border-right: var(--c-border) 1px solid;
-
   position: relative;
 }
 .editor-inner {
@@ -98,7 +97,7 @@ watch(
   bottom: 300px;
 }
 #graph {
-  width: 60vw;
+  flex-grow: 1;
   position: relative;
 }
 .add-data {
@@ -129,10 +128,10 @@ watch(
 }
 .plot-data.output pre {
   position: absolute;
-  top:60px;
-  bottom:15px;
-  left:15px;
-  right:15px;
+  top: 60px;
+  bottom: 15px;
+  left: 15px;
+  right: 15px;
   margin: 0;
   overflow: scroll;
   user-select: all;
