@@ -10,8 +10,11 @@
     "postinstall": "patch-package"
   },
   "dependencies": {
+    "@prettier/sync": "^0.5.2",
     "function-plot": "^2.0.0-0",
+    "json5": "^2.2.3",
     "lodash-es": "^4.17.21",
+    "prettier": "^3.4.2",
     "vue": "^3.5.13"
   },
   "devDependencies": {

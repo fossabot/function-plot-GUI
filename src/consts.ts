@@ -5,7 +5,15 @@ export type ValueLabel = {
   label: string;
 };
 
-export const inputTypeArr = ["fn", "x", "y", "r", "vector", "offset"] as const;
+export const inputTypeArr = [
+  "fn",
+  "x",
+  "y",
+  "r",
+  "vector",
+  "offset",
+  "range",
+] as const;
 
 export type InputType = {
   value: "fn" | "x" | "y" | "r";
@@ -15,13 +23,14 @@ export type InputType = {
 };
 
 export type CoordType = {
-  value: "vector" | "offset";
+  value: "vector" | "offset" | "range";
   label: string;
   sep: string;
   fin: string;
   placeholder1: string;
   placeholder2: string;
   optional?: boolean;
+  defaultVal?: [number, number];
 };
 
 export type FnType = {
@@ -61,6 +70,18 @@ export const fnTypeArr = [
       { value: "x", label: "x", title: "x=", placeholder: "f(t)" },
       { value: "y", label: "y", title: "y=", placeholder: "g(t)" },
     ],
+    coord: [
+      {
+        value: "range",
+        label: "t ∈ [",
+        sep: ",",
+        fin: "]",
+        placeholder1: "0",
+        placeholder2: "2π",
+        optional: true,
+        defaultVal: [0, 2 * Math.PI],
+      },
+    ],
     notAllowedInIntervel: true,
   },
   {
@@ -68,6 +89,18 @@ export const fnTypeArr = [
     label: "极坐标",
     inputs: [
       { value: "r", label: "半径", title: "r=", placeholder: "f(theta)" },
+    ],
+    coord: [
+      {
+        value: "range",
+        label: "theta ∈ [",
+        sep: ",",
+        fin: "]",
+        placeholder1: "-π",
+        placeholder2: "π",
+        optional: true,
+        defaultVal: [-Math.PI, Math.PI],
+      },
     ],
     notAllowedInIntervel: true,
   },
@@ -92,11 +125,11 @@ export const fnTypeArr = [
       },
       {
         value: "offset",
-        label: "起点 (",
+        label: "起点坐标 (",
         sep: ",",
         fin: ")",
-        placeholder1: "x",
-        placeholder2: "y",
+        placeholder1: "0",
+        placeholder2: "0",
         optional: true,
       },
     ],

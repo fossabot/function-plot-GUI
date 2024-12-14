@@ -1,6 +1,5 @@
 <template>
   <div id="graph" ref="shellRef">
-    {{ width }},{{ height }}
     <div id="graphRender" ref="plotRef"></div>
   </div>
 </template>
@@ -27,24 +26,38 @@ onMounted(() => {
   handleResize();
   window.addEventListener("resize", handleResize);
   watch(
-    [width, height, () => graphData],
+    [width, height],
     throttle(() => {
       const data = <FunctionPlotDatum[]>JSON.parse(JSON.stringify(graphData));
-      for (const dataItem of data) {
+      let flag = 0;
+      outer: for (const [index, dataItem] of data.entries()) {
         const fnType = getFnType(dataItem.fnType);
-        if (fnType.notAllowedInIntervel && !dataItem.graphType) return;
+        if (fnType.notAllowedInIntervel && !dataItem.graphType) {
+          flag = index;
+          break;
+        }
         for (const input of fnType.inputs)
-          if (!dataItem[input.value]) return;
+          if (!dataItem[input.value]) {
+            flag = index;
+            break outer;
+          }
         for (const coord of fnType.coord ?? [])
-          if (!dataItem[coord.value] && !coord.optional) return;
+          if (!dataItem[coord.value] && !coord.optional) {
+            flag = index;
+            break outer;
+          }
       }
-      if (plotRef.value && width.value && height.value)
-        functionPlot({
-          data,
-          target: plotRef.value,
-          width: width.value,
-          height: height.value,
-        });
+      if (plotRef.value)
+        try {
+          functionPlot({
+            target: plotRef.value,
+            data: flag ? data.slice(0, flag) : data,
+            width: width.value - 20,
+            height: height.value - 20,
+          });
+        } catch (e) {
+          console.log(e);
+        }
     }, 200),
     { immediate: true, deep: true }
   );
@@ -59,7 +72,11 @@ onUnmounted(() => window.removeEventListener("resize", handleResize));
   right: 0;
   left: 0;
   bottom: 0;
-  filter: invert() hue-rotate(180deg);
+  filter: invert(100%) hue-rotate(210deg) brightness(133%);
   color: black;
+  user-select: none;
+}
+.top-right-legend {
+  transform: translateY(20px);
 }
 </style>

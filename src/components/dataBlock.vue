@@ -1,5 +1,5 @@
 <template>
-  <div class="plot-data" v-if="dataItem">
+  <div class="plot-data" v-if="dataItem" ref="block">
     <div class="selectors">
       <select v-model="dataItem.fnType" @change="fnTypeChange(dataItem)">
         <option :value="undefined">{{ fnTypeArr[0].label }}</option>
@@ -38,17 +38,18 @@
         <div
           v-for="input in getFnType(dataItem.fnType).coord"
           class="input-box coord"
+          :class="{ optional: input.optional }"
         >
           <span class="coord-label">{{ input.label }}</span>
           <input
             type="number"
-            @input="handleCoordInput(dataItem!, input.value, 0, $event)"
+            @input="handleCoordInput(dataItem!, input, 0, $event)"
             :placeholder="input.placeholder1"
           />
           <span class="coord-label">{{ input.sep }}</span>
           <input
             type="number"
-            @input="handleCoordInput(dataItem!, input.value, 1, $event)"
+            @input="handleCoordInput(dataItem!, input, 1, $event)"
             :placeholder="input.placeholder2"
           />
           <span class="coord-label">{{ input.fin }}</span>
@@ -59,37 +60,40 @@
 </template>
 <script setup lang="ts">
 import type { FunctionPlotDatum } from "function-plot";
-import { fnTypeArr, graphTypeArr, inputTypeArr,getFnType } from "../consts";
+import { fnTypeArr, graphTypeArr, inputTypeArr, getFnType } from "../consts";
 import type { CoordType } from "../consts";
+import { ref } from "vue";
 const emit = defineEmits(["delete"]);
 const dataItem = defineModel<FunctionPlotDatum>();
-
+const block = ref<HTMLDivElement>();
 function fnTypeChange(dataItem: FunctionPlotDatum) {
   if (getFnType(dataItem.fnType).notAllowedInIntervel && !dataItem.graphType)
     dataItem.graphType = "polyline";
   if (dataItem.fnType === "implicit") delete dataItem.graphType;
   inputTypeArr.forEach((key) => delete dataItem[key]);
   if (dataItem.fnType === "vector") dataItem.vector = [0, 0];
+  if (block.value)
+    block.value.querySelectorAll("input").forEach((ele) => (ele.value = ""));
 }
 function handleCoordInput(
   dataItem: FunctionPlotDatum,
-  key: CoordType["value"],
+  input: CoordType,
   index: 0 | 1,
   event: Event
 ) {
   const raw = (<HTMLInputElement>event.target).value;
   const newVal = Number(raw);
+  const key = input.value,
+    defaultVal = input.defaultVal ?? [0, 0];
   if (!dataItem[key]) {
-    const coord: [number, number] = [0, 0];
+    const coord: [number, number] = [...defaultVal];
     coord[index] = newVal;
     dataItem[key] = coord;
   } else {
-    if (raw === "") {
-      if (dataItem[key][(index + 1) % 2]) dataItem[key][index] = 0;
-      else delete dataItem[key];
-    } else {
-      dataItem[key][index] = newVal;
-    }
+    if (raw !== "") dataItem[key][index] = newVal;
+    else if (dataItem[key][1 - index] !== defaultVal[1 - index])
+      dataItem[key][index] = defaultVal[index];
+    else delete dataItem[key];
   }
 }
 </script>
@@ -110,7 +114,6 @@ function handleCoordInput(
   padding: 8px 15px;
   border: none;
   background: var(--c-red);
-  transition: all 0.2s;
   border-radius: 5px;
   opacity: 0.75;
 }
@@ -118,8 +121,7 @@ function handleCoordInput(
   opacity: 1;
 }
 .delete:active {
-  opacity: 0.2;
-  transition: none;
+  opacity: 0.3;
 }
 .selectors {
   margin-bottom: 10px;
@@ -134,6 +136,7 @@ function handleCoordInput(
   margin-right: 15px;
   color: var(--text);
   font-size: 15px;
+  min-width: 6.5em;
 }
 .selectors select:focus {
   border-color: var(--c-accent);
@@ -148,7 +151,6 @@ function handleCoordInput(
   display: flex;
 }
 .inputs .input-box .input-title {
-  font-family: "JetBrains Mono";
   font-style: italic;
   letter-spacing: 5px;
   font-size: 20px;
@@ -161,29 +163,36 @@ function handleCoordInput(
   background: var(--c-bk1);
   border: var(--c-border) 1px solid;
   height: 100%;
-  line-height: 100%;
   font-size: 20px;
   border-radius: 5px;
   display: block;
   width: 100%;
   text-indent: 10px;
-  font-family: "JetBrains Mono";
   padding: 10px 0;
 }
-.inputs input:placeholder-shown {
+.inputs :not(.optional) input:placeholder-shown {
   border-color: var(--c-red);
 }
 .inputs input:focus {
   border-color: var(--c-accent);
 }
-.add-data {
-  padding-top: 10px;
-  padding-bottom: 10px;
+
+.input-box.coord {
+  display: flex;
 }
-.add-data:hover {
-  background: var(--c-bk3);
+.input-box.coord.optional {
+  color: #bbb;
 }
-.add-data:active {
-  background: var(--c-bk1);
+.input-box.coord span {
+  font-size: 18px;
+  margin: auto 5px;
+  flex-shrink: 0;
+}
+.input-box.coord input {
+  max-width: 8em;
+  min-width: 3em;
+  padding: 6px 0;
+  font-size: 18px;
+  flex-shrink: 1;
 }
 </style>
