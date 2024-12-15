@@ -6,9 +6,9 @@
 
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, watch } from "vue";
-import { throttle, cloneDeep } from "lodash-es";
+import { throttle } from "lodash-es";
 import type { FunctionPlotDatum } from "function-plot";
-import { getFnType } from "../consts";
+import { findError } from "../consts";
 const { graphData } = defineProps<{ graphData: FunctionPlotDatum[] }>();
 
 const shellRef = ref<HTMLDivElement | null>(null);
@@ -26,32 +26,14 @@ onMounted(async () => {
   handleResize();
   window.addEventListener("resize", handleResize);
   watch(
-    [width, height],
+    [width, height, graphData],
     throttle(() => {
-      const data = <FunctionPlotDatum[]>cloneDeep(graphData);
-      let flag = 0;
-      outer: for (const [index, dataItem] of data.entries()) {
-        const fnType = getFnType(dataItem.fnType);
-        if (fnType.notAllowedInInterval && !dataItem.graphType) {
-          flag = index;
-          break;
-        }
-        for (const input of fnType.inputs)
-          if (!dataItem[input.value]) {
-            flag = index;
-            break outer;
-          }
-        for (const coord of fnType.coord ?? [])
-          if (!dataItem[coord.value] && !coord.optional) {
-            flag = index;
-            break outer;
-          }
-      }
+      const flag = findError(graphData);
       if (plotRef.value)
         try {
           functionPlot({
             target: plotRef.value,
-            data: flag ? data.slice(0, flag) : data,
+            data: flag ? graphData.slice(0, flag) : graphData,
             width: width.value - 20,
             height: height.value - 20,
           });
@@ -59,7 +41,7 @@ onMounted(async () => {
           console.log(e);
         }
     }, 200),
-    { immediate: true, deep: true }
+    { immediate: true }
   );
 });
 onUnmounted(() => window.removeEventListener("resize", handleResize));

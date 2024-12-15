@@ -10,12 +10,9 @@
         />
         <div class="plot-data add-data" @click="graphData.push({})">+ 添加</div>
       </div>
-      <div class="plot-data output">
-        <span class="output-title">代码</span>
-        <pre>{{ formatted }}</pre>
-      </div>
+      <CodeDisplay :dataArr="cloneDeep(graphData)" />
     </div>
-    <Graph :key="graphKey" :graphData="graphData" ref="graphRef" />
+    <Graph :key="graphKey" :graphData="cloneDeep(graphData)" ref="graphRef" />
   </div>
 </template>
 
@@ -23,36 +20,14 @@
 import Navbar from "./components/nav.vue";
 import Graph from "./components/graph.vue";
 import DataBlock from "./components/dataBlock.vue";
+import CodeDisplay from "./components/codeDisplay.vue";
 import type { FunctionPlotDatum } from "function-plot";
-import { reactive, ref, watch } from "vue";
-import JSON5 from "json5";
-import prettier from "prettier/standalone";
-import prettierPluginBabel from "prettier/plugins/babel";
-import prettierPluginEstree from "prettier/plugins/estree";
+import { reactive, ref } from "vue";
 import { cloneDeep } from "lodash-es";
 
 const graphRef = ref<InstanceType<typeof Graph>>();
 const graphData = reactive<FunctionPlotDatum[]>([{ fn: "x^2" }]);
 const graphKey = ref(0);
-const formatted = ref("");
-watch(
-  graphData,
-  () => {
-    graphKey.value++;
-    const dataArr = cloneDeep(graphData);
-    dataArr.forEach((item) => {
-      if (item.graphType === "text") delete item.fnType;
-    });
-    prettier
-      .format(JSON5.stringify({ data: dataArr }), {
-        parser: "json5",
-        printWidth: 40,
-        plugins: [prettierPluginBabel, prettierPluginEstree],
-      })
-      .then((value) => (formatted.value = value));
-  },
-  { immediate: true, deep: true }
-);
 </script>
 
 <style>
@@ -104,6 +79,7 @@ watch(
   padding-top: 10px;
   padding-bottom: 10px;
   margin-bottom: 50px;
+  cursor: default;
 }
 .add-data:hover {
   background: var(--c-bk3);
@@ -136,4 +112,5 @@ watch(
   overflow: scroll;
   user-select: all;
 }
+
 </style>

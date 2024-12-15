@@ -16,6 +16,7 @@ export const inputTypeArr = [
   "closed",
   "text",
   "location",
+  "points",
 ] as const;
 
 export type InputType = {
@@ -43,6 +44,13 @@ export type SwitchType = {
   folded?: boolean;
 };
 
+export type CoordInfty = {
+  value: "points";
+  label: string;
+  sep: string;
+  fin: string;
+};
+
 export type FnType = {
   value: FunctionPlotDatum["fnType"] | "text";
   label: string;
@@ -51,6 +59,7 @@ export type FnType = {
   switches?: SwitchType[];
   notAllowedInInterval?: boolean;
 };
+
 export const getFnType = (fnType: string = "linear") =>
   <FnType>fnTypeArr.find(({ value }) => value === fnType);
 
@@ -153,12 +162,19 @@ export const fnTypeArr = [
       },
     ],
   },
-  // {
-  //   value: "points",
-  //   label: "点",
-  //   inputs: [],
-  //   notAllowedInInterval: true,
-  // },
+  {
+    value: "points",
+    label: "点集合",
+    inputs: [],
+    notAllowedInInterval: true,
+    switches: [
+      {
+        value: "closed",
+        label: "填充",
+        folded: true,
+      },
+    ],
+  },
   {
     value: "vector",
     label: "向量",
@@ -188,9 +204,9 @@ export const fnTypeArr = [
     inputs: [
       {
         value: "text",
-        title: "=",
+        title: "s=",
         label: "文本",
-        placeholder: "文本",
+        placeholder: "Lorem ipsum dolor",
       },
     ],
     coord: [
@@ -205,3 +221,14 @@ export const fnTypeArr = [
     ],
   },
 ] as const satisfies FnType[];
+
+export function findError(graphData: FunctionPlotDatum[]) {
+  for (const [index, dataItem] of graphData.entries()) {
+    const fnType = getFnType(dataItem.fnType);
+    if (fnType.notAllowedInInterval && !dataItem.graphType) return index;
+    for (const input of fnType.inputs) if (!dataItem[input.value]) return index;
+    for (const coord of fnType.coord ?? [])
+      if (!dataItem[coord.value] && !coord.optional) return index;
+  }
+  return 0;
+}
