@@ -9,12 +9,14 @@
     <span class="coord-label">{{ input.label }}</span>
     <input
       type="number"
+      :value="dataItem[input.value]?.[0] ?? ''"
       @input="handleCoordInput(dataItem!, input, 0, $event)"
       :placeholder="input.placeholder[0]"
     />
     <span class="coord-label">{{ input.sep }}</span>
     <input
       type="number"
+      :value="dataItem[input.value]?.[1] ?? ''"
       @input="handleCoordInput(dataItem!, input, 1, $event)"
       :placeholder="input.placeholder[1]"
     />

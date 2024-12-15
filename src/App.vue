@@ -15,11 +15,14 @@
             :key="dataItem.key"
           />
         </VueDraggable>
-        <div
-          class="plot-data add-data"
-          @click="graphData.push({ key: Math.random() })"
-        >
-          + 添加
+        <div class="plot-data add-data">
+          <div
+            @click="graphData.push({ key: Math.random() })"
+            class="add-data-opt add"
+          >
+            + 添加
+          </div>
+          <div @click="handleImport()" class="add-data-opt import">↓ 导入</div>
         </div>
       </div>
       <CodeDisplay :dataArr="cloneDeep(graphData)" />
@@ -42,9 +45,10 @@ import Graph from "./components/graph.vue";
 import DataBlock from "./components/dataBlock.vue";
 import CodeDisplay from "./components/codeDisplay.vue";
 import { VueDraggable } from "vue-draggable-plus";
-import type { FunctionPlotDatum } from "function-plot";
+import type { FunctionPlotDatum, FunctionPlotOptions } from "function-plot";
 import { onMounted, ref, watch } from "vue";
 import { cloneDeep } from "lodash-es";
+import JSON5 from "json5";
 const graphData = ref<(FunctionPlotDatum & { key: number })[]>([
   { fn: "x^2", key: 1 },
 ]);
@@ -76,6 +80,15 @@ function handleDrag() {
     onResize.value = false;
     handleResize();
   });
+}
+function handleImport() {
+  const raw = prompt("源数据：");
+  if (!raw) return;
+  graphData.value =
+    (<FunctionPlotOptions>JSON5.parse(raw)).data?.map((item) => ({
+      key: Math.random(),
+      ...item,
+    })) ?? [];
 }
 </script>
 
@@ -125,15 +138,27 @@ function handleDrag() {
   overflow: hidden;
 }
 .add-data {
-  padding-top: 10px;
-  padding-bottom: 10px;
-  margin-bottom: 50px;
+  padding: 0;
+  display: flex;
+  flex-direction: row;
   cursor: default;
 }
-.add-data:hover {
+.add-data-opt {
+  padding: 10px 30px;
+}
+.add-data-opt.add {
+  flex-grow: 1;
+}
+.add-data-opt:not(:nth-child(1)) {
+  border-left: 1px solid var(--c-border);
+}
+.editor-inner {
+  padding-bottom: 50px;
+}
+.add-data-opt:hover {
   background: var(--c-bk3);
 }
-.add-data:active {
+.add-data-opt:active {
   background: var(--c-bk1);
 }
 

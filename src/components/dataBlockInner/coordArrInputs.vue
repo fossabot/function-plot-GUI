@@ -25,7 +25,9 @@
         :placeholder="fnType.coordArr.placeholder[1]"
       />
       <span class="coord-label">{{ fnType.coordArr.fin }}</span>
-      <span class="coordarr-delete" @click="privateData.splice(index, 1)">×</span>
+      <span class="coordarr-delete" @click="privateData.splice(index, 1)"
+        >×</span
+      >
     </div>
   </VueDraggable>
   <div
@@ -45,7 +47,7 @@
 <script setup lang="ts">
 import { FnType } from "../../consts";
 import { FunctionPlotDatum } from "function-plot";
-import { computed, onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { VueDraggable } from "vue-draggable-plus";
 
 const { dataItem, fnType } = defineProps<{
@@ -97,12 +99,12 @@ onMounted(() => {
   border-radius: 50%;
   line-height: var(--d);
   text-align: center;
-	border:transparent 1px solid
+  border: transparent 1px solid;
 }
 .coordarr-delete:hover {
   opacity: 1;
-	background-color: var(--c-red);
-	border-color:var(--c-red2)
+  background-color: var(--c-red);
+  border-color: var(--c-red2);
 }
 .coordarr-delete:active {
   opacity: 1;
