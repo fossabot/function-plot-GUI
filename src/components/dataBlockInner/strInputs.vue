@@ -15,6 +15,7 @@ import { FunctionPlotDatum } from "function-plot";
 const { dataItem, fnType } = defineProps<{
   dataItem: FunctionPlotDatum;
   fnType: FnType;
+  blockFolded: boolean;
 }>();
 </script>
 

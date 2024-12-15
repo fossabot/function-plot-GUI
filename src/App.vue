@@ -1,18 +1,33 @@
 <template>
   <Navbar />
-  <div id="content">
-    <div id="editor">
+  <div id="content" :class="{ onresize: onResize }">
+    <div id="editor" :style="{ width: sideRatio + 'vw' }">
       <div class="editor-inner">
-        <DataBlock
-          v-for="(_dataItem, i) in graphData"
-          v-model="graphData[i]"
-          @delete="graphData.splice(i, 1)"
-        />
-        <div class="plot-data add-data" @click="graphData.push({})">+ 添加</div>
+        <VueDraggable v-model="graphData" :animation="150" handle=".datablock-drag">
+          <DataBlock
+            v-for="(dataItem, i) in graphData"
+            v-model="graphData[i]"
+            @delete="graphData.splice(i, 1)"
+            :key="dataItem.key"
+          />
+        </VueDraggable>
+        <div
+          class="plot-data add-data"
+          @click="graphData.push({ key: Math.random() })"
+        >
+          + 添加
+        </div>
       </div>
       <CodeDisplay :dataArr="cloneDeep(graphData)" />
     </div>
-    <Graph :key="graphKey" :graphData="cloneDeep(graphData)" ref="graphRef" />
+    <div id="divider" @mousedown="handleDrag"></div>
+    <div id="graph" ref="shellRef">
+      <Graph
+        :graphData="cloneDeep(graphData)"
+        :width="graphWidth"
+        :height="graphHeight"
+      />
+    </div>
   </div>
 </template>
 
@@ -21,13 +36,40 @@ import Navbar from "./components/nav.vue";
 import Graph from "./components/graph.vue";
 import DataBlock from "./components/dataBlock.vue";
 import CodeDisplay from "./components/codeDisplay.vue";
+import { VueDraggable } from "vue-draggable-plus";
 import type { FunctionPlotDatum } from "function-plot";
-import { reactive, ref } from "vue";
+import { onMounted, ref } from "vue";
 import { cloneDeep } from "lodash-es";
-
-const graphRef = ref<InstanceType<typeof Graph>>();
-const graphData = reactive<FunctionPlotDatum[]>([{ fn: "x^2" }]);
-const graphKey = ref(0);
+const graphData = ref<(FunctionPlotDatum & { key: number })[]>([
+  { fn: "x^2", key: 1 },
+]);
+const graphWidth = ref(0),
+  graphHeight = ref(0);
+const sideRatio = ref(33);
+const onResize = ref(false);
+const shellRef = ref<HTMLDivElement>();
+function handleResize() {
+  if (shellRef.value) {
+    graphWidth.value = shellRef.value.clientWidth;
+    graphHeight.value = shellRef.value.clientHeight;
+  }
+}
+onMounted(() => {
+  window.addEventListener("resize", handleResize);
+  handleResize();
+});
+function handleDrag() {
+  onResize.value = true;
+  const xfull = outerWidth;
+  const mousemove = (event: MouseEvent) =>
+    (sideRatio.value = (event.clientX / xfull) * 100);
+  document.addEventListener("mousemove", mousemove);
+  document.addEventListener("mouseup", () => {
+    document.removeEventListener("mousemove", mousemove);
+    onResize.value = false;
+    handleResize();
+  });
+}
 </script>
 
 <style>
@@ -59,7 +101,6 @@ const graphKey = ref(0);
   flex-shrink: 0;
 }
 #editor {
-  width: 33vw;
   border-right: var(--c-border) 1px solid;
   position: relative;
 }
@@ -74,6 +115,7 @@ const graphKey = ref(0);
 #graph {
   flex-grow: 1;
   position: relative;
+  overflow: hidden;
 }
 .add-data {
   padding-top: 10px;
@@ -87,30 +129,26 @@ const graphKey = ref(0);
 .add-data:active {
   background: var(--c-bk1);
 }
-.plot-data.output {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-top: var(--c-border) 1px solid;
-  padding: 20px 15px;
-  height: 260px;
-}
-.plot-data.output .output-title {
-  font-size: 20px;
-  font-weight: bold;
-  display: block;
-  margin-bottom: 10px;
-}
-.plot-data.output pre {
-  position: absolute;
-  top: 60px;
-  bottom: 15px;
-  left: 15px;
-  right: 15px;
-  margin: 0;
-  overflow: scroll;
-  user-select: all;
-}
 
+#divider {
+  width: 6px;
+  background: var(--c-accent);
+  margin-left: -3px;
+  margin-right: -3px;
+  z-index: 999;
+  opacity: 0;
+  transition: opacity 0.1s;
+  cursor: w-resize;
+}
+#divider:hover {
+  opacity: 0.8;
+}
+.onresize #divider {
+  opacity: 0.3;
+  transition: none;
+}
+.onresize {
+  cursor: w-resize;
+  user-select: none;
+}
 </style>
