@@ -1,5 +1,6 @@
 <template>
   <div class="plot-data" v-if="dataItem" ref="block">
+    <div class="datablock-drag">☰</div>
     <div class="selectors">
       <select v-model="dataItem.fnType" @change="fnTypeChange(dataItem)">
         <option :value="undefined">{{ fnTypeArr[0].label }}</option>
@@ -8,10 +9,7 @@
         </option>
       </select>
       <select v-model="dataItem.graphType" v-if="dataItem.graphType !== 'text'">
-        <option
-          v-if="!fnType.notAllowedInInterval"
-          :value="undefined"
-        >
+        <option v-if="!fnType.notAllowedInInterval" :value="undefined">
           {{ graphTypeArr[0].label }}
         </option>
         <option
@@ -91,7 +89,7 @@ const fnType = computed(() => getFnType(dataItem.value?.fnType));
   border-bottom: var(--c-border) 1px solid;
   background: var(--c-bk2);
   position: relative;
-  padding: 20px 15px;
+  padding: 20px 15px 20px 35px;
 }
 .blockBtn {
   height: 100%;
@@ -133,5 +131,25 @@ const fnType = computed(() => getFnType(dataItem.value?.fnType));
 }
 .selectors select:focus {
   border-color: var(--c-accent);
+}
+.datablock-drag {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  width: 20px;
+  background: var(--c-bk3);
+  border-right: 1px solid var(--c-border);
+  height: 100%;
+  cursor: grab;
+  color: var(--c-text);
+  text-align: center;
+  font-size: 18px;
+}
+.sortable-chosen .datablock-drag {
+  background: var(--c-border);
+}
+.sortable-chosen {
+  z-index: 999;
 }
 </style>
