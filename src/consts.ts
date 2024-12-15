@@ -44,11 +44,12 @@ export type SwitchType = {
   folded?: boolean;
 };
 
-export type CoordInfty = {
+export type CoordArr = {
   value: "points";
   label: string;
   sep: string;
   fin: string;
+  placeholder: [string, string];
 };
 
 export type FnType = {
@@ -56,6 +57,7 @@ export type FnType = {
   label: string;
   inputs: InputType[];
   coord?: CoordType[];
+  coordArr?: CoordArr;
   switches?: SwitchType[];
   notAllowedInInterval?: boolean;
 };
@@ -90,7 +92,7 @@ export const fnTypeArr = [
     switches: [
       {
         value: "closed",
-        label: "填充颜色",
+        label: "闭合并填充",
         folded: true,
       },
     ],
@@ -104,7 +106,7 @@ export const fnTypeArr = [
     switches: [
       {
         value: "closed",
-        label: "填充",
+        label: "闭合并填充",
         folded: true,
       },
     ],
@@ -131,7 +133,7 @@ export const fnTypeArr = [
     switches: [
       {
         value: "closed",
-        label: "填充",
+        label: "闭合并填充",
         folded: true,
       },
     ],
@@ -157,20 +159,27 @@ export const fnTypeArr = [
     switches: [
       {
         value: "closed",
-        label: "填充",
+        label: "闭合并填充",
         folded: true,
       },
     ],
   },
   {
     value: "points",
-    label: "点集合",
+    label: "点集",
     inputs: [],
     notAllowedInInterval: true,
+    coordArr: {
+      value: "points",
+      label: "(",
+      sep: ",",
+      fin: ")",
+      placeholder: ["x", "y"],
+    },
     switches: [
       {
         value: "closed",
-        label: "填充",
+        label: "闭合并填充",
         folded: true,
       },
     ],

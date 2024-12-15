@@ -3,7 +3,11 @@
   <div id="content" :class="{ onresize: onResize }">
     <div id="editor" :style="{ width: sideRatio + 'vw' }">
       <div class="editor-inner">
-        <VueDraggable v-model="graphData" :animation="150" handle=".datablock-drag">
+        <VueDraggable
+          v-model="graphData"
+          :animation="150"
+          handle=".datablock-drag"
+        >
           <DataBlock
             v-for="(dataItem, i) in graphData"
             v-model="graphData[i]"
@@ -26,6 +30,7 @@
         :graphData="cloneDeep(graphData)"
         :width="graphWidth"
         :height="graphHeight"
+        :key="key"
       />
     </div>
   </div>
@@ -38,13 +43,14 @@ import DataBlock from "./components/dataBlock.vue";
 import CodeDisplay from "./components/codeDisplay.vue";
 import { VueDraggable } from "vue-draggable-plus";
 import type { FunctionPlotDatum } from "function-plot";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { cloneDeep } from "lodash-es";
 const graphData = ref<(FunctionPlotDatum & { key: number })[]>([
   { fn: "x^2", key: 1 },
 ]);
 const graphWidth = ref(0),
   graphHeight = ref(0);
+const key = ref(0);
 const sideRatio = ref(33);
 const onResize = ref(false);
 const shellRef = ref<HTMLDivElement>();
@@ -57,6 +63,7 @@ function handleResize() {
 onMounted(() => {
   window.addEventListener("resize", handleResize);
   handleResize();
+  watch(graphData, () => key.value++, { deep: true });
 });
 function handleDrag() {
   onResize.value = true;

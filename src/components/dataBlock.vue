@@ -20,7 +20,7 @@
           {{ type.label }}
         </option>
       </select>
-      <button class="delete blockBtn" @click="emit('delete')">删除</button>
+      <div style="flex-grow: 2"></div>
       <button
         class="fold blockBtn"
         :class="{ active: !blockFolded }"
@@ -28,6 +28,7 @@
       >
         更多
       </button>
+      <button class="delete blockBtn" @click="emit('delete')">删除</button>
     </div>
 
     <div class="inputs">
@@ -37,11 +38,19 @@
         :blockFolded="blockFolded"
       />
       <CoordInputs
+        v-if="fnType.coord"
+        :dataItem="dataItem"
+        :fnType="fnType"
+        :blockFolded="blockFolded"
+      />
+      <CoordArrInputs
+        v-if="fnType.coordArr"
         :dataItem="dataItem"
         :fnType="fnType"
         :blockFolded="blockFolded"
       />
       <SwitchInputs
+        v-if="fnType.switches"
         :dataItem="dataItem"
         :fnType="fnType"
         :blockFolded="blockFolded"
@@ -56,6 +65,7 @@ import { ref, computed } from "vue";
 import StrInputs from "./dataBlockInner/strInputs.vue";
 import CoordInputs from "./dataBlockInner/coordInputs.vue";
 import SwitchInputs from "./dataBlockInner/switchInputs.vue";
+import CoordArrInputs from "./dataBlockInner/coordArrInputs.vue";
 
 const emit = defineEmits(["delete"]);
 const dataItem = defineModel<FunctionPlotDatum>();
@@ -77,6 +87,7 @@ function fnTypeChange(
     if (fnType.value.notAllowedInInterval && !dataItem.graphType)
       dataItem.graphType = "polyline";
     if (dataItem.fnType === "vector") dataItem.vector = [0, 0];
+    if (dataItem.fnType === "points") dataItem.points = [];
     if (block.value)
       block.value.querySelectorAll("input").forEach((ele) => (ele.value = ""));
   }
@@ -90,20 +101,21 @@ const fnType = computed(() => getFnType(dataItem.value?.fnType));
   background: var(--c-bk2);
   position: relative;
   padding: 20px 15px 20px 35px;
+  overflow-x: hidden;
 }
 .blockBtn {
-  height: 100%;
-  float: right;
   color: var(--c-text);
-  padding: 8px 15px;
+  padding: 0 15px;
   border: none;
-  background: var(--c-border);
-  margin-left: 10px;
+  background: var(--c-bk3);
   border-radius: 5px;
   opacity: 0.75;
+  border: var(--c-border) 1px solid;
+  flex-shrink: 0;
 }
 .delete {
   background: var(--c-red);
+  border-color: var(--c-red2);
 }
 .blockBtn.active {
   background: var(--c-bk1);
@@ -112,22 +124,25 @@ const fnType = computed(() => getFnType(dataItem.value?.fnType));
   opacity: 1;
 }
 .blockBtn:active {
-  opacity: 0.3;
+  opacity: 1;
+  filter: brightness(0.5);
 }
+
 .selectors {
   margin-bottom: 10px;
   position: relative;
+  display: flex;
+  gap: 10px;
 }
 .selectors select {
   border: var(--c-border) 1px solid;
   background: var(--c-bk3);
   border-radius: 5px;
-  width: 30%;
+  flex-grow: 1;
   padding: 8px 8px;
-  margin-right: 15px;
   color: var(--text);
   font-size: 15px;
-  min-width: 6.5em;
+  width: 6.5em;
 }
 .selectors select:focus {
   border-color: var(--c-accent);

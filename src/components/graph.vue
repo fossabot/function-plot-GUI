@@ -17,7 +17,7 @@ const plotRef = ref<HTMLDivElement | null>(null);
 onMounted(async () => {
   const functionPlot = (await import("function-plot")).default;
   watch(
-    [() => width, () => height, () => graphData],
+    [() => width, () => height],
     throttle(() => {
       const flag = findError(graphData);
       try {

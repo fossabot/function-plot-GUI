@@ -10,7 +10,7 @@
         : (dataItem[input.value] = true)
     "
   >
-    <span class="switch" :class="dataItem[input.value] ? 'on' : 'off'"></span>
+    <button class="switch" :class="dataItem[input.value] ? 'on' : 'off'"></button>
     {{ input.label }}
   </div>
 </template>
@@ -44,6 +44,7 @@ const { dataItem, fnType } = defineProps<{
   border-radius: 5px;
   position: relative;
   border-radius: 10px;
+  border:none
 }
 .switch.on {
   background: var(--c-accent);
@@ -67,10 +68,10 @@ const { dataItem, fnType } = defineProps<{
 .switch.on:after {
   left: 24px;
 }
-.switch:hover {
+.switches:hover .switch {
   filter: brightness(110%);
 }
-.switch:active {
+.switches:active .switch {
   filter: brightness(90%);
 }
 </style>
