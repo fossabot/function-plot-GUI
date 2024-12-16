@@ -52,6 +52,12 @@ export type CoordArr = {
   placeholder: [string, string];
 };
 
+export type OptInput = {
+  label: string;
+  placeholder?: string;
+  vif?: keyof FunctionPlotDatum;
+} & ({ value: "color"; type: "text" } | { value: "nSamples"; type: "number" });
+
 export type FnType = {
   value: FunctionPlotDatum["fnType"] | "text";
   label: string;
@@ -59,6 +65,7 @@ export type FnType = {
   coord?: CoordType[];
   coordArr?: CoordArr;
   switches?: SwitchType[];
+  optInput?: OptInput[];
   notAllowedInInterval?: boolean;
 };
 
@@ -94,6 +101,13 @@ export const fnTypeArr = [
         value: "closed",
         label: "闭合并填充",
         folded: true,
+      },
+    ],
+    optInput: [
+      {
+        value: "color",
+        type: "text",
+        label: "颜色",
       },
     ],
   },

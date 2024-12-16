@@ -55,6 +55,12 @@
         :fnType="fnType"
         :blockFolded="blockFolded"
       />
+      <OptInputs
+        v-if="fnType.optInput"
+        :dataItem="dataItem"
+        :fnType="fnType"
+        :blockFolded="blockFolded"
+      />
     </div>
   </div>
 </template>
@@ -66,6 +72,7 @@ import StrInputs from "./dataBlockInner/strInputs.vue";
 import CoordInputs from "./dataBlockInner/coordInputs.vue";
 import SwitchInputs from "./dataBlockInner/switchInputs.vue";
 import CoordArrInputs from "./dataBlockInner/coordArrInputs.vue";
+import OptInputs from "./dataBlockInner/optInputs.vue";
 
 const emit = defineEmits(["delete"]);
 const dataItem = defineModel<FunctionPlotDatum>();
