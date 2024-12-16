@@ -49,14 +49,14 @@
         :fnType="fnType"
         :blockFolded="blockFolded"
       />
-      <SwitchInputs
-        v-if="fnType.switches"
+      <OptInputs
+        v-if="fnType.optInput"
         :dataItem="dataItem"
         :fnType="fnType"
         :blockFolded="blockFolded"
       />
-      <OptInputs
-        v-if="fnType.optInput"
+      <SwitchInputs
+        v-if="fnType.switches"
         :dataItem="dataItem"
         :fnType="fnType"
         :blockFolded="blockFolded"

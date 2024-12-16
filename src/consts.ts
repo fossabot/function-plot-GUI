@@ -108,6 +108,7 @@ export const fnTypeArr = [
         value: "color",
         type: "text",
         label: "颜色",
+        placeholder:'RGB / HEX / name'
       },
     ],
   },
