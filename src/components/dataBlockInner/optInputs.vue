@@ -42,7 +42,7 @@ function handleCoordInput(
 <style>
 .input-box.opt-input {
   display: flex;
-  color: #bbb;
+  color: var(--c-text2);
   gap: 10px;
 }
 .input-box.opt-input span {
