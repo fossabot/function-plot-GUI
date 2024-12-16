@@ -108,7 +108,7 @@ export const fnTypeArr = [
         value: "color",
         type: "text",
         label: "颜色",
-        placeholder:'RGB / HEX / name'
+        placeholder: "RGB / HEX / name",
       },
     ],
   },
@@ -123,6 +123,14 @@ export const fnTypeArr = [
         value: "closed",
         label: "闭合并填充",
         folded: true,
+      },
+    ],
+    optInput: [
+      {
+        value: "color",
+        type: "text",
+        label: "颜色",
+        placeholder: "RGB / HEX / name",
       },
     ],
   },
@@ -152,6 +160,14 @@ export const fnTypeArr = [
         folded: true,
       },
     ],
+    optInput: [
+      {
+        value: "color",
+        type: "text",
+        label: "颜色",
+        placeholder: "RGB / HEX / name",
+      },
+    ],
   },
   {
     value: "polar",
@@ -178,6 +194,14 @@ export const fnTypeArr = [
         folded: true,
       },
     ],
+    optInput: [
+      {
+        value: "color",
+        type: "text",
+        label: "颜色",
+        placeholder: "RGB / HEX / name",
+      },
+    ],
   },
   {
     value: "points",
@@ -196,6 +220,14 @@ export const fnTypeArr = [
         value: "closed",
         label: "闭合并填充",
         folded: true,
+      },
+    ],
+    optInput: [
+      {
+        value: "color",
+        type: "text",
+        label: "颜色",
+        placeholder: "RGB / HEX / name",
       },
     ],
   },
@@ -220,6 +252,14 @@ export const fnTypeArr = [
         optional: true,
       },
     ],
+    optInput: [
+      {
+        value: "color",
+        type: "text",
+        label: "颜色",
+        placeholder: "RGB / HEX / name",
+      },
+    ],
     notAllowedInInterval: true,
   },
   {
@@ -241,6 +281,14 @@ export const fnTypeArr = [
         fin: ")",
         placeholder: ["x", "y"],
         defaultVal: [0, 0],
+      },
+    ],
+    optInput: [
+      {
+        value: "color",
+        type: "text",
+        label: "颜色",
+        placeholder: "RGB / HEX / name",
       },
     ],
   },

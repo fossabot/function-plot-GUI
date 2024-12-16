@@ -46,14 +46,14 @@ function handleCoordInput(
   gap: 10px;
 }
 .input-box.opt-input span {
-  font-size: 18px;
+  font-size: 16px;
   margin: auto 5px;
   flex-shrink: 0;
 }
 .input-box.opt-input input {
   min-width: 3em;
-  padding: 6px 0;
-  font-size: 18px;
+  padding: 5px 0;
+  font-size: 17px;
   flex-shrink: 1;
 }
 </style>

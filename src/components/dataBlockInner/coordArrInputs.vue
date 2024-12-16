@@ -130,7 +130,7 @@ onMounted(() => {
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
 }
-.sortable-chosen .coordarr-drag {
+.sortable-chosen > .coordarr-drag {
   background: var(--c-border);
   z-index: 999;
 }
