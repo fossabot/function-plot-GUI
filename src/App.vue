@@ -85,7 +85,7 @@ onMounted(() => {
   const rawCode = window.location.search.match(/\?code=(.+)$/)?.[1];
   if (rawCode)
     try {
-      const code = utf8.decode(base64.decode(rawCode));
+      const code = utf8.decode(base64.decode(decodeURIComponent(rawCode)));
       const data = (<FunctionPlotDatum[]>JSON5.parse(code).data).map(
         importMapper
       );
