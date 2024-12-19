@@ -45,16 +45,11 @@
 </template>
 
 <script setup lang="ts">
-import { FnType } from "../../consts";
-import { FunctionPlotDatum } from "function-plot";
+import { InputProps } from "../../consts";
 import { onMounted, ref, watch } from "vue";
 import { VueDraggable } from "vue-draggable-plus";
 
-const { dataItem, fnType } = defineProps<{
-  dataItem: FunctionPlotDatum;
-  fnType: FnType;
-  blockFolded: boolean;
-}>();
+const { dataItem, fnType } = defineProps<InputProps>();
 
 type PrivateData = {
   id: number;

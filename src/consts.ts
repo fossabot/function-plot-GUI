@@ -69,6 +69,21 @@ export type FnType = {
   notAllowedInInterval?: boolean;
 };
 
+export type Datum = (
+  | (Omit<FunctionPlotDatum, "fnType"> & {
+      fnType: "text" | FunctionPlotDatum["fnType"];
+    })
+  | FunctionPlotDatum
+) & {
+  key: number;
+};
+
+export type InputProps = {
+  dataItem: Datum;
+  fnType: FnType;
+  blockFolded: boolean;
+};
+
 export const getFnType = (fnType: string = "linear") =>
   <FnType>fnTypeArr.find(({ value }) => value === fnType);
 
@@ -318,7 +333,7 @@ export const fnTypeArr = [
   },
 ] as const satisfies FnType[];
 
-export function findError(graphData: FunctionPlotDatum[]) {
+export function findError(graphData: Datum[]) {
   for (const [index, dataItem] of graphData.entries()) {
     const fnType = getFnType(dataItem.fnType);
     if (fnType.notAllowedInInterval && !dataItem.graphType) return index;

@@ -65,8 +65,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import type { FunctionPlotDatum } from "function-plot";
-import { fnTypeArr, graphTypeArr, inputTypeArr, getFnType } from "../consts";
+import { fnTypeArr, graphTypeArr, inputTypeArr, getFnType, Datum } from "../consts";
 import { ref, computed } from "vue";
 import StrInputs from "./dataBlockInner/strInputs.vue";
 import CoordInputs from "./dataBlockInner/coordInputs.vue";
@@ -75,16 +74,10 @@ import CoordArrInputs from "./dataBlockInner/coordArrInputs.vue";
 import OptInputs from "./dataBlockInner/optInputs.vue";
 
 const emit = defineEmits(["delete"]);
-const dataItem = defineModel<FunctionPlotDatum>();
+const dataItem = defineModel<Datum>();
 const block = ref<HTMLDivElement>();
 const blockFolded = ref(true);
-function fnTypeChange(
-  dataItem:
-    | (Omit<FunctionPlotDatum, "fnType"> & {
-        fnType: "text" | FunctionPlotDatum["fnType"];
-      })
-    | FunctionPlotDatum
-) {
+function fnTypeChange(dataItem: Datum) {
   inputTypeArr.forEach((key) => delete dataItem[key]);
   if (dataItem.fnType === "text") {
     dataItem.graphType = "text";

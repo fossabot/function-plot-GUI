@@ -10,20 +10,18 @@
         : (dataItem[input.value] = true)
     "
   >
-    <button class="switch" :class="dataItem[input.value] ? 'on' : 'off'"></button>
+    <button
+      class="switch"
+      :class="dataItem[input.value] ? 'on' : 'off'"
+    ></button>
     {{ input.label }}
   </div>
 </template>
 
 <script setup lang="ts">
-import { FnType } from "../../consts";
-import { FunctionPlotDatum } from "function-plot";
+import { InputProps } from "../../consts";
 
-const { dataItem, fnType } = defineProps<{
-  dataItem: FunctionPlotDatum;
-  fnType: FnType;
-  blockFolded: boolean;
-}>();
+const { dataItem, fnType } = defineProps<InputProps>();
 </script>
 
 <style>
@@ -44,7 +42,7 @@ const { dataItem, fnType } = defineProps<{
   border-radius: 5px;
   position: relative;
   border-radius: 10px;
-  border:none
+  border: none;
 }
 .switch.on {
   background: var(--c-accent);

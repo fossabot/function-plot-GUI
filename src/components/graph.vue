@@ -6,9 +6,9 @@
 import { onMounted, ref, watch } from "vue";
 import { throttle } from "lodash-es";
 import type { FunctionPlotDatum } from "function-plot";
-import { findError } from "../consts";
+import { Datum, findError } from "../consts";
 const { graphData, width, height } = defineProps<{
-  graphData: FunctionPlotDatum[];
+  graphData: Datum[];
   width: number;
   height: number;
 }>();
@@ -24,7 +24,9 @@ onMounted(async () => {
         plotRef.value &&
           functionPlot({
             target: plotRef.value,
-            data: flag ? graphData.slice(0, flag) : graphData,
+            data: <FunctionPlotDatum[]>(
+              (flag ? graphData.slice(0, flag) : graphData)
+            ),
             width: width - 20,
             height: height - 20,
           });

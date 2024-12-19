@@ -10,10 +10,10 @@ import JSON5 from "json5";
 import prettier from "prettier/standalone";
 import prettierPluginBabel from "prettier/plugins/babel";
 import prettierPluginEstree from "prettier/plugins/estree";
-import { FunctionPlotDatum } from "function-plot";
 import { ref, watch } from "vue";
+import { Datum } from "../consts";
 const { dataArr } = defineProps<{
-  dataArr: (FunctionPlotDatum & { key?: number })[];
+  dataArr: (Omit<Datum, "key"> & { key?: number })[];
 }>();
 const formatted = ref("");
 watch(

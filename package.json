@@ -11,15 +11,19 @@
   },
   "dependencies": {
     "@prettier/sync": "^0.5.2",
+    "base-64": "^1.0.0",
     "function-plot": "^2.0.0-0",
     "json5": "^2.2.3",
     "lodash-es": "^4.17.21",
     "prettier": "^3.4.2",
+    "utf8": "^3.0.0",
     "vue": "^3.5.13",
     "vue-draggable-plus": "^0.6.0"
   },
   "devDependencies": {
+    "@types/base-64": "^1.0.2",
     "@types/lodash-es": "^4.17.12",
+    "@types/utf8": "^3.0.3",
     "@vitejs/plugin-vue": "^5.2.1",
     "patch-package": "^8.0.0",
     "typescript": "~5.6.2",

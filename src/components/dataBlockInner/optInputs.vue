@@ -15,20 +15,11 @@
 </template>
 
 <script setup lang="ts">
-import { FnType, OptInput } from "../../consts";
-import { FunctionPlotDatum } from "function-plot";
+import { Datum, InputProps, OptInput } from "../../consts";
 
-const { dataItem, fnType } = defineProps<{
-  dataItem: FunctionPlotDatum;
-  fnType: FnType;
-  blockFolded: boolean;
-}>();
+const { dataItem, fnType } = defineProps<InputProps>();
 
-function handleCoordInput(
-  dataItem: FunctionPlotDatum,
-  input: OptInput,
-  event: Event
-) {
+function handleCoordInput(dataItem: Datum, input: OptInput, event: Event) {
   const raw = (<HTMLInputElement>event.target).value;
   if (raw === "") {
     delete dataItem[input.value];

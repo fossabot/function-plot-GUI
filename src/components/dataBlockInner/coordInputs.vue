@@ -25,17 +25,12 @@
 </template>
 
 <script setup lang="ts">
-import { FnType, CoordType } from "../../consts";
-import { FunctionPlotDatum } from "function-plot";
+import { CoordType, Datum, InputProps } from "../../consts";
 
-const { dataItem, fnType } = defineProps<{
-  dataItem: FunctionPlotDatum;
-  fnType: FnType;
-  blockFolded: boolean;
-}>();
+const { dataItem, fnType } = defineProps<InputProps>();
 
 function handleCoordInput(
-  dataItem: FunctionPlotDatum,
+  dataItem: Datum,
   input: CoordType,
   index: 0 | 1,
   event: Event

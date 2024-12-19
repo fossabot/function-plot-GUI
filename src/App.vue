@@ -49,9 +49,11 @@ import type { FunctionPlotDatum, FunctionPlotOptions } from "function-plot";
 import { onMounted, ref, watch } from "vue";
 import { cloneDeep } from "lodash-es";
 import JSON5 from "json5";
-const graphData = ref<(FunctionPlotDatum & { key: number })[]>([
-  { fn: "x^2", key: 1 },
-]);
+import base64 from "base-64";
+import utf8 from "utf8";
+import { Datum } from "./consts";
+
+const graphData = ref<Datum[]>([{ fn: "x^2", key: 1 }]);
 const graphWidth = ref(0),
   graphHeight = ref(0);
 const key = ref(0);
@@ -64,7 +66,34 @@ function handleResize() {
     graphHeight.value = shellRef.value.clientHeight;
   }
 }
+
+function importMapper(item: FunctionPlotDatum): Datum {
+  if (item.graphType === "text")
+    return {
+      ...item,
+      fnType: "text",
+      key: Math.random(),
+    };
+  else
+    return {
+      ...item,
+      key: Math.random(),
+    };
+}
+
 onMounted(() => {
+  const rawCode = window.location.search.match(/\?code=(.+)$/)?.[1];
+  if (rawCode)
+    try {
+      const code = utf8.decode(base64.decode(rawCode));
+      const data = (<FunctionPlotDatum[]>JSON5.parse(code).data).map(
+        importMapper
+      );
+      graphData.value = <Datum[]>data;
+      console.log(code);
+      console.log(data);
+    } catch (e) {}
+
   window.addEventListener("resize", handleResize);
   handleResize();
   watch(graphData, () => key.value++, { deep: true });
@@ -85,10 +114,7 @@ function handleImport() {
   const raw = prompt("源数据：");
   if (!raw) return;
   graphData.value =
-    (<FunctionPlotOptions>JSON5.parse(raw)).data?.map((item) => ({
-      key: Math.random(),
-      ...item,
-    })) ?? [];
+    (<FunctionPlotOptions>JSON5.parse(raw)).data?.map(importMapper) ?? [];
 }
 </script>
 

@@ -10,13 +10,8 @@
 </template>
 
 <script setup lang="ts">
-import { FnType } from "../../consts";
-import { FunctionPlotDatum } from "function-plot";
-const { dataItem, fnType } = defineProps<{
-  dataItem: FunctionPlotDatum;
-  fnType: FnType;
-  blockFolded: boolean;
-}>();
+import { InputProps } from "../../consts";
+const { dataItem, fnType } = defineProps<InputProps>();
 </script>
 
 <style>
