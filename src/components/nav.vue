@@ -1,7 +1,10 @@
 <template>
   <div id="navbar">
     <span class="nav-title">
-      function-plot-GUI <span class="version">v0.1</span>
+      function-plot-GUI <span class="version"> v0.2 · </span>
+      <a class="link" href="https://github.com/Linho1219/function-plot-GUI" target="_blank"
+        >Github</a
+      >
     </span>
   </div>
 </template>
@@ -19,8 +22,18 @@
   font-size: 20px;
   font-weight: bold;
 }
-.version{
+.version {
   opacity: 0.5;
   font-size: 0.8em;
+}
+.link {
+  opacity: 0.5;
+  font-size: 0.8em;
+  text-decoration: none;
+  color: var(--c-text);
+}
+.link:hover {
+  opacity: 0.8;
+  text-decoration: underline;
 }
 </style>

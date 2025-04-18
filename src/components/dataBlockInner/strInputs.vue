@@ -25,7 +25,6 @@ const { dataItem, fnType } = defineProps<InputProps>();
   display: flex;
 }
 .inputs .input-box .input-title {
-  font-style: italic;
   letter-spacing: 5px;
   font-size: 20px;
   font-weight: bold;
