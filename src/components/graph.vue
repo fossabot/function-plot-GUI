@@ -1,5 +1,6 @@
 <template>
   <div id="graphRender" ref="plotRef"></div>
+  <button id="refresh" @click="emit('requireFullUpdate')">重置</button>
 </template>
 
 <script setup lang="ts">
@@ -72,5 +73,25 @@ onMounted(async () => {
 }
 .top-right-legend {
   display: none;
+}
+
+#refresh {
+  color: var(--c-text);
+  padding: 6px 10px;
+  border: none;
+  background: var(--c-bk3);
+  border-radius: 5px;
+  opacity: 0.75;
+  border: var(--c-border) 1px solid;
+  position: absolute;
+  top: 25px;
+  right: 25px;
+}
+#refresh:hover {
+  opacity: 1;
+}
+#refresh:active {
+  opacity: 1;
+  filter: brightness(0.5);
 }
 </style>
