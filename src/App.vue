@@ -13,6 +13,7 @@
             v-model="graphData[i]"
             @delete="graphData.splice(i, 1)"
             :key="dataItem.key"
+            @require-full-update="fullUpdate"
           />
         </VueDraggable>
         <div class="plot-data add-data">
@@ -25,15 +26,18 @@
           <div @click="handleImport()" class="add-data-opt import">↓ 导入</div>
         </div>
       </div>
-      <CodeDisplay :dataArr="cloneDeep(graphData)" />
+      <CodeDisplay :dataArr="cloneArr(graphData)" />
     </div>
     <div id="divider" @mousedown="handleDrag"></div>
     <div id="graph" ref="shellRef">
       <Graph
-        :graphData="cloneDeep(graphData)"
+        :data="cloneArr(graphData)"
         :width="graphWidth"
         :height="graphHeight"
         :key="key"
+        @requireFullUpdate="fullUpdate"
+        @requirePostUpdate="key++"
+        v-model="fullUpdateState"
       />
     </div>
   </div>
@@ -46,7 +50,7 @@ import DataBlock from "./components/dataBlock.vue";
 import CodeDisplay from "./components/codeDisplay.vue";
 import { VueDraggable } from "vue-draggable-plus";
 import type { FunctionPlotDatum, FunctionPlotOptions } from "function-plot";
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref } from "vue";
 import { cloneDeep } from "lodash-es";
 import JSON5 from "json5";
 import base64 from "base-64";
@@ -54,9 +58,11 @@ import utf8 from "utf8";
 import { Datum } from "./consts";
 
 const graphData = ref<Datum[]>([{ fn: "x^2", key: 1 }]);
+
 const graphWidth = ref(0),
   graphHeight = ref(0);
 const key = ref(0);
+const fullUpdateState = ref(false);
 const sideRatio = ref(33);
 const onResize = ref(false);
 const shellRef = ref<HTMLDivElement>();
@@ -65,6 +71,24 @@ function handleResize() {
     graphWidth.value = shellRef.value.clientWidth;
     graphHeight.value = shellRef.value.clientHeight;
   }
+}
+
+function cloneArr<T extends Object[]>(obj: T) {
+  const cloned = cloneDeep(obj);
+  function removeUndefined(obj: Record<string, any>) {
+    for (const key in obj) {
+      console.log(1);
+      if (obj[key] === undefined) delete obj[key];
+      if (
+        typeof obj[key] === "object" &&
+        obj[key] !== null &&
+        !Array.isArray(obj[key])
+      )
+        removeUndefined(obj[key]);
+    }
+  }
+  cloned.forEach((item) => removeUndefined(item));
+  return cloned as T;
 }
 
 function importMapper(item: FunctionPlotDatum): Datum {
@@ -79,6 +103,11 @@ function importMapper(item: FunctionPlotDatum): Datum {
       ...item,
       key: Math.random(),
     };
+}
+
+function fullUpdate() {
+  fullUpdateState.value = true;
+  key.value++;
 }
 
 onMounted(() => {
@@ -96,11 +125,11 @@ onMounted(() => {
 
   window.addEventListener("resize", handleResize);
   handleResize();
-  watch(graphData, () => key.value++, { deep: true });
 });
+
 function handleDrag() {
   onResize.value = true;
-  const xfull = outerWidth;
+  const xfull = window.innerWidth;
   const mousemove = (event: MouseEvent) =>
     (sideRatio.value = (event.clientX / xfull) * 100);
   document.addEventListener("mousemove", mousemove);
@@ -110,6 +139,7 @@ function handleDrag() {
     handleResize();
   });
 }
+
 function handleImport() {
   const raw = prompt("源数据：");
   if (!raw) return;

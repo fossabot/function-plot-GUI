@@ -8,7 +8,11 @@
           {{ type.label }}
         </option>
       </select>
-      <select v-model="dataItem.graphType" v-if="dataItem.graphType !== 'text'">
+      <select
+        v-model="dataItem.graphType"
+        v-if="dataItem.graphType !== 'text'"
+        @change="graphTypeChange(dataItem)"
+      >
         <option v-if="!fnType.notAllowedInInterval" :value="undefined">
           {{ graphTypeArr[0].label }}
         </option>
@@ -26,7 +30,7 @@
         :class="{ active: !blockFolded }"
         @click="blockFolded = !blockFolded"
       >
-        更多
+        {{ blockFolded ? "展开" : "收起" }}
       </button>
       <button class="delete blockBtn" @click="emit('delete')">删除</button>
     </div>
@@ -65,7 +69,13 @@
   </div>
 </template>
 <script setup lang="ts">
-import { fnTypeArr, graphTypeArr, inputTypeArr, getFnType, Datum } from "../consts";
+import {
+  fnTypeArr,
+  graphTypeArr,
+  inputTypeArr,
+  getFnType,
+  Datum,
+} from "../consts";
 import { ref, computed } from "vue";
 import StrInputs from "./dataBlockInner/strInputs.vue";
 import CoordInputs from "./dataBlockInner/coordInputs.vue";
@@ -73,7 +83,7 @@ import SwitchInputs from "./dataBlockInner/switchInputs.vue";
 import CoordArrInputs from "./dataBlockInner/coordArrInputs.vue";
 import OptInputs from "./dataBlockInner/optInputs.vue";
 
-const emit = defineEmits(["delete"]);
+const emit = defineEmits(["delete", "requireFullUpdate"]);
 const dataItem = defineModel<Datum>();
 const block = ref<HTMLDivElement>();
 const blockFolded = ref(true);
@@ -90,6 +100,20 @@ function fnTypeChange(dataItem: Datum) {
     if (dataItem.fnType === "points") dataItem.points = [];
     if (block.value)
       block.value.querySelectorAll("input").forEach((ele) => (ele.value = ""));
+  }
+}
+const scatteredSet = new WeakSet<Datum>();
+function graphTypeChange(dataItem: Datum) {
+  if (dataItem.graphType === "scatter") {
+    if (!scatteredSet.has(dataItem)) {
+      scatteredSet.add(dataItem);
+      emit("requireFullUpdate");
+    }
+  } else {
+    if (scatteredSet.has(dataItem)) {
+      scatteredSet.delete(dataItem);
+      emit("requireFullUpdate");
+    }
   }
 }
 const fnType = computed(() => getFnType(dataItem.value?.fnType));
