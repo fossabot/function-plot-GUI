@@ -90,7 +90,6 @@ export const getFnType = (fnType: string = "linear") =>
 export const graphTypeArr = [
   { value: "interval", label: "默认" },
   { value: "polyline", label: "多段线" },
-  // { value: "text", label: "文本" },
   { value: "scatter", label: "散点" },
 ] as const satisfies ValueLabel[];
 
