@@ -307,7 +307,7 @@ export const fnTypeArr = [
       {
         value: "vector",
         label: "inputs.vectorValue",
-        fir: "(",
+        fir: " (",
         sep: ",",
         fin: ")",
         placeholder: ["x", "y"],
@@ -315,7 +315,7 @@ export const fnTypeArr = [
       {
         value: "offset",
         label: "inputs.vectorOffset",
-        fir: "(",
+        fir: " (",
         sep: ",",
         fin: ")",
         placeholder: ["0", "0"],
@@ -347,7 +347,7 @@ export const fnTypeArr = [
       {
         value: "location",
         label: "inputs.location",
-        fir: "(",
+        fir: " (",
         sep: ",",
         fin: ")",
         placeholder: ["x", "y"],
