@@ -10,34 +10,36 @@
       >
         <div slot="start" id="editor" :style="{ width: sideRatio + 'vw' }">
           <div class="editor-inner">
-            <VueDraggable
-              v-model="graphData"
-              :animation="150"
-              handle=".datablock-drag"
-            >
-              <DataBlock
-                v-for="(dataItem, i) in graphData"
-                v-model="graphData[i]"
-                @delete="graphData.splice(i, 1)"
-                :key="dataItem.key"
-                @require-full-update="fullUpdate"
-              />
-            </VueDraggable>
+            <s-scroll-view>
+              <VueDraggable
+                v-model="graphData"
+                :animation="150"
+                handle=".datablock-drag"
+              >
+                <DataBlock
+                  v-for="(dataItem, i) in graphData"
+                  v-model="graphData[i]"
+                  @delete="graphData.splice(i, 1)"
+                  :key="dataItem.key"
+                  @require-full-update="fullUpdate"
+                />
+              </VueDraggable>
 
-            <div
-              class="plot-data add-data"
-              @click="
-                graphData.push({
-                  key: Math.random(),
-                  fnType: 'linear',
-                  graphType: 'polyline',
-                })
-              "
-            >
-              <s-icon name="add" />
-              {{ t("buttons.add") }}
-              <s-ripple attached></s-ripple>
-            </div>
+              <div
+                class="plot-data add-data"
+                @click="
+                  graphData.push({
+                    key: Math.random(),
+                    fnType: 'linear',
+                    graphType: 'polyline',
+                  })
+                "
+              >
+                <s-icon name="add" />
+                {{ t("buttons.add") }}
+                <s-ripple attached></s-ripple>
+              </div>
+            </s-scroll-view>
 
             <s-tooltip class="data-import">
               <s-fab slot="trigger" @click.stop="handleImport()">
@@ -180,11 +182,16 @@ s-page {
   position: relative;
   display: flex;
   flex-direction: column;
+  margin-right: 3px; /* 为宽度调节条留空间 */
 }
 .editor-inner {
-  overflow: scroll;
+  height: 0;
   flex-grow: 1;
   position: relative;
+}
+
+.editor-inner s-scroll-view {
+  height: 100%;
 }
 
 #graph {
@@ -210,10 +217,10 @@ s-page {
 
 #divider {
   position: absolute;
-  right: 0;
+  right: -3px;
   top: 0;
   bottom: 0;
-  width: 4px;
+  width: 5px;
   background: var(--c-accent);
   z-index: 999;
   opacity: 0;
