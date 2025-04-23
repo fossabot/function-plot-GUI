@@ -1,6 +1,6 @@
 <template>
   <div class="plot-data" v-if="dataItem" ref="block">
-    <div class="datablock-drag">☰</div>
+    <div class="datablock-drag"></div>
     <div class="selectors">
       <select v-model="dataItem.fnType" @change="fnTypeChange(dataItem)">
         <option v-for="type in fnTypeArr" :value="type.value">
