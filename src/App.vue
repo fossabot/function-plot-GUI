@@ -76,6 +76,7 @@ import JSON5 from "json5";
 import base64 from "base-64";
 import utf8 from "utf8";
 import { InternalDatum, toInternalDatum, toOriginalDatum } from "./consts";
+import { throttle } from "lodash-es";
 
 const graphData = ref<InternalDatum[]>([
   { fnType: "linear", graphType: "polyline", fn: "x^2", key: 1 },
@@ -89,13 +90,16 @@ const key = ref(0);
 const fullUpdateState = ref(false);
 const sideRatio = ref(33);
 const onResize = ref(false);
+
 const shellRef = ref<HTMLDivElement>();
-function handleResize() {
-  if (shellRef.value) {
-    graphWidth.value = shellRef.value.clientWidth;
-    graphHeight.value = shellRef.value.clientHeight;
-  }
-}
+onMounted(()=>{
+  const observer = new ResizeObserver(throttle(() => {
+    graphWidth.value = shellRef.value!.clientWidth;
+    graphHeight.value = shellRef.value!.clientHeight;
+  }, 250));
+  observer.observe(shellRef.value!);
+})
+
 
 function fullUpdate() {
   fullUpdateState.value = true;
@@ -114,8 +118,6 @@ onMounted(() => {
       console.log(code);
       console.log(data);
     } catch (e) {}
-  window.addEventListener("resize", handleResize);
-  handleResize();
 });
 
 function handleDrag() {
@@ -127,12 +129,10 @@ function handleDrag() {
   document.addEventListener("mouseup", () => {
     document.removeEventListener("mousemove", mousemove);
     onResize.value = false;
-    handleResize();
   });
 }
 function toogleDrawer() {
   innerDrawer.value?.toggle();
-  window.setTimeout(handleResize, 500);
 }
 function handleImport() {
   const raw = prompt("源数据：");
