@@ -27,9 +27,11 @@
             "
             class="add-data-opt add"
           >
-            + 添加
+            + {{ t("buttons.add") }}
           </div>
-          <div @click="handleImport()" class="add-data-opt import">↓ 导入</div>
+          <div @click="handleImport()" class="add-data-opt import">
+            ↓ {{ t("buttons.import") }}
+          </div>
         </div>
       </div>
       <CodeDisplay :dataArr="toOriginalDatum(graphData)" />
@@ -50,6 +52,9 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+
 import Navbar from "./components/nav.vue";
 import Graph from "./components/graph.vue";
 import DataBlock from "./components/dataBlock.vue";
@@ -146,6 +151,7 @@ function handleImport() {
 #navbar {
   height: 50px;
   width: 100vw;
+  box-sizing: border-box;
   background: var(--c-bk1);
   border-bottom: var(--c-border) 1px solid;
   position: relative;

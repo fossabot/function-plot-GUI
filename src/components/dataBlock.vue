@@ -4,7 +4,7 @@
     <div class="selectors">
       <select v-model="dataItem.fnType" @change="fnTypeChange(dataItem)">
         <option v-for="type in fnTypeArr" :value="type.value">
-          {{ type.label }}
+          {{ t(type.label) }}
         </option>
       </select>
       <select
@@ -13,7 +13,7 @@
         @change="graphTypeChange(dataItem)"
       >
         <option v-for="type in allowedGraphType" :value="type.value">
-          {{ type.label }}
+          {{ t(type.label) }}
         </option>
       </select>
       <div style="flex-grow: 2"></div>
@@ -22,9 +22,11 @@
         :class="{ active: !blockFolded }"
         @click="blockFolded = !blockFolded"
       >
-        {{ blockFolded ? "展开" : "收起" }}
+        {{ t(blockFolded ? "buttons.expand" : "buttons.collapse") }}
       </button>
-      <button class="delete blockBtn" @click="emit('delete')">删除</button>
+      <button class="delete blockBtn" @click="emit('delete')">
+        {{ t("buttons.del") }}
+      </button>
     </div>
 
     <div class="inputs">
@@ -61,6 +63,9 @@
   </div>
 </template>
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+
 import {
   fnTypeArr,
   getAllowedGraphType,

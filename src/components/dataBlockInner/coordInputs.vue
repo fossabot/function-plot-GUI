@@ -6,25 +6,28 @@
     class="input-box coord"
     :class="{ optional: input.optional }"
   >
-    <span class="coord-label">{{ input.label }}</span>
+    <span class="coord-label">{{ t(input.label) + input.fir }}</span>
     <input
       type="number"
       :value="dataItem[input.value]?.[0] ?? ''"
       @input="handleCoordInput(dataItem!, input, 0, $event)"
-      :placeholder="input.placeholder[0]"
+      :placeholder="t(input.placeholder[0])"
     />
     <span class="coord-label">{{ input.sep }}</span>
     <input
       type="number"
       :value="dataItem[input.value]?.[1] ?? ''"
       @input="handleCoordInput(dataItem!, input, 1, $event)"
-      :placeholder="input.placeholder[1]"
+      :placeholder="t(input.placeholder[1])"
     />
     <span class="coord-label">{{ input.fin }}</span>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
+
 import { CoordType, InternalDatum, InputProps } from "../../consts";
 
 const { dataItem, fnType } = defineProps<InputProps>();

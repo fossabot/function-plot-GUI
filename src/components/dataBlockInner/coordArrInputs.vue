@@ -12,17 +12,19 @@
       :key="data.id"
     >
       <span class="coordarr-drag">☰</span>
-      <span class="coord-label">{{ fnType.coordArr.label }}</span>
+      <span class="coord-label">{{
+        t(fnType.coordArr.label) + fnType.coordArr.fir
+      }}</span>
       <input
         type="number"
         v-model="data.payload[0]"
-        :placeholder="fnType.coordArr.placeholder[0]"
+        :placeholder="t(fnType.coordArr.placeholder[0])"
       />
       <span class="coord-label">{{ fnType.coordArr.sep }}</span>
       <input
         type="number"
         v-model="data.payload[1]"
-        :placeholder="fnType.coordArr.placeholder[1]"
+        :placeholder="t(fnType.coordArr.placeholder[1])"
       />
       <span class="coord-label">{{ fnType.coordArr.fin }}</span>
       <span class="coordarr-delete" @click="privateData.splice(index, 1)"
@@ -45,6 +47,9 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
+
 import { InputProps } from "../../consts";
 import { onMounted, ref, watch } from "vue";
 import { VueDraggable } from "vue-draggable-plus";

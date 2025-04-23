@@ -1,10 +1,24 @@
 import { createI18n } from "vue-i18n";
 export default createI18n({
+  legacy: false,
   locale: "zh-CN",
   messages: {
     "zh-CN": {
-      buttons: { add: "添加", import: "导入", raw: "原始数据" },
-      graphType: { interval: "默认", polyline: "多段线", scatter: "散点" },
+      buttons: {
+        add: "添加",
+        import: "导入",
+        raw: "原始数据",
+        del: "删除",
+        expand: "展开",
+        collapse: "收起",
+        reset: "重置",
+      },
+      graphType: {
+        interval: "默认",
+        polyline: "多段线",
+        scatter: "散点",
+        text: "文本",
+      },
       fnType: {
         linear: "一般",
         implicit: "隐函数",
@@ -12,6 +26,7 @@ export default createI18n({
         polar: "极坐标",
         points: "点集",
         vector: "向量",
+        text: "文本",
       },
       inputs: {
         fn: "函数",
@@ -24,8 +39,47 @@ export default createI18n({
         vector: "向量",
         vectorValue: "向量大小",
         vectorOffset: "起点坐标",
+        location: "位置",
       },
     },
-    "en-US": {},
+    "en-US": {
+      buttons: {
+        add: "Add",
+        import: "Import",
+        raw: "Raw data",
+        del: "Delete",
+        expand: "Expand",
+        collapse: "Collapse",
+        reset: "Reset",
+      },
+      graphType: {
+        interval: "Interval",
+        polyline: "Polyline",
+        scatter: "Scattered",
+        text: "Text",
+      },
+      fnType: {
+        linear: "Linear",
+        implicit: "Implicit",
+        parametric: "Parametric",
+        polar: "Polar",
+        points: "Points",
+        vector: "Vector",
+        text: "Text",
+      },
+      inputs: {
+        fn: "Function",
+        range: "Range",
+        color: "Color",
+        colorPlaceholder: "RGB / HEX / Color name",
+        nSamples: "Samples",
+        nSamplesPlaceholder: "Default to width",
+        closed: "Close and fill",
+        vector: "Vector (",
+        vectorValue: "Vector size",
+        vectorOffset: "Offset",
+        location: "Location",
+      },
+    },
   },
 });
