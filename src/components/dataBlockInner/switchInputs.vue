@@ -10,17 +10,14 @@
         : (dataItem[input.value] = true)
     "
   >
-    <button
-      class="switch"
-      :class="dataItem[input.value] ? 'on' : 'off'"
-    ></button>
+    <s-switch :checked="dataItem[input.value]"></s-switch>
     {{ t(input.label) }}
   </div>
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
-const { t } = useI18n()
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
 
 import { InputProps } from "../../consts";
 

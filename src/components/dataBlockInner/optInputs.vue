@@ -5,18 +5,19 @@
     class="input-box opt-input optional"
   >
     <span class="coord-label optin-label">{{ t(input.label) }}</span>
-    <input
+    <s-text-field
       :type="input.type"
-      :value="dataItem[input.value] ?? ''"
+      :value="(dataItem[input.value] ?? '') + ''"
       @input="handleCoordInput(dataItem!, input, $event)"
-      :placeholder="t(input.placeholder ?? '')"
-    />
+      :label="t(input.placeholder ?? '')"
+    >
+    </s-text-field>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
-const { t } = useI18n()
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
 
 import { InternalDatum, InputProps, OptInput } from "../../consts";
 
@@ -42,15 +43,16 @@ function handleCoordInput(
   display: flex;
   color: var(--c-text2);
   gap: 10px;
+  justify-content: space-between;
 }
 .input-box.opt-input span {
   font-size: 16px;
   margin: auto 5px;
   flex-shrink: 0;
 }
-.input-box.opt-input input {
+.input-box.opt-input s-text-field {
   min-width: 3em;
-  padding: 5px 0;
+  max-width: 16em;
   font-size: 17px;
   flex-shrink: 1;
 }

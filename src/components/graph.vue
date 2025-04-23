@@ -1,13 +1,23 @@
 <template>
   <div id="graphRender" ref="plotRef"></div>
-  <button id="refresh" @click="emit('requireFullUpdate')">
+
+  <s-tooltip id="refresh" align="bottom">
+    <s-icon-button slot="trigger" @click="emit('requireFullUpdate')">
+      <s-icon>
+        <svg viewBox="0 -960 960 960">
+          <path
+            d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z"
+          ></path>
+        </svg>
+      </s-icon>
+    </s-icon-button>
     {{ t("buttons.reset") }}
-  </button>
+  </s-tooltip>
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
-const { t } = useI18n()
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
 
 import { onMounted, ref, watch } from "vue";
 import { cloneDeep, throttle } from "lodash-es";
@@ -46,7 +56,7 @@ onMounted(async () => {
           emit("requirePostUpdate");
         }
       } catch (e) {
-        console.log(e);
+        // console.log(e);
         if (!fullUpdateState.value) emit("requireFullUpdate");
       }
     }, 200),
@@ -81,22 +91,8 @@ onMounted(async () => {
 }
 
 #refresh {
-  color: var(--c-text);
-  padding: 6px 10px;
-  border: none;
-  background: var(--c-bk3);
-  border-radius: 5px;
-  opacity: 0.75;
-  border: var(--c-border) 1px solid;
   position: absolute;
   top: 25px;
   right: 25px;
-}
-#refresh:hover {
-  opacity: 1;
-}
-#refresh:active {
-  opacity: 1;
-  filter: brightness(0.5);
 }
 </style>

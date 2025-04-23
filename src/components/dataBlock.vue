@@ -1,6 +1,5 @@
 <template>
   <div class="plot-data" v-if="dataItem" ref="block">
-    <div class="datablock-drag"></div>
     <div class="selectors">
       <s-picker
         :label="t('inputs.fnType')"
@@ -30,22 +29,39 @@
         </s-picker-item>
       </s-picker>
       <div style="flex-grow: 1"></div>
-      <button
-        class="fold blockBtn"
-        :class="{ active: !blockFolded }"
-        @click="blockFolded = !blockFolded"
-      >
+      <s-tooltip>
+        <s-icon-button slot="trigger" @click="emit('delete')">
+          <s-icon>
+            <svg viewBox="0 -960 960 960">
+              <path
+                d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"
+              ></path>
+            </svg>
+          </s-icon>
+        </s-icon-button>
+        {{ t("buttons.del") }}
+      </s-tooltip>
+      <s-tooltip>
+        <s-icon-button
+          slot="trigger"
+          @click="
+            blockFolded = !blockFolded;
+            console.log(foldShell);
+          "
+        >
+          <s-icon :name="blockFolded ? 'chevron_down' : 'chevron_up'"> </s-icon>
+        </s-icon-button>
         {{ t(blockFolded ? "buttons.expand" : "buttons.collapse") }}
-      </button>
-      <s-icon-button @click="emit('delete')">
-        <s-icon name="add">
+      </s-tooltip>
+      <span class="datablock-drag">
+        <s-icon>
           <svg viewBox="0 -960 960 960">
             <path
-              d="m376-300 104-104 104 104 56-56-104-104 104-104-56-56-104 104-104-104-56 56 104 104-104 104 56 56Zm-96 180q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520Zm-400 0v520-520Z"
+              d="M320-440v-287L217-624l-57-56 200-200 200 200-57 56-103-103v287h-80ZM600-80 400-280l57-56 103 103v-287h80v287l103-103 57 56L600-80Z"
             ></path>
           </svg>
         </s-icon>
-      </s-icon-button>
+      </span>
     </div>
 
     <div class="inputs">
@@ -103,6 +119,9 @@ const emit = defineEmits(["delete", "requireFullUpdate"]);
 const dataItem = defineModel<InternalDatum>();
 const block = ref<HTMLDivElement>();
 const blockFolded = ref(true);
+
+const foldShell = ref<HTMLElementTagNameMap["s-fold"]>();
+
 function fnTypeChange(dataItem: InternalDatum) {
   console.log(dataItem);
   inputTypeArr.forEach((key) => delete dataItem[key]);
@@ -142,7 +161,7 @@ const allowedGraphType = computed(() =>
 .plot-data {
   border-bottom: var(--c-border) 1px solid;
   position: relative;
-  padding: 20px 15px 20px 35px;
+  padding: 20px 15px;
   overflow-x: hidden;
 }
 .blockBtn {
@@ -179,20 +198,15 @@ const allowedGraphType = computed(() =>
 .selectors s-picker {
   width: 8em;
 }
+
 .datablock-drag {
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  width: 20px;
-  background: var(--c-bk3);
-  border-right: 1px solid var(--c-border);
-  height: 100%;
-  cursor: grab;
-  color: var(--c-text);
+  width: 40px;
   text-align: center;
-  font-size: 18px;
+  line-height: 40px;
+  border-radius: 50%;
+  cursor: grab;
 }
+
 .sortable-chosen .datablock-drag {
   background: var(--c-border);
 }

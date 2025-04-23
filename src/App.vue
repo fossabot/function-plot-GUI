@@ -23,23 +23,34 @@
                 @require-full-update="fullUpdate"
               />
             </VueDraggable>
-            <div class="plot-data add-data">
-              <div
-                @click="
-                  graphData.push({
-                    key: Math.random(),
-                    fnType: 'linear',
-                    graphType: 'polyline',
-                  })
-                "
-                class="add-data-opt add"
-              >
-                + {{ t("buttons.add") }}
-              </div>
-              <div @click="handleImport()" class="add-data-opt import">
-                ↓ {{ t("buttons.import") }}
-              </div>
+
+            <div
+              class="plot-data add-data"
+              @click="
+                graphData.push({
+                  key: Math.random(),
+                  fnType: 'linear',
+                  graphType: 'polyline',
+                })
+              "
+            >
+              <s-icon name="add" />
+              {{ t("buttons.add") }}
+              <s-ripple attached></s-ripple>
             </div>
+
+            <s-tooltip class="data-import">
+              <s-fab slot="trigger" @click.stop="handleImport()">
+                <s-icon>
+                  <svg viewBox="0 -960 960 960">
+                    <path
+                      d="M480-120v-80h280v-560H480v-80h280q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H480Zm-80-160-55-58 102-102H120v-80h327L345-622l55-58 200 200-200 200Z"
+                    ></path>
+                  </svg>
+                </s-icon>
+              </s-fab>
+              {{ t("buttons.import") }}
+            </s-tooltip>
           </div>
           <CodeDisplay :dataArr="toOriginalDatum(graphData)" />
         </div>
@@ -83,7 +94,6 @@ const graphData = ref<InternalDatum[]>([
 ]);
 
 const innerDrawer = ref<HTMLElementTagNameMap["s-drawer"]>();
-
 const graphWidth = ref(0),
   graphHeight = ref(0);
 const key = ref(0);
@@ -174,6 +184,7 @@ s-page {
 .editor-inner {
   overflow: scroll;
   flex-grow: 1;
+  position: relative;
 }
 
 #graph {
@@ -181,28 +192,20 @@ s-page {
   position: relative;
   overflow: hidden;
 }
-.add-data {
-  padding: 0;
+
+.plot-data.add-data {
+  position: relative;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  margin-bottom: 50px;
   display: flex;
-  flex-direction: row;
+  gap: 5px;
 }
-.add-data-opt {
-  padding: 10px 30px;
-}
-.add-data-opt.add {
-  flex-grow: 1;
-}
-.add-data-opt:not(:nth-child(1)) {
-  border-left: 1px solid var(--c-border);
-}
-.editor-inner {
-  padding-bottom: 50px;
-}
-.add-data-opt:hover {
-  background: var(--c-bk3);
-}
-.add-data-opt:active {
-  background: var(--c-bk1);
+
+.data-import {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
 }
 
 #divider {

@@ -141,8 +141,8 @@ export const fnTypeArr = [
     coord: [
       {
         value: "range",
-        label: "x ∈ ",
-        fir: "[",
+        label: "",
+        fir: "x ∈ [",
         sep: ",",
         fin: "]",
         placeholder: ["-Inf", "+Inf"],
@@ -206,8 +206,8 @@ export const fnTypeArr = [
     coord: [
       {
         value: "range",
-        label: "t ∈ ",
-        fir: "[",
+        label: "",
+        fir: "t ∈ [",
         sep: ",",
         fin: "]",
         placeholder: ["0", "2π"],
@@ -239,13 +239,13 @@ export const fnTypeArr = [
       { value: "scatter", label: "graphType.scatter" },
     ],
     inputs: [
-      { value: "r", label: "半径", title: "r=", placeholder: "f(theta)" },
+      { value: "r", label: "半径", title: "ρ=", placeholder: "f(theta)" },
     ],
     coord: [
       {
         value: "range",
-        label: "theta ∈ ",
-        fir: "[",
+        label: "",
+        fir: "θ ∈ [",
         sep: ",",
         fin: "]",
         placeholder: ["-π", "π"],
@@ -307,7 +307,7 @@ export const fnTypeArr = [
       {
         value: "vector",
         label: "inputs.vectorValue",
-        fir: " (",
+        fir: " =(",
         sep: ",",
         fin: ")",
         placeholder: ["x", "y"],
@@ -315,7 +315,7 @@ export const fnTypeArr = [
       {
         value: "offset",
         label: "inputs.vectorOffset",
-        fir: " (",
+        fir: " =(",
         sep: ",",
         fin: ")",
         placeholder: ["0", "0"],

@@ -6,21 +6,26 @@
     class="input-box coord"
     :class="{ optional: input.optional }"
   >
-    <span class="coord-label">{{ t(input.label) + input.fir }}</span>
-    <input
+    <span class="coord-label text">{{ t(input.label) }}</span
+    ><span class="coord-label styled">{{ input.fir }}</span>
+    <s-text-field
       type="number"
-      :value="dataItem[input.value]?.[0] ?? ''"
+      class="styled"
+      :value="(dataItem[input.value]?.[0] ?? '') + ''"
       @input="handleCoordInput(dataItem!, input, 0, $event)"
-      :placeholder="t(input.placeholder[0])"
-    />
-    <span class="coord-label">{{ input.sep }}</span>
-    <input
+      :label="t(input.placeholder[0])"
+    >
+    </s-text-field>
+    <span class="coord-label styled">{{ input.sep }}</span>
+    <s-text-field
       type="number"
-      :value="dataItem[input.value]?.[1] ?? ''"
+      class="styled"
+      :value="(dataItem[input.value]?.[1] ?? '') + ''"
       @input="handleCoordInput(dataItem!, input, 1, $event)"
-      :placeholder="t(input.placeholder[1])"
-    />
-    <span class="coord-label">{{ input.fin }}</span>
+      :label="t(input.placeholder[1])"
+    >
+    </s-text-field>
+    <span class="coord-label styled">{{ input.fin }}</span>
   </div>
 </template>
 
@@ -62,16 +67,17 @@ function handleCoordInput(
 .input-box.coord.optional {
   color: var(--c-text2);
 }
-.input-box.coord span {
-  font-size: 18px;
+.coord-label {
+  font-size: 20px;
   margin: auto 5px;
   flex-shrink: 0;
 }
-.input-box.coord input {
-  max-width: 8em;
-  min-width: 3em;
-  padding: 6px 0;
+.coord-label.text {
+  margin: auto -5px auto 5px;
+}
+.input-box.coord s-text-field {
+  flex-grow: 1;
+  width: 0;
   font-size: 18px;
-  flex-shrink: 1;
 }
 </style>

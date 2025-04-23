@@ -1,8 +1,8 @@
 :root {
   --c-bk1: #181818;
   --c-bk2: #1f1f1f;
-  --c-bk3: #242424;
-  --c-border: #454545;
+  --c-bk3: #25292c;
+  --c-border: #6a757a8a;
   --c-hr: #2b2b2b;
   --c-text: #fffe;
   --c-text2: #bbb;
@@ -54,8 +54,12 @@ input[type="number"] {
   src: url("/fonts/KaTeX_Main-Widesign.woff2");
 }
 
+@font-face {
+  font-family: "KaTeX-Math";
+  src: url("/fonts/KaTeX_Math-Italic.woff2");
+}
+
 .styled::part(input),
 .styled {
-  font-family: "KaTeX-Italic", "KaTeX", "Times new roman";
-  font-size: 22px;
+  font-family: "KaTeX-Italic", "KaTeX", "KaTeX-Math","Times new roman";
 }

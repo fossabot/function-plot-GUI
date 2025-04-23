@@ -34,7 +34,7 @@ const { dataItem, fnType } = defineProps<InputProps>();
   height: fit-content;
 }
 .inputs s-text-field {
-  font-size: 20px;
+  font-size: 22px;
   flex-grow: 1;
 }
 </style>

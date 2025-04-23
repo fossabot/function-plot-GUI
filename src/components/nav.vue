@@ -42,7 +42,6 @@
 </template>
 
 <script setup lang="ts">
-import "sober";
 import { ref, watchEffect } from "vue";
 import { useI18n } from "vue-i18n";
 
