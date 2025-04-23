@@ -1,7 +1,7 @@
 <template>
   <s-page theme="auto" id="soberpage">
     <s-drawer>
-      <Navbar @toggle-drawer="innerDrawer?.toggle()" />
+      <Navbar @toggle-drawer="toogleDrawer" />
       <s-drawer
         theme="auto"
         id="content"
@@ -130,7 +130,10 @@ function handleDrag() {
     handleResize();
   });
 }
-
+function toogleDrawer() {
+  innerDrawer.value?.toggle();
+  window.setTimeout(handleResize, 500);
+}
 function handleImport() {
   const raw = prompt("源数据：");
   if (!raw) return;
