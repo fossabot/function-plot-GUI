@@ -3,21 +3,17 @@ export default createI18n({
   locale: "zh-CN",
   messages: {
     "zh-CN": {
-      buttons: {
-        add: "添加",
-        import: "导入",
-        raw: "原始数据",
-      },
-      options: {
-        default: "默认",
-        polyline: "多段线",
-        scatter: "散点",
+      buttons: { add: "添加", import: "导入", raw: "原始数据" },
+      graphType: { interval: "默认", polyline: "多段线", scatter: "散点" },
+      fnType: {
         linear: "一般",
         implicit: "隐函数",
         parametric: "参数方程",
         polar: "极坐标",
+        points: "点集",
+        vector: "向量",
       },
-      titles: {
+      inputs: {
         fn: "函数",
         range: "范围",
         color: "颜色",
