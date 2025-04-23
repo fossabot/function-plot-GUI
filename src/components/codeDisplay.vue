@@ -11,18 +11,14 @@ import prettier from "prettier/standalone";
 import prettierPluginBabel from "prettier/plugins/babel";
 import prettierPluginEstree from "prettier/plugins/estree";
 import { ref, watch } from "vue";
-import { Datum } from "../consts";
+import { FunctionPlotDatum } from "function-plot";
 const { dataArr } = defineProps<{
-  dataArr: (Omit<Datum, "key"> & { key?: number })[];
+  dataArr: FunctionPlotDatum[];
 }>();
 const formatted = ref("");
 watch(
   () => dataArr,
   () => {
-    dataArr.forEach((item) => {
-      if (item.graphType === "text") delete item.fnType;
-      delete item.key;
-    });
     prettier
       .format(JSON5.stringify({ data: dataArr }), {
         parser: "json5",

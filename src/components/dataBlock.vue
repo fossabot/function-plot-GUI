@@ -3,8 +3,7 @@
     <div class="datablock-drag">☰</div>
     <div class="selectors">
       <select v-model="dataItem.fnType" @change="fnTypeChange(dataItem)">
-        <option :value="undefined">{{ fnTypeArr[0].label }}</option>
-        <option v-for="type in fnTypeArr.slice(1)" :value="type.value">
+        <option v-for="type in fnTypeArr" :value="type.value">
           {{ type.label }}
         </option>
       </select>
@@ -13,14 +12,7 @@
         v-if="dataItem.graphType !== 'text'"
         @change="graphTypeChange(dataItem)"
       >
-        <option v-if="!fnType.notAllowedInInterval" :value="undefined">
-          {{ graphTypeArr[0].label }}
-        </option>
-        <option
-          v-if="dataItem.fnType !== 'implicit'"
-          v-for="type in graphTypeArr.slice(1)"
-          :value="type.value"
-        >
+        <option v-for="type in allowedGraphType" :value="type.value">
           {{ type.label }}
         </option>
       </select>
@@ -71,10 +63,10 @@
 <script setup lang="ts">
 import {
   fnTypeArr,
-  graphTypeArr,
+  getAllowedGraphType,
   inputTypeArr,
   getFnType,
-  Datum,
+  InternalDatum,
 } from "../consts";
 import { ref, computed } from "vue";
 import StrInputs from "./dataBlockInner/strInputs.vue";
@@ -84,26 +76,25 @@ import CoordArrInputs from "./dataBlockInner/coordArrInputs.vue";
 import OptInputs from "./dataBlockInner/optInputs.vue";
 
 const emit = defineEmits(["delete", "requireFullUpdate"]);
-const dataItem = defineModel<Datum>();
+const dataItem = defineModel<InternalDatum>();
 const block = ref<HTMLDivElement>();
 const blockFolded = ref(true);
-function fnTypeChange(dataItem: Datum) {
+function fnTypeChange(dataItem: InternalDatum) {
   inputTypeArr.forEach((key) => delete dataItem[key]);
   if (dataItem.fnType === "text") {
     dataItem.graphType = "text";
   } else {
     if (dataItem.graphType === "text" || dataItem.fnType === "implicit")
       delete dataItem.graphType;
-    if (fnType.value.notAllowedInInterval && !dataItem.graphType)
-      dataItem.graphType = "polyline";
+    dataItem.graphType = getAllowedGraphType(dataItem.fnType)[0].value;
     if (dataItem.fnType === "vector") dataItem.vector = [0, 0];
     if (dataItem.fnType === "points") dataItem.points = [];
     if (block.value)
       block.value.querySelectorAll("input").forEach((ele) => (ele.value = ""));
   }
 }
-const scatteredSet = new WeakSet<Datum>();
-function graphTypeChange(dataItem: Datum) {
+const scatteredSet = new WeakSet<InternalDatum>();
+function graphTypeChange(dataItem: InternalDatum) {
   if (dataItem.graphType === "scatter") {
     if (!scatteredSet.has(dataItem)) {
       scatteredSet.add(dataItem);
@@ -117,6 +108,9 @@ function graphTypeChange(dataItem: Datum) {
   }
 }
 const fnType = computed(() => getFnType(dataItem.value?.fnType));
+const allowedGraphType = computed(() =>
+  getAllowedGraphType(dataItem.value?.fnType)
+);
 </script>
 
 <style>

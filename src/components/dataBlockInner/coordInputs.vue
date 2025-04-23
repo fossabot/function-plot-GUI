@@ -25,12 +25,12 @@
 </template>
 
 <script setup lang="ts">
-import { CoordType, Datum, InputProps } from "../../consts";
+import { CoordType, InternalDatum, InputProps } from "../../consts";
 
 const { dataItem, fnType } = defineProps<InputProps>();
 
 function handleCoordInput(
-  dataItem: Datum,
+  dataItem: InternalDatum,
   input: CoordType,
   index: 0 | 1,
   event: Event

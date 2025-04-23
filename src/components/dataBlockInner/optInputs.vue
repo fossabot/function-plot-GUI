@@ -15,11 +15,11 @@
 </template>
 
 <script setup lang="ts">
-import { Datum, InputProps, OptInput } from "../../consts";
+import { InternalDatum, InputProps, OptInput } from "../../consts";
 
 const { dataItem, fnType } = defineProps<InputProps>();
 
-function handleCoordInput(dataItem: Datum, input: OptInput, event: Event) {
+function handleCoordInput(dataItem: InternalDatum, input: OptInput, event: Event) {
   const raw = (<HTMLInputElement>event.target).value;
   if (raw === "") {
     delete dataItem[input.value];
