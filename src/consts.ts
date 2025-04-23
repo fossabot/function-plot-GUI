@@ -1,10 +1,9 @@
 import type { FunctionPlotDatum } from "function-plot";
+import { cloneDeep } from "lodash-es";
 
-export type ValueLabel = {
-  value: string;
-  label: string;
-};
+export type ValueLabel = { value: string; label: string; default?: boolean };
 
+/** 字段列表 */
 export const inputTypeArr = [
   "fn",
   "x",
@@ -19,6 +18,7 @@ export const inputTypeArr = [
   "points",
 ] as const;
 
+/** 文本字段类型 */
 export type InputType = {
   value: "fn" | "x" | "y" | "r" | "text";
   label: string;
@@ -27,9 +27,11 @@ export type InputType = {
   optional?: boolean;
 };
 
+/** 有序数对字段类型 */
 export type CoordType = {
   value: "vector" | "offset" | "range" | "location";
   label: string;
+  fir: string;
   sep: string;
   fin: string;
   placeholder: [string, string];
@@ -38,15 +40,13 @@ export type CoordType = {
   folded?: boolean;
 };
 
-export type SwitchType = {
-  value: "closed";
-  label: string;
-  folded?: boolean;
-};
+/** 开关字段类型 */
+export type SwitchType = { value: "closed"; label: string; folded?: boolean };
 
 export type CoordArr = {
   value: "points";
   label: string;
+  fir: string;
   sep: string;
   fin: string;
   placeholder: [string, string];
@@ -66,20 +66,54 @@ export type FnType = {
   coordArr?: CoordArr;
   switches?: SwitchType[];
   optInput?: OptInput[];
-  notAllowedInInterval?: boolean;
+  allowedGraphType?: ValueLabel[];
+  default?: boolean;
 };
 
-export type Datum = (
-  | (Omit<FunctionPlotDatum, "fnType"> & {
-      fnType: "text" | FunctionPlotDatum["fnType"];
-    })
-  | FunctionPlotDatum
-) & {
+export type InternalDatum = Omit<FunctionPlotDatum, "fnType" | "graphType"> & {
+  fnType: "text" | FunctionPlotDatum["fnType"];
+  graphType: FunctionPlotDatum["graphType"];
   key: number;
 };
 
+export function toOriginalDatum(items: InternalDatum[]) {
+  const cloned = cloneDeep(items);
+  cloned.forEach((item) => {
+    const fnType = item.fnType;
+    const graphType = item.graphType;
+    const graphTypeObj = getAllowedGraphType(fnType).find(
+      (item) => item.value === graphType
+    )!;
+    if (getFnType(fnType).default) {
+      delete (<any>item).fnType;
+    }
+    if ("default" in graphTypeObj && graphTypeObj.default) {
+      delete (<any>item).graphType;
+    }
+    delete (<any>item).key;
+  });
+  return cloned as FunctionPlotDatum[];
+}
+export function toInternalDatum(items: FunctionPlotDatum[]) {
+  const cloned = cloneDeep(items) as InternalDatum[];
+  cloned.forEach((item, index) => {
+    const clonedItem = cloned[index];
+    if (item.graphType === "text") {
+      clonedItem.fnType = "text";
+    }
+    if (item.fnType === undefined) {
+      clonedItem.fnType = "linear";
+    }
+    if (item.graphType === undefined) {
+      clonedItem.graphType = "interval";
+    }
+    clonedItem.key = Math.random();
+  });
+  return cloned;
+}
+
 export type InputProps = {
-  dataItem: Datum;
+  dataItem: InternalDatum;
   fnType: FnType;
   blockFolded: boolean;
 };
@@ -87,22 +121,28 @@ export type InputProps = {
 export const getFnType = (fnType: string = "linear") =>
   <FnType>fnTypeArr.find(({ value }) => value === fnType);
 
-export const graphTypeArr = [
-  { value: "interval", label: "默认" },
-  { value: "polyline", label: "多段线" },
-  // { value: "text", label: "文本" },
-  { value: "scatter", label: "散点" },
-] as const satisfies ValueLabel[];
+/** graphType 字段选项 */
+export const getAllowedGraphType = (fnType?: string) =>
+  fnType
+    ? (fnTypeArr.find(({ value }) => value === fnType)?.allowedGraphType ?? [])
+    : [];
 
 export const fnTypeArr = [
   {
+    default: true,
     value: "linear",
-    label: "一般",
+    label: "fnType.linear",
+    allowedGraphType: [
+      { value: "polyline", label: "graphType.polyline" },
+      { value: "interval", label: "graphType.interval", default: true },
+      { value: "scatter", label: "graphType.scatter" },
+    ],
     inputs: [{ value: "fn", label: "函数", title: "y=", placeholder: "f(x)" }],
     coord: [
       {
         value: "range",
-        label: "x ∈ [",
+        label: "x ∈ ",
+        fir: "[",
         sep: ",",
         fin: "]",
         placeholder: ["-Inf", "+Inf"],
@@ -111,59 +151,54 @@ export const fnTypeArr = [
         folded: true,
       },
     ],
-    switches: [
-      {
-        value: "closed",
-        label: "闭合并填充",
-        folded: true,
-      },
-    ],
+    switches: [{ value: "closed", label: "inputs.closed", folded: true }],
     optInput: [
       {
         value: "color",
         type: "text",
-        label: "颜色",
-        placeholder: "RGB / HEX / 颜色名称",
+        label: "inputs.color",
+        placeholder: "inputs.colorPlaceholder",
       },
       {
         value: "nSamples",
         type: "number",
-        label: "采样数",
-        placeholder: "默认值为宽度",
+        label: "inputs.nSamples",
+        placeholder: "inputs.nSamplesPlaceholder",
       },
     ],
   },
   {
     value: "implicit",
-    label: "隐函数",
+    label: "fnType.implicit",
+    allowedGraphType: [
+      { value: "interval", label: "graphType.interval", default: true },
+    ],
     inputs: [
       { value: "fn", label: "函数", title: "0=", placeholder: "f(x,y)" },
     ],
-    switches: [
-      {
-        value: "closed",
-        label: "闭合并填充",
-        folded: true,
-      },
-    ],
+    switches: [{ value: "closed", label: "inputs.closed", folded: true }],
     optInput: [
       {
         value: "color",
         type: "text",
-        label: "颜色",
-        placeholder: "RGB / HEX / 颜色名称",
+        label: "inputs.color",
+        placeholder: "inputs.colorPlaceholder",
       },
       {
         value: "nSamples",
         type: "number",
-        label: "采样数",
-        placeholder: "默认值为宽度",
+        label: "inputs.nSamples",
+        placeholder: "inputs.nSamplesPlaceholder",
       },
     ],
   },
   {
     value: "parametric",
-    label: "参数方程",
+    label: "fnType.parametric",
+    allowedGraphType: [
+      { value: "polyline", label: "graphType.polyline" },
+      { value: "scatter", label: "graphType.scatter" },
+    ],
     inputs: [
       { value: "x", label: "x", title: "x=", placeholder: "f(t)" },
       { value: "y", label: "y", title: "y=", placeholder: "g(t)" },
@@ -171,7 +206,8 @@ export const fnTypeArr = [
     coord: [
       {
         value: "range",
-        label: "t ∈ [",
+        label: "t ∈ ",
+        fir: "[",
         sep: ",",
         fin: "]",
         placeholder: ["0", "2π"],
@@ -179,39 +215,37 @@ export const fnTypeArr = [
         defaultVal: [0, 2 * Math.PI],
       },
     ],
-    notAllowedInInterval: true,
-    switches: [
-      {
-        value: "closed",
-        label: "闭合并填充",
-        folded: true,
-      },
-    ],
+    switches: [{ value: "closed", label: "inputs.closed", folded: true }],
     optInput: [
       {
         value: "color",
         type: "text",
-        label: "颜色",
-        placeholder: "RGB / HEX / 颜色名称",
+        label: "inputs.color",
+        placeholder: "inputs.colorPlaceholder",
       },
       {
         value: "nSamples",
         type: "number",
-        label: "采样数",
-        placeholder: "默认值为宽度",
+        label: "inputs.nSamples",
+        placeholder: "inputs.nSamplesPlaceholder",
       },
     ],
   },
   {
     value: "polar",
-    label: "极坐标",
+    label: "fnType.polar",
+    allowedGraphType: [
+      { value: "polyline", label: "graphType.polyline" },
+      { value: "scatter", label: "graphType.scatter" },
+    ],
     inputs: [
       { value: "r", label: "半径", title: "r=", placeholder: "f(theta)" },
     ],
     coord: [
       {
         value: "range",
-        label: "theta ∈ [",
+        label: "theta ∈ ",
+        fir: "[",
         sep: ",",
         fin: "]",
         placeholder: ["-π", "π"],
@@ -219,72 +253,69 @@ export const fnTypeArr = [
         defaultVal: [-Math.PI, Math.PI],
       },
     ],
-    notAllowedInInterval: true,
-    switches: [
-      {
-        value: "closed",
-        label: "闭合并填充",
-        folded: true,
-      },
-    ],
+    switches: [{ value: "closed", label: "inputs.closed", folded: true }],
     optInput: [
       {
         value: "color",
         type: "text",
-        label: "颜色",
-        placeholder: "RGB / HEX / 颜色名称",
+        label: "inputs.color",
+        placeholder: "inputs.colorPlaceholder",
       },
       {
         value: "nSamples",
         type: "number",
-        label: "采样数",
-        placeholder: "默认值为宽度",
+        label: "inputs.nSamples",
+        placeholder: "inputs.nSamplesPlaceholder",
       },
     ],
   },
   {
     value: "points",
-    label: "点集",
+    label: "fnType.points",
+    allowedGraphType: [
+      { value: "polyline", label: "graphType.polyline" },
+      { value: "scatter", label: "graphType.scatter" },
+    ],
     inputs: [],
-    notAllowedInInterval: true,
     coordArr: {
       value: "points",
-      label: "(",
+      label: "",
+      fir: "(",
       sep: ",",
       fin: ")",
       placeholder: ["x", "y"],
     },
-    switches: [
-      {
-        value: "closed",
-        label: "闭合并填充",
-        folded: true,
-      },
-    ],
+    switches: [{ value: "closed", label: "inputs.closed", folded: true }],
     optInput: [
       {
         value: "color",
         type: "text",
-        label: "颜色",
-        placeholder: "RGB / HEX / 颜色名称",
+        label: "inputs.color",
+        placeholder: "inputs.colorPlaceholder",
       },
     ],
   },
   {
     value: "vector",
-    label: "向量",
+    label: "fnType.vector",
+    allowedGraphType: [
+      { value: "polyline", label: "graphType.polyline" },
+      { value: "scatter", label: "graphType.scatter" },
+    ],
     inputs: [],
     coord: [
       {
         value: "vector",
-        label: "向量大小 (",
+        label: "inputs.vectorValue",
+        fir: " (",
         sep: ",",
         fin: ")",
         placeholder: ["x", "y"],
       },
       {
         value: "offset",
-        label: "起点坐标 (",
+        label: "inputs.vectorOffset",
+        fir: " (",
         sep: ",",
         fin: ")",
         placeholder: ["0", "0"],
@@ -295,15 +326,15 @@ export const fnTypeArr = [
       {
         value: "color",
         type: "text",
-        label: "颜色",
-        placeholder: "RGB / HEX / 颜色名称",
+        label: "inputs.color",
+        placeholder: "inputs.colorPlaceholder",
       },
     ],
-    notAllowedInInterval: true,
   },
   {
     value: "text",
-    label: "文本",
+    label: "fnType.text",
+    allowedGraphType: [{ value: "text", label: "graphType.text" }],
     inputs: [
       {
         value: "text",
@@ -315,7 +346,8 @@ export const fnTypeArr = [
     coord: [
       {
         value: "location",
-        label: "位置 (",
+        label: "inputs.location",
+        fir: " (",
         sep: ",",
         fin: ")",
         placeholder: ["x", "y"],
@@ -326,17 +358,16 @@ export const fnTypeArr = [
       {
         value: "color",
         type: "text",
-        label: "颜色",
-        placeholder: "RGB / HEX / 颜色名称",
+        label: "inputs.color",
+        placeholder: "inputs.colorPlaceholder",
       },
     ],
   },
 ] as const satisfies FnType[];
 
-export function findError(graphData: Datum[]) {
+export function findError(graphData: FunctionPlotDatum[]) {
   for (const [index, dataItem] of graphData.entries()) {
     const fnType = getFnType(dataItem.fnType);
-    if (fnType.notAllowedInInterval && !dataItem.graphType) return index;
     for (const input of fnType.inputs) if (!dataItem[input.value]) return index;
     for (const coord of fnType.coord ?? [])
       if (!dataItem[coord.value] && !coord.optional) return index;

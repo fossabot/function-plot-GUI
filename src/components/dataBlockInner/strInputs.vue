@@ -1,15 +1,18 @@
 <template>
   <div v-for="input in fnType.inputs" class="input-box">
-    <span class="input-title">{{ input.title }}</span>
+    <span class="input-title">{{ t(input.title) }}</span>
     <input
       type="text"
       v-model="dataItem[input.value]"
-      :placeholder="input.placeholder"
+      :placeholder="t(input.placeholder)"
     />
   </div>
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+
 import { InputProps } from "../../consts";
 const { dataItem, fnType } = defineProps<InputProps>();
 </script>

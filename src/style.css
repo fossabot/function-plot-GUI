@@ -27,9 +27,15 @@
 
 :root,
 input,
-pre {
-  font-family: "JetBrains Mono", "Sarasa Term SC", Consolas, "Courier New",
-    Courier, monospace;
+select,
+button,
+textarea {
+  font-family: "HarmonyOS Sans SC", sans-serif;
+}
+
+pre,
+input[type="text"],input[type="number"] {
+  font-family: "Jetbrains Mono", monospace;
 }
 
 * {

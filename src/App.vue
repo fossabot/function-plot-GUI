@@ -18,20 +18,28 @@
         </VueDraggable>
         <div class="plot-data add-data">
           <div
-            @click="graphData.push({ key: Math.random() })"
+            @click="
+              graphData.push({
+                key: Math.random(),
+                fnType: 'linear',
+                graphType: 'polyline',
+              })
+            "
             class="add-data-opt add"
           >
-            + 添加
+            + {{ t("buttons.add") }}
           </div>
-          <div @click="handleImport()" class="add-data-opt import">↓ 导入</div>
+          <div @click="handleImport()" class="add-data-opt import">
+            ↓ {{ t("buttons.import") }}
+          </div>
         </div>
       </div>
-      <CodeDisplay :dataArr="cloneArr(graphData)" />
+      <CodeDisplay :dataArr="toOriginalDatum(graphData)" />
     </div>
     <div id="divider" @mousedown="handleDrag"></div>
     <div id="graph" ref="shellRef">
       <Graph
-        :data="cloneArr(graphData)"
+        :data="toOriginalDatum(graphData)"
         :width="graphWidth"
         :height="graphHeight"
         :key="key"
@@ -44,20 +52,24 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+
 import Navbar from "./components/nav.vue";
 import Graph from "./components/graph.vue";
 import DataBlock from "./components/dataBlock.vue";
 import CodeDisplay from "./components/codeDisplay.vue";
 import { VueDraggable } from "vue-draggable-plus";
-import type { FunctionPlotDatum, FunctionPlotOptions } from "function-plot";
+import type { FunctionPlotDatum } from "function-plot";
 import { onMounted, ref } from "vue";
-import { cloneDeep } from "lodash-es";
 import JSON5 from "json5";
 import base64 from "base-64";
 import utf8 from "utf8";
-import { Datum } from "./consts";
+import { InternalDatum, toInternalDatum, toOriginalDatum } from "./consts";
 
-const graphData = ref<Datum[]>([{ fn: "x^2", key: 1 }]);
+const graphData = ref<InternalDatum[]>([
+  { fnType: "linear", graphType: "polyline", fn: "x^2", key: 1 },
+]);
 
 const graphWidth = ref(0),
   graphHeight = ref(0);
@@ -73,38 +85,6 @@ function handleResize() {
   }
 }
 
-function cloneArr<T extends Object[]>(obj: T) {
-  const cloned = cloneDeep(obj);
-  function removeUndefined(obj: Record<string, any>) {
-    for (const key in obj) {
-      console.log(1);
-      if (obj[key] === undefined) delete obj[key];
-      if (
-        typeof obj[key] === "object" &&
-        obj[key] !== null &&
-        !Array.isArray(obj[key])
-      )
-        removeUndefined(obj[key]);
-    }
-  }
-  cloned.forEach((item) => removeUndefined(item));
-  return cloned as T;
-}
-
-function importMapper(item: FunctionPlotDatum): Datum {
-  if (item.graphType === "text")
-    return {
-      ...item,
-      fnType: "text",
-      key: Math.random(),
-    };
-  else
-    return {
-      ...item,
-      key: Math.random(),
-    };
-}
-
 function fullUpdate() {
   fullUpdateState.value = true;
   key.value++;
@@ -115,14 +95,13 @@ onMounted(() => {
   if (rawCode)
     try {
       const code = utf8.decode(base64.decode(decodeURIComponent(rawCode)));
-      const data = (<FunctionPlotDatum[]>JSON5.parse(code).data).map(
-        importMapper
+      const data = toInternalDatum(
+        (JSON5.parse(code).data as FunctionPlotDatum[]) ?? []
       );
-      graphData.value = <Datum[]>data;
+      graphData.value = toInternalDatum(<FunctionPlotDatum[]>data);
       console.log(code);
       console.log(data);
     } catch (e) {}
-
   window.addEventListener("resize", handleResize);
   handleResize();
 });
@@ -143,8 +122,9 @@ function handleDrag() {
 function handleImport() {
   const raw = prompt("源数据：");
   if (!raw) return;
-  graphData.value =
-    (<FunctionPlotOptions>JSON5.parse(raw)).data?.map(importMapper) ?? [];
+  graphData.value = toInternalDatum(
+    (JSON5.parse(raw).data as FunctionPlotDatum[]) ?? []
+  );
 }
 </script>
 
@@ -171,6 +151,7 @@ function handleImport() {
 #navbar {
   height: 50px;
   width: 100vw;
+  box-sizing: border-box;
   background: var(--c-bk1);
   border-bottom: var(--c-border) 1px solid;
   position: relative;
@@ -179,15 +160,14 @@ function handleImport() {
 #editor {
   border-right: var(--c-border) 1px solid;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 .editor-inner {
   overflow: scroll;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 300px;
+  flex-grow: 1;
 }
+
 #graph {
   flex-grow: 1;
   position: relative;
@@ -197,7 +177,6 @@ function handleImport() {
   padding: 0;
   display: flex;
   flex-direction: row;
-  cursor: default;
 }
 .add-data-opt {
   padding: 10px 30px;

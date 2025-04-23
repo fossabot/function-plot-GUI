@@ -1,15 +1,20 @@
 <template>
   <div id="graphRender" ref="plotRef"></div>
-  <button id="refresh" @click="emit('requireFullUpdate')">重置</button>
+  <button id="refresh" @click="emit('requireFullUpdate')">
+    {{ t("buttons.reset") }}
+  </button>
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+
 import { onMounted, ref, watch } from "vue";
 import { cloneDeep, throttle } from "lodash-es";
 import type { FunctionPlotDatum } from "function-plot";
-import { Datum, findError } from "../consts";
+import { findError } from "../consts";
 const { data, width, height } = defineProps<{
-  data: Datum[];
+  data: FunctionPlotDatum[];
   width: number;
   height: number;
 }>();

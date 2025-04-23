@@ -4,22 +4,29 @@
     v-for="input in fnType.optInput ?? []"
     class="input-box opt-input optional"
   >
-    <span class="coord-label optin-label">{{ input.label }}</span>
+    <span class="coord-label optin-label">{{ t(input.label) }}</span>
     <input
       :type="input.type"
       :value="dataItem[input.value] ?? ''"
       @input="handleCoordInput(dataItem!, input, $event)"
-      :placeholder="input.placeholder"
+      :placeholder="t(input.placeholder ?? '')"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { Datum, InputProps, OptInput } from "../../consts";
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+
+import { InternalDatum, InputProps, OptInput } from "../../consts";
 
 const { dataItem, fnType } = defineProps<InputProps>();
 
-function handleCoordInput(dataItem: Datum, input: OptInput, event: Event) {
+function handleCoordInput(
+  dataItem: InternalDatum,
+  input: OptInput,
+  event: Event
+) {
   const raw = (<HTMLInputElement>event.target).value;
   if (raw === "") {
     delete dataItem[input.value];

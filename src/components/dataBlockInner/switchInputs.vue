@@ -14,11 +14,14 @@
       class="switch"
       :class="dataItem[input.value] ? 'on' : 'off'"
     ></button>
-    {{ input.label }}
+    {{ t(input.label) }}
   </div>
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+
 import { InputProps } from "../../consts";
 
 const { dataItem, fnType } = defineProps<InputProps>();
