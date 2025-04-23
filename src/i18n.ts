@@ -29,6 +29,7 @@ export default createI18n({
         text: "文本",
       },
       inputs: {
+        language: "语言",
         fn: "函数",
         range: "范围",
         color: "颜色",
@@ -71,6 +72,7 @@ export default createI18n({
         text: "Text",
       },
       inputs: {
+        language: "Language",
         fn: "Function",
         range: "Range",
         color: "Color",

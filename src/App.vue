@@ -1,59 +1,69 @@
 <template>
-  <Navbar />
-  <div id="content" :class="{ onresize: onResize }">
-    <div id="editor" :style="{ width: sideRatio + 'vw' }">
-      <div class="editor-inner">
-        <VueDraggable
-          v-model="graphData"
-          :animation="150"
-          handle=".datablock-drag"
-        >
-          <DataBlock
-            v-for="(dataItem, i) in graphData"
-            v-model="graphData[i]"
-            @delete="graphData.splice(i, 1)"
-            :key="dataItem.key"
-            @require-full-update="fullUpdate"
-          />
-        </VueDraggable>
-        <div class="plot-data add-data">
-          <div
-            @click="
-              graphData.push({
-                key: Math.random(),
-                fnType: 'linear',
-                graphType: 'polyline',
-              })
-            "
-            class="add-data-opt add"
-          >
-            + {{ t("buttons.add") }}
+  <s-page theme="auto" id="soberpage">
+    <s-drawer>
+      <Navbar @toggle-drawer="innerDrawer?.toggle()" />
+      <s-drawer
+        theme="auto"
+        id="content"
+        :class="{ onresize: onResize }"
+        ref="innerDrawer"
+      >
+        <div slot="start" id="editor" :style="{ width: sideRatio + 'vw' }">
+          <div class="editor-inner">
+            <VueDraggable
+              v-model="graphData"
+              :animation="150"
+              handle=".datablock-drag"
+            >
+              <DataBlock
+                v-for="(dataItem, i) in graphData"
+                v-model="graphData[i]"
+                @delete="graphData.splice(i, 1)"
+                :key="dataItem.key"
+                @require-full-update="fullUpdate"
+              />
+            </VueDraggable>
+            <div class="plot-data add-data">
+              <div
+                @click="
+                  graphData.push({
+                    key: Math.random(),
+                    fnType: 'linear',
+                    graphType: 'polyline',
+                  })
+                "
+                class="add-data-opt add"
+              >
+                + {{ t("buttons.add") }}
+              </div>
+              <div @click="handleImport()" class="add-data-opt import">
+                ↓ {{ t("buttons.import") }}
+              </div>
+            </div>
           </div>
-          <div @click="handleImport()" class="add-data-opt import">
-            ↓ {{ t("buttons.import") }}
-          </div>
+          <CodeDisplay :dataArr="toOriginalDatum(graphData)" />
         </div>
-      </div>
-      <CodeDisplay :dataArr="toOriginalDatum(graphData)" />
-    </div>
-    <div id="divider" @mousedown="handleDrag"></div>
-    <div id="graph" ref="shellRef">
-      <Graph
-        :data="toOriginalDatum(graphData)"
-        :width="graphWidth"
-        :height="graphHeight"
-        :key="key"
-        @requireFullUpdate="fullUpdate"
-        @requirePostUpdate="key++"
-        v-model="fullUpdateState"
-      />
-    </div>
-  </div>
+        <div id="divider" @mousedown="handleDrag"></div>
+        <div id="graph" ref="shellRef">
+          <Graph
+            :data="toOriginalDatum(graphData)"
+            :width="graphWidth"
+            :height="graphHeight"
+            :key="key"
+            @requireFullUpdate="fullUpdate"
+            @requirePostUpdate="key++"
+            v-model="fullUpdateState"
+          />
+        </div>
+      </s-drawer>
+    </s-drawer>
+  </s-page>
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
-const { t } = useI18n()
+import "sober";
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
 
 import Navbar from "./components/nav.vue";
 import Graph from "./components/graph.vue";
@@ -70,6 +80,8 @@ import { InternalDatum, toInternalDatum, toOriginalDatum } from "./consts";
 const graphData = ref<InternalDatum[]>([
   { fnType: "linear", graphType: "polyline", fn: "x^2", key: 1 },
 ]);
+
+const innerDrawer = ref<HTMLElementTagNameMap["s-drawer"]>();
 
 const graphWidth = ref(0),
   graphHeight = ref(0);
@@ -129,33 +141,22 @@ function handleImport() {
 </script>
 
 <style>
-#app {
-  position: fixed;
+html,
+body {
   margin: 0;
   padding: 0;
+  overflow: hidden;
+}
+#soberpage {
+  position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 100vh;
-  display: flex;
-  flex-wrap: nowrap;
-  flex-direction: column;
 }
 #content {
-  width: 100vw;
   flex-grow: 1;
   display: flex;
-  max-height: calc(100vh - 50px);
-}
-#navbar {
-  height: 50px;
-  width: 100vw;
-  box-sizing: border-box;
-  background: var(--c-bk1);
-  border-bottom: var(--c-border) 1px solid;
-  position: relative;
-  flex-shrink: 0;
 }
 #editor {
   border-right: var(--c-border) 1px solid;
