@@ -53,8 +53,8 @@
             </s-tooltip>
           </div>
           <CodeDisplay :dataArr="toOriginalDatum(graphData)" />
+          <div id="divider" @mousedown="handleDrag"></div>
         </div>
-        <div id="divider" @mousedown="handleDrag"></div>
         <div id="graph" ref="shellRef">
           <Graph
             :data="toOriginalDatum(graphData)"
@@ -87,7 +87,7 @@ import JSON5 from "json5";
 import base64 from "base-64";
 import utf8 from "utf8";
 import { InternalDatum, toInternalDatum, toOriginalDatum } from "./consts";
-import { throttle } from "lodash-es";
+import { debounce } from "lodash-es";
 
 const graphData = ref<InternalDatum[]>([
   { fnType: "linear", graphType: "polyline", fn: "x^2", key: 1 },
@@ -104,7 +104,7 @@ const onResize = ref(false);
 const shellRef = ref<HTMLDivElement>();
 onMounted(() => {
   const observer = new ResizeObserver(
-    throttle(() => {
+    debounce(() => {
       graphWidth.value = shellRef.value!.clientWidth;
       graphHeight.value = shellRef.value!.clientHeight;
     }, 250)
@@ -209,10 +209,12 @@ s-page {
 }
 
 #divider {
-  width: 6px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
   background: var(--c-accent);
-  margin-left: -3px;
-  margin-right: -3px;
   z-index: 999;
   opacity: 0;
   transition: opacity 0.1s;
