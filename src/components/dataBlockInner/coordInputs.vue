@@ -78,6 +78,6 @@ function handleCoordInput(
 .input-box.coord s-text-field {
   flex-grow: 1;
   width: 0;
-  font-size: 18px;
+  font-size: 20px;
 }
 </style>

@@ -112,6 +112,7 @@ onMounted(() => {
 }
 
 .coordarr-drag {
+  cursor: grab;
   margin: 0 0 !important;
   line-height: 2.5em;
   border-radius: 5px;
