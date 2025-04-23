@@ -41,6 +41,9 @@ export default createI18n({
         vectorOffset: "起点坐标",
         location: "位置",
       },
+      title: {
+        output: "输出代码",
+      },
     },
     "en-US": {
       buttons: {
@@ -79,6 +82,9 @@ export default createI18n({
         vectorValue: "Vector size",
         vectorOffset: "Offset",
         location: "Location",
+      },
+      title: {
+        output: "Output code",
       },
     },
   },

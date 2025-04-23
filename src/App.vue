@@ -160,15 +160,14 @@ function handleImport() {
 #editor {
   border-right: var(--c-border) 1px solid;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 .editor-inner {
   overflow: scroll;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 300px;
+  flex-grow: 1;
 }
+
 #graph {
   flex-grow: 1;
   position: relative;

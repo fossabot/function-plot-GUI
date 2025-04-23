@@ -10,7 +10,7 @@
       >
     </span>
     <div class="grow"></div>
-    <select v-model="locale">
+    <select v-model="locale" id="language">
       <option value="zh-CN">简体中文</option>
       <option value="en-US">English</option>
     </select>
@@ -47,5 +47,21 @@ const { locale } = useI18n();
   justify-content: space-between;
   align-items: center;
   padding: 0 15px;
+}
+
+.grow {
+  flex-grow: 1;
+}
+
+#language {
+  border: var(--c-border) 1px solid;
+  background: var(--c-bk3);
+  border-radius: 5px;
+  padding: 5px 8px;
+  color: var(--text);
+  font-size: 15px;
+}
+#language:focus {
+  border-color: var(--c-accent);
 }
 </style>
