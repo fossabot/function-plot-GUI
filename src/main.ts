@@ -4,6 +4,8 @@ import i18n from "./i18n";
 import "./style.css";
 import App from "./App.vue";
 
+import "sober";
+
 const app = createApp(App);
 
 app.use(i18n);

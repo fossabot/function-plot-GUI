@@ -1,9 +1,9 @@
 <template>
   <VueDraggable
-    class="coordarr-wrapper"
+    class="coordarr-wrapper styled"
     v-if="fnType.coordArr"
     v-model="privateData"
-    :animation="150"
+    :animation="200"
     handle="span.coordarr-drag"
   >
     <div
@@ -11,29 +11,49 @@
       class="input-box coord coordarr"
       :key="data.id"
     >
-      <span class="coordarr-drag">☰</span>
+      <span class="coordarr-drag">
+        <s-icon name="menu">
+          <svg viewBox="0 -960 960 960">
+            <path
+              d="M360-160q-33 0-56.5-23.5T280-240q0-33 23.5-56.5T360-320q33 0 56.5 23.5T440-240q0 33-23.5 56.5T360-160Zm240 0q-33 0-56.5-23.5T520-240q0-33 23.5-56.5T600-320q33 0 56.5 23.5T680-240q0 33-23.5 56.5T600-160ZM360-400q-33 0-56.5-23.5T280-480q0-33 23.5-56.5T360-560q33 0 56.5 23.5T440-480q0 33-23.5 56.5T360-400Zm240 0q-33 0-56.5-23.5T520-480q0-33 23.5-56.5T600-560q33 0 56.5 23.5T680-480q0 33-23.5 56.5T600-400ZM360-640q-33 0-56.5-23.5T280-720q0-33 23.5-56.5T360-800q33 0 56.5 23.5T440-720q0 33-23.5 56.5T360-640Zm240 0q-33 0-56.5-23.5T520-720q0-33 23.5-56.5T600-800q33 0 56.5 23.5T680-720q0 33-23.5 56.5T600-640Z"
+            ></path>
+          </svg>
+        </s-icon>
+      </span>
+
       <span class="coord-label">{{
         t(fnType.coordArr.label) + fnType.coordArr.fir
       }}</span>
-      <input
+      <s-text-field
         type="number"
+        class="styled"
         v-model="data.payload[0]"
-        :placeholder="t(fnType.coordArr.placeholder[0])"
-      />
-      <span class="coord-label">{{ fnType.coordArr.sep }}</span>
-      <input
-        type="number"
-        v-model="data.payload[1]"
-        :placeholder="t(fnType.coordArr.placeholder[1])"
-      />
-      <span class="coord-label">{{ fnType.coordArr.fin }}</span>
-      <span class="coordarr-delete" @click="privateData.splice(index, 1)"
-        >×</span
+        :label="t(fnType.coordArr.placeholder[0])"
       >
+      </s-text-field>
+      <span class="coord-label">{{ fnType.coordArr.sep }}</span>
+      <s-text-field
+        type="number"
+        class="styled"
+        v-model="data.payload[1]"
+        :label="t(fnType.coordArr.placeholder[1])"
+      >
+      </s-text-field>
+      <span class="coord-label">{{ fnType.coordArr.fin }}</span>
+      <s-icon-button @click="privateData.splice(index, 1)">
+        <s-icon>
+          <svg viewBox="0 -960 960 960">
+            <path
+              d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"
+            ></path>
+          </svg>
+        </s-icon>
+      </s-icon-button>
     </div>
   </VueDraggable>
-  <div
+  <s-button
     v-if="fnType.coordArr"
+    type="text"
     class="add-coord"
     @click="
       privateData.push({
@@ -42,8 +62,8 @@
       })
     "
   >
-    + 添加点
-  </div>
+    <s-icon slot="start" name="add"></s-icon> {{ t("buttons.addPoint") }}
+  </s-button>
 </template>
 
 <script setup lang="ts">
@@ -88,62 +108,28 @@ onMounted(() => {
 .coordarr-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 0;
-}
-.coordarr-delete {
-  background-color: var(--c-bk3);
-  --d: 1.2em;
-  width: var(--d);
-  height: var(--d);
-  margin: auto 0;
-  border-radius: 50%;
-  line-height: var(--d);
-  text-align: center;
-  border: transparent 1px solid;
-}
-.coordarr-delete:hover {
-  opacity: 1;
-  background-color: var(--c-red);
-  border-color: var(--c-red2);
-}
-.coordarr-delete:active {
-  opacity: 1;
-  filter: brightness(0.5);
+  gap: 0.8rem;
 }
 
 .coordarr-drag {
-  background: var(--c-bk3);
-  border: var(--c-border) 1px solid;
-  border-top-color: var(--c-bk3);
-  border-bottom-color: var(--c-bk3);
+  cursor: grab;
   margin: 0 0 !important;
-  padding: 0 5px;
   line-height: 2.5em;
+  border-radius: 5px;
 }
-.coordarr-wrapper .coord:nth-child(1) .coordarr-drag {
-  border-top-color: var(--c-border);
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-}
-.coordarr-wrapper .coord:nth-last-child(1) .coordarr-drag {
-  border-bottom-color: var(--c-border);
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-}
+
 .sortable-chosen > .coordarr-drag {
-  background: var(--c-border);
+  background: var(--s-color-outline-variant);
   z-index: 999;
 }
 .add-coord {
-  padding: 5px 15px;
   margin-left: 25px;
-  margin-top: -5px;
-  border-radius: 5px;
+  width: fit-content;
 }
-.add-coord:hover {
-  background: var(--c-bk3);
-}
-.add-coord:active {
-  background: var(--c-bk1);
+
+.coordarr-wrapper s-text-field {
+  width: 0;
+  flex-grow: 1;
+  font-size: 20px;
 }
 </style>

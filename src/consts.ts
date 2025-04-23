@@ -74,11 +74,20 @@ export type InternalDatum = Omit<FunctionPlotDatum, "fnType" | "graphType"> & {
   fnType: "text" | FunctionPlotDatum["fnType"];
   graphType: FunctionPlotDatum["graphType"];
   key: number;
+  hidden?: boolean;
 };
 
-export function toOriginalDatum(items: InternalDatum[]) {
+export function toOriginalDatum(items: InternalDatum[], forExport?: boolean) {
   const cloned = cloneDeep(items);
-  cloned.forEach((item) => {
+  return cloned.flatMap((item) => {
+    if (item.hidden)
+      if (forExport) return [];
+      else
+        return {
+          fnType: "points",
+          graphType: "polyline",
+          points: [],
+        };
     const fnType = item.fnType;
     const graphType = item.graphType;
     const graphTypeObj = getAllowedGraphType(fnType).find(
@@ -91,8 +100,8 @@ export function toOriginalDatum(items: InternalDatum[]) {
       delete (<any>item).graphType;
     }
     delete (<any>item).key;
-  });
-  return cloned as FunctionPlotDatum[];
+    return item;
+  }) as FunctionPlotDatum[];
 }
 export function toInternalDatum(items: FunctionPlotDatum[]) {
   const cloned = cloneDeep(items) as InternalDatum[];
@@ -141,8 +150,8 @@ export const fnTypeArr = [
     coord: [
       {
         value: "range",
-        label: "x ∈ ",
-        fir: "[",
+        label: "",
+        fir: "x ∈ [",
         sep: ",",
         fin: "]",
         placeholder: ["-Inf", "+Inf"],
@@ -174,7 +183,7 @@ export const fnTypeArr = [
       { value: "interval", label: "graphType.interval", default: true },
     ],
     inputs: [
-      { value: "fn", label: "函数", title: "0=", placeholder: "f(x,y)" },
+      { value: "fn", label: "函数", title: "0=", placeholder: "f(x, y)" },
     ],
     switches: [{ value: "closed", label: "inputs.closed", folded: true }],
     optInput: [
@@ -206,13 +215,14 @@ export const fnTypeArr = [
     coord: [
       {
         value: "range",
-        label: "t ∈ ",
-        fir: "[",
+        label: "",
+        fir: "t ∈ [",
         sep: ",",
         fin: "]",
         placeholder: ["0", "2π"],
         optional: true,
         defaultVal: [0, 2 * Math.PI],
+        folded: true,
       },
     ],
     switches: [{ value: "closed", label: "inputs.closed", folded: true }],
@@ -239,17 +249,18 @@ export const fnTypeArr = [
       { value: "scatter", label: "graphType.scatter" },
     ],
     inputs: [
-      { value: "r", label: "半径", title: "r=", placeholder: "f(theta)" },
+      { value: "r", label: "半径", title: "ρ=", placeholder: "f(theta)" },
     ],
     coord: [
       {
         value: "range",
-        label: "theta ∈ ",
-        fir: "[",
+        label: "",
+        fir: "θ ∈ [",
         sep: ",",
         fin: "]",
         placeholder: ["-π", "π"],
         optional: true,
+        folded: true,
         defaultVal: [-Math.PI, Math.PI],
       },
     ],
@@ -307,7 +318,7 @@ export const fnTypeArr = [
       {
         value: "vector",
         label: "inputs.vectorValue",
-        fir: " (",
+        fir: " =(",
         sep: ",",
         fin: ")",
         placeholder: ["x", "y"],
@@ -315,11 +326,12 @@ export const fnTypeArr = [
       {
         value: "offset",
         label: "inputs.vectorOffset",
-        fir: " (",
+        fir: " =(",
         sep: ",",
         fin: ")",
         placeholder: ["0", "0"],
         optional: true,
+        folded: true,
       },
     ],
     optInput: [
@@ -347,7 +359,7 @@ export const fnTypeArr = [
       {
         value: "location",
         label: "inputs.location",
-        fir: " (",
+        fir: " =(",
         sep: ",",
         fin: ")",
         placeholder: ["x", "y"],
@@ -364,13 +376,3 @@ export const fnTypeArr = [
     ],
   },
 ] as const satisfies FnType[];
-
-export function findError(graphData: FunctionPlotDatum[]) {
-  for (const [index, dataItem] of graphData.entries()) {
-    const fnType = getFnType(dataItem.fnType);
-    for (const input of fnType.inputs) if (!dataItem[input.value]) return index;
-    for (const coord of fnType.coord ?? [])
-      if (!dataItem[coord.value] && !coord.optional) return index;
-  }
-  return 0;
-}

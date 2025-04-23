@@ -1,22 +1,7 @@
 :root {
-  --c-bk1: #181818;
-  --c-bk2: #1f1f1f;
-  --c-bk3: #242424;
-  --c-border: #454545;
-  --c-hr: #2b2b2b;
-  --c-text: #fffe;
-  --c-text2: #bbb;
-  --c-accent: #1967d2;
-  --c-red: #800000;
-  --c-red2: #8f4545;
-}
-
-:root {
   color-scheme: dark;
   line-height: 1.5;
   font-weight: 400;
-  color: var(--c-text);
-  background-color: var(--c-bk1);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -34,10 +19,28 @@ textarea {
 }
 
 pre,
-input[type="text"],input[type="number"] {
+input[type="text"],
+input[type="number"] {
   font-family: "Jetbrains Mono", monospace;
 }
 
 * {
   outline: none;
+}
+
+@font-face {
+  font-family: "KaTeX";
+  src: url("/fonts/KaTeX_AllInOne.woff2");
+}
+
+.styled::part(input),
+.styled {
+  font-family: "KaTeX", "Times new roman";
+  font-variant-ligatures: common-ligatures discretionary-ligatures contextual
+    historical-ligatures;
+}
+
+.monospace,
+.monospace::part(input) {
+  font-family: "Jetbrains Mono", monospace;
 }
