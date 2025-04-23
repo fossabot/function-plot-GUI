@@ -23,11 +23,14 @@ const { dataItem, fnType } = defineProps<InputProps>();
 const inputBox = ref<HTMLElementTagNameMap["s-text-field"][]>();
 
 // Chromium 文本框输入三个字形以上的连字时渲染不生效
-// 需要在失去焦点时手动添加空格再删除以触发渲染
+// 需要在失去焦点时手动对文本框赋值以触发渲染
+// 直接操作 .value 属性不会触发 Vue 的响应式更新，无需担忧性能
 
 function handleBlur(index: number) {
-  inputBox.value![index].value = inputBox.value![index].value + " ";
-  inputBox.value![index].value = inputBox.value![index].value.trim();
+  const element = inputBox.value![index];
+  const value = element.value;
+  element.value = value + "\u200B";
+  element.value = value;
 }
 const emit = defineEmits(["blur"]);
 </script>
