@@ -3,7 +3,7 @@
     class="coordarr-wrapper styled"
     v-if="fnType.coordArr"
     v-model="privateData"
-    :animation="150"
+    :animation="300"
     handle="span.coordarr-drag"
   >
     <div

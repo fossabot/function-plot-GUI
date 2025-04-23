@@ -13,7 +13,7 @@
             <s-scroll-view>
               <VueDraggable
                 v-model="graphData"
-                :animation="150"
+                :animation="300"
                 handle=".datablock-drag"
               >
                 <DataBlock
@@ -40,21 +40,37 @@
                 <s-ripple attached></s-ripple>
               </div>
             </s-scroll-view>
-
-            <s-tooltip class="data-import">
-              <s-fab slot="trigger" @click.stop="handleImport()">
-                <s-icon>
-                  <svg viewBox="0 -960 960 960">
-                    <path
-                      d="M480-120v-80h280v-560H480v-80h280q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H480Zm-80-160-55-58 102-102H120v-80h327L345-622l55-58 200 200-200 200Z"
-                    ></path>
-                  </svg>
-                </s-icon>
-              </s-fab>
-              {{ t("buttons.import") }}
-            </s-tooltip>
+            <s-dialog>
+              <s-tooltip class="data-import" slot="trigger">
+                <s-fab slot="trigger">
+                  <s-icon>
+                    <svg viewBox="0 -960 960 960">
+                      <path
+                        d="M480-120v-80h280v-560H480v-80h280q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H480Zm-80-160-55-58 102-102H120v-80h327L345-622l55-58 200 200-200 200Z"
+                      ></path>
+                    </svg>
+                  </s-icon>
+                </s-fab>
+                {{ t("buttons.import") }}
+              </s-tooltip>
+              <div slot="headline">{{ t("title.source") }}</div>
+              <s-text-field
+                slot="text"
+                label="JSON5 / JSON"
+                multiLine
+                style="min-height: 180px; min-width: 40vw"
+                v-model.lazy="importStr"
+                class="monospace"
+              ></s-text-field>
+              <s-button slot="action" type="text">
+                {{ t("buttons.cancel") }}
+              </s-button>
+              <s-button slot="action" type="text" @click="handleImport">
+                {{ t("buttons.confirm") }}
+              </s-button>
+            </s-dialog>
           </div>
-          <CodeDisplay :dataArr="toOriginalDatum(graphData)" />
+          <CodeDisplay :dataArr="toOriginalDatum(graphData, true)" />
           <div id="divider" @mousedown="handleDrag"></div>
         </div>
         <div id="graph" ref="shellRef">
@@ -74,7 +90,6 @@
 </template>
 
 <script setup lang="ts">
-import "sober";
 import { useI18n } from "vue-i18n";
 const { t } = useI18n();
 
@@ -149,12 +164,27 @@ function handleDrag() {
 function toogleDrawer() {
   innerDrawer.value?.toggle();
 }
+
+const importStr = ref("");
+import { Snackbar } from "sober";
 function handleImport() {
-  const raw = prompt("源数据：");
-  if (!raw) return;
-  graphData.value = toInternalDatum(
-    (JSON5.parse(raw).data as FunctionPlotDatum[]) ?? []
-  );
+  if (importStr.value !== "") {
+    try {
+      graphData.value = toInternalDatum(
+        (JSON5.parse(importStr.value).data as FunctionPlotDatum[]) ?? []
+      );
+      Snackbar.builder({
+        text: t("title.importSuccess"),
+        type: "success",
+      });
+    } catch (e) {
+      Snackbar.builder({
+        text: t("title.importFail"),
+        type: "error",
+      });
+    }
+    importStr.value = "";
+  }
 }
 </script>
 

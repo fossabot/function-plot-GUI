@@ -29,39 +29,58 @@
         </s-picker-item>
       </s-picker>
       <div style="flex-grow: 1"></div>
-      <s-tooltip>
-        <s-icon-button slot="trigger" @click="emit('delete')">
+      <div class="dataBlockBtns">
+        <s-tooltip>
+          <s-icon-button slot="trigger" @click="emit('delete')">
+            <s-icon style="color: var(--s-color-error)">
+              <svg viewBox="0 -960 960 960">
+                <path
+                  d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"
+                ></path>
+              </svg>
+            </s-icon>
+          </s-icon-button>
+          {{ t("buttons.del") }}
+        </s-tooltip>
+        <s-tooltip>
+          <s-icon-button
+            slot="trigger"
+            @click="dataItem.hidden = !dataItem.hidden"
+            :type="dataItem.hidden ? 'filled-tonal' : 'standard'"
+          >
+            <s-icon>
+              <svg viewBox="0 -960 960 960">
+                <path
+                  d="M280-440h400v-80H280v80ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"
+                ></path>
+              </svg>
+            </s-icon>
+          </s-icon-button>
+          {{ t("buttons.hide") }}
+        </s-tooltip>
+        <s-tooltip>
+          <s-icon-button
+            slot="trigger"
+            @click="
+              blockFolded = !blockFolded;
+              console.log(foldShell);
+            "
+          >
+            <s-icon :name="blockFolded ? 'chevron_down' : 'chevron_up'">
+            </s-icon>
+          </s-icon-button>
+          {{ t(blockFolded ? "buttons.expand" : "buttons.collapse") }}
+        </s-tooltip>
+        <span class="datablock-drag">
           <s-icon>
             <svg viewBox="0 -960 960 960">
               <path
-                d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"
+                d="M320-440v-287L217-624l-57-56 200-200 200 200-57 56-103-103v287h-80ZM600-80 400-280l57-56 103 103v-287h80v287l103-103 57 56L600-80Z"
               ></path>
             </svg>
           </s-icon>
-        </s-icon-button>
-        {{ t("buttons.del") }}
-      </s-tooltip>
-      <s-tooltip>
-        <s-icon-button
-          slot="trigger"
-          @click="
-            blockFolded = !blockFolded;
-            console.log(foldShell);
-          "
-        >
-          <s-icon :name="blockFolded ? 'chevron_down' : 'chevron_up'"> </s-icon>
-        </s-icon-button>
-        {{ t(blockFolded ? "buttons.expand" : "buttons.collapse") }}
-      </s-tooltip>
-      <span class="datablock-drag">
-        <s-icon>
-          <svg viewBox="0 -960 960 960">
-            <path
-              d="M320-440v-287L217-624l-57-56 200-200 200 200-57 56-103-103v287h-80ZM600-80 400-280l57-56 103 103v-287h80v287l103-103 57 56L600-80Z"
-            ></path>
-          </svg>
-        </s-icon>
-      </span>
+        </span>
+      </div>
     </div>
 
     <div class="inputs">
@@ -198,13 +217,17 @@ const allowedGraphType = computed(() =>
 .selectors s-picker {
   width: 8em;
 }
-
+.dataBlockBtns {
+  display: flex;
+}
 .datablock-drag {
   width: 40px;
+  height: 40px;
   text-align: center;
-  line-height: 40px;
   border-radius: 50%;
   cursor: grab;
+  display: inline-flex;
+  justify-content: center;
 }
 
 .sortable-chosen .datablock-drag {

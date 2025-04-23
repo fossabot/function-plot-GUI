@@ -61,5 +61,10 @@ input[type="number"] {
 
 .styled::part(input),
 .styled {
-  font-family: "KaTeX-Italic", "KaTeX", "KaTeX-Math","Times new roman";
+  font-family: "KaTeX-Italic", "KaTeX", "KaTeX-Math", "Times new roman";
+}
+
+.monospace,
+.monospace::part(input) {
+  font-family: "Jetbrains Mono", monospace;
 }

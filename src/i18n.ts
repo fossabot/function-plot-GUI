@@ -7,12 +7,14 @@ export default createI18n({
       buttons: {
         add: "添加",
         import: "导入",
-        raw: "原始数据",
         del: "删除",
         expand: "展开",
         collapse: "收起",
         reset: "重置",
         addPoint: "添加点",
+        hide: "隐藏",
+        cancel: "取消",
+        confirm: "确定",
       },
       graphType: {
         interval: "默认",
@@ -46,18 +48,23 @@ export default createI18n({
       },
       title: {
         output: "输出代码",
+        source: "数据源",
+        importSuccess: "导入成功",
+        importFail: "导入失败",
       },
     },
     "en-US": {
       buttons: {
         add: "Add",
         import: "Import",
-        raw: "Raw data",
         del: "Delete",
         expand: "Expand",
         collapse: "Collapse",
         reset: "Reset",
         addPoint: "Add Point",
+        hide: "Hide",
+        cancel: "Cancel",
+        confirm: "Confirm",
       },
       graphType: {
         interval: "Interval",
@@ -91,7 +98,9 @@ export default createI18n({
       },
       title: {
         output: "Output code",
-        defaultTo: "Default to {defaultValue}",
+        source: "Data Source",
+        importSuccess: "Import success",
+        importFail: "Import failed",
       },
     },
   },

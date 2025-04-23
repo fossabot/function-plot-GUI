@@ -74,11 +74,20 @@ export type InternalDatum = Omit<FunctionPlotDatum, "fnType" | "graphType"> & {
   fnType: "text" | FunctionPlotDatum["fnType"];
   graphType: FunctionPlotDatum["graphType"];
   key: number;
+  hidden?: boolean;
 };
 
-export function toOriginalDatum(items: InternalDatum[]) {
+export function toOriginalDatum(items: InternalDatum[], forExport?: boolean) {
   const cloned = cloneDeep(items);
-  cloned.forEach((item) => {
+  return cloned.flatMap((item) => {
+    if (item.hidden)
+      if (forExport) return [];
+      else
+        return {
+          fnType: "points",
+          graphType: "polyline",
+          points: [],
+        };
     const fnType = item.fnType;
     const graphType = item.graphType;
     const graphTypeObj = getAllowedGraphType(fnType).find(
@@ -91,8 +100,8 @@ export function toOriginalDatum(items: InternalDatum[]) {
       delete (<any>item).graphType;
     }
     delete (<any>item).key;
-  });
-  return cloned as FunctionPlotDatum[];
+    return item;
+  }) as FunctionPlotDatum[];
 }
 export function toInternalDatum(items: FunctionPlotDatum[]) {
   const cloned = cloneDeep(items) as InternalDatum[];
@@ -364,13 +373,3 @@ export const fnTypeArr = [
     ],
   },
 ] as const satisfies FnType[];
-
-export function findError(graphData: FunctionPlotDatum[]) {
-  for (const [index, dataItem] of graphData.entries()) {
-    const fnType = getFnType(dataItem.fnType);
-    for (const input of fnType.inputs) if (!dataItem[input.value]) return index;
-    for (const coord of fnType.coord ?? [])
-      if (!dataItem[coord.value] && !coord.optional) return index;
-  }
-  return 0;
-}
