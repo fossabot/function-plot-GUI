@@ -222,6 +222,7 @@ export const fnTypeArr = [
         placeholder: ["0", "2π"],
         optional: true,
         defaultVal: [0, 2 * Math.PI],
+        folded: true,
       },
     ],
     switches: [{ value: "closed", label: "inputs.closed", folded: true }],
@@ -259,6 +260,7 @@ export const fnTypeArr = [
         fin: "]",
         placeholder: ["-π", "π"],
         optional: true,
+        folded: true,
         defaultVal: [-Math.PI, Math.PI],
       },
     ],
@@ -329,6 +331,7 @@ export const fnTypeArr = [
         fin: ")",
         placeholder: ["0", "0"],
         optional: true,
+        folded: true,
       },
     ],
     optInput: [
@@ -356,7 +359,7 @@ export const fnTypeArr = [
       {
         value: "location",
         label: "inputs.location",
-        fir: " (",
+        fir: " =(",
         sep: ",",
         fin: ")",
         placeholder: ["x", "y"],
