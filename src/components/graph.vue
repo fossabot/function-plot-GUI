@@ -7,9 +7,9 @@
 import { onMounted, ref, watch } from "vue";
 import { cloneDeep, throttle } from "lodash-es";
 import type { FunctionPlotDatum } from "function-plot";
-import { Datum, findError } from "../consts";
+import { findError } from "../consts";
 const { data, width, height } = defineProps<{
-  data: Datum[];
+  data: FunctionPlotDatum[];
   width: number;
   height: number;
 }>();
