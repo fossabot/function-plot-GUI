@@ -30,6 +30,8 @@ export default createI18n({
       },
       inputs: {
         language: "语言",
+        fnType: "图形类型",
+        graphType: "渲染方式",
         fn: "函数",
         range: "范围",
         color: "颜色",
@@ -73,6 +75,8 @@ export default createI18n({
       },
       inputs: {
         language: "Language",
+        fnType: "Plot type",
+        graphType: "Renderer",
         fn: "Function",
         range: "Range",
         color: "Color",

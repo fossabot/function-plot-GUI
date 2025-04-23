@@ -174,7 +174,7 @@ export const fnTypeArr = [
       { value: "interval", label: "graphType.interval", default: true },
     ],
     inputs: [
-      { value: "fn", label: "函数", title: "0=", placeholder: "f(x,y)" },
+      { value: "fn", label: "函数", title: "0=", placeholder: "f(x, y)" },
     ],
     switches: [{ value: "closed", label: "inputs.closed", folded: true }],
     optInput: [
