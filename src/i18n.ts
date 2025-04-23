@@ -15,6 +15,8 @@ export default createI18n({
         hide: "隐藏",
         cancel: "取消",
         confirm: "确定",
+        language: "语言",
+        repo: "GitHub 仓库",
       },
       graphType: {
         interval: "默认",
@@ -32,7 +34,6 @@ export default createI18n({
         text: "文本",
       },
       inputs: {
-        language: "语言",
         fnType: "图形类型",
         graphType: "渲染方式",
         fn: "函数",
@@ -65,6 +66,8 @@ export default createI18n({
         hide: "Hide",
         cancel: "Cancel",
         confirm: "Confirm",
+        language: "Language",
+        repo: "GitHub Repo",
       },
       graphType: {
         interval: "Interval",
@@ -82,7 +85,6 @@ export default createI18n({
         text: "Text",
       },
       inputs: {
-        language: "Language",
         fnType: "Plot type",
         graphType: "Renderer",
         fn: "Function",
