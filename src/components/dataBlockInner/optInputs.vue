@@ -41,7 +41,7 @@ function handleCoordInput(
 <style>
 .input-box.opt-input {
   display: flex;
-  color: var(--c-text2);
+  color: var(--s-color-on-surface-variant);
   gap: 10px;
   justify-content: space-between;
 }

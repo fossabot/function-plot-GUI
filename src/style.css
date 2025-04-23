@@ -1,22 +1,7 @@
 :root {
-  --c-bk1: #181818;
-  --c-bk2: #1f1f1f;
-  --c-bk3: #25292c;
-  --c-border: #6a757a8a;
-  --c-hr: #2b2b2b;
-  --c-text: #fffe;
-  --c-text2: #bbb;
-  --c-accent: #398cab;
-  --c-red: #800000;
-  --c-red2: #8f4545;
-}
-
-:root {
   color-scheme: dark;
   line-height: 1.5;
   font-weight: 400;
-  color: var(--c-text);
-  background-color: var(--c-bk1);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;

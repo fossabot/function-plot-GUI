@@ -119,7 +119,7 @@ onMounted(() => {
 }
 
 .sortable-chosen > .coordarr-drag {
-  background: var(--c-border);
+  background: var(--s-color-outline-variant);
   z-index: 999;
 }
 .add-coord {

@@ -43,7 +43,7 @@ const collapse = ref(true);
 
 <style>
 .plot-data.output {
-  border-top: var(--c-border) 1px solid;
+  border-top: var(--s-color-outline-variant) 1px solid;
   padding: 15px 15px;
   height: 260px;
   display: flex;
@@ -71,8 +71,7 @@ const collapse = ref(true);
   float: right;
   height:100%;
   padding:0 10px;
-  background: var(--c-bk3);
-  border:var(--c-border) 1px solid;
+  border:var(--s-color-outline-variant) 1px solid;
   border-radius: 5px;
   opacity: 0.75;
 }

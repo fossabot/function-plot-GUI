@@ -65,7 +65,7 @@ function handleCoordInput(
   display: flex;
 }
 .input-box.coord.optional {
-  color: var(--c-text2);
+  color: var(--s-color-on-surface-variant);
 }
 .coord-label {
   font-size: 20px;

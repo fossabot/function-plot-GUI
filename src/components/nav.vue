@@ -72,14 +72,4 @@ const emit = defineEmits(["toggleDrawer"]);
   opacity: 0.5;
   font-size: 0.8em;
 }
-.link {
-  opacity: 0.5;
-  font-size: 0.8em;
-  text-decoration: none;
-  color: var(--c-text);
-}
-.link:hover {
-  opacity: 0.8;
-  text-decoration: underline;
-}
 </style>

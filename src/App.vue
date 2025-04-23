@@ -210,7 +210,7 @@ s-page {
   display: flex;
 }
 #editor {
-  border-right: var(--c-border) 1px solid;
+  border-right: var(--s-color-outline-variant) 1px solid;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -253,7 +253,7 @@ s-page {
   top: 0;
   bottom: 0;
   width: 5px;
-  background: var(--c-accent);
+  background: var(--s-color-secondary);
   z-index: 999;
   opacity: 0;
   transition: opacity 0.1s;

@@ -178,34 +178,10 @@ const allowedGraphType = computed(() =>
 
 <style>
 .plot-data {
-  border-bottom: var(--c-border) 1px solid;
+  border-bottom: var(--s-color-outline-variant) 1px solid;
   position: relative;
   padding: 20px 15px;
   overflow-x: hidden;
-}
-.blockBtn {
-  color: var(--c-text);
-  padding: 0 15px;
-  border: none;
-  background: var(--c-bk3);
-  border-radius: 5px;
-  opacity: 0.75;
-  border: var(--c-border) 1px solid;
-  flex-shrink: 0;
-}
-.delete {
-  background: var(--c-red);
-  border-color: var(--c-red2);
-}
-.blockBtn.active {
-  background: var(--c-bk1);
-}
-.blockBtn:hover {
-  opacity: 1;
-}
-.blockBtn:active {
-  opacity: 1;
-  filter: brightness(0.5);
 }
 .selectors {
   margin-bottom: 10px;
@@ -231,7 +207,7 @@ const allowedGraphType = computed(() =>
 }
 
 .sortable-chosen .datablock-drag {
-  background: var(--c-border);
+  background: var(--s-color-outline-variant);
 }
 .sortable-chosen {
   z-index: 999;
