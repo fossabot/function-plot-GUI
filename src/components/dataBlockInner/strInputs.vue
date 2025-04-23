@@ -1,17 +1,18 @@
 <template>
   <div v-for="input in fnType.inputs" class="input-box">
-    <span class="input-title">{{ t(input.title) }}</span>
-    <input
-      type="text"
+    <span class="input-title styled">{{ t(input.title) }}</span>
+    <s-text-field
       v-model="dataItem[input.value]"
-      :placeholder="t(input.placeholder)"
-    />
+      :label="t(input.placeholder)"
+      class="styled"
+    >
+    </s-text-field>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
-const { t } = useI18n()
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
 
 import { InputProps } from "../../consts";
 const { dataItem, fnType } = defineProps<InputProps>();
@@ -28,28 +29,12 @@ const { dataItem, fnType } = defineProps<InputProps>();
   display: flex;
 }
 .inputs .input-box .input-title {
-  letter-spacing: 5px;
-  font-size: 20px;
-  font-weight: bold;
+  font-size: 25px;
   margin: auto 5px;
   height: fit-content;
 }
-.inputs input {
-  color: var(--c-text);
-  background: var(--c-bk1);
-  border: var(--c-border) 1px solid;
-  height: 100%;
+.inputs s-text-field {
   font-size: 20px;
-  border-radius: 5px;
-  display: block;
-  width: 100%;
-  text-indent: 10px;
-  padding: 10px 0;
-}
-.inputs :not(.optional) input:placeholder-shown {
-  border-color: var(--c-red);
-}
-.inputs input:focus {
-  border-color: var(--c-accent);
+  flex-grow: 1;
 }
 </style>

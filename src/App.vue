@@ -92,14 +92,15 @@ const sideRatio = ref(33);
 const onResize = ref(false);
 
 const shellRef = ref<HTMLDivElement>();
-onMounted(()=>{
-  const observer = new ResizeObserver(throttle(() => {
-    graphWidth.value = shellRef.value!.clientWidth;
-    graphHeight.value = shellRef.value!.clientHeight;
-  }, 250));
+onMounted(() => {
+  const observer = new ResizeObserver(
+    throttle(() => {
+      graphWidth.value = shellRef.value!.clientWidth;
+      graphHeight.value = shellRef.value!.clientHeight;
+    }, 250)
+  );
   observer.observe(shellRef.value!);
-})
-
+});
 
 function fullUpdate() {
   fullUpdateState.value = true;
@@ -150,12 +151,15 @@ body {
   padding: 0;
   overflow: hidden;
 }
-#soberpage {
+s-page {
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
+}
+* {
+  --s-color-outline: #6a757a;
 }
 #content {
   flex-grow: 1;

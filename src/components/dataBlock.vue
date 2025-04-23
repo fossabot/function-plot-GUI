@@ -2,21 +2,34 @@
   <div class="plot-data" v-if="dataItem" ref="block">
     <div class="datablock-drag"></div>
     <div class="selectors">
-      <select v-model="dataItem.fnType" @change="fnTypeChange(dataItem)">
-        <option v-for="type in fnTypeArr" :value="type.value">
+      <s-picker
+        :label="t('inputs.fnType')"
+        v-model.lazy="dataItem.fnType"
+        @change="fnTypeChange(dataItem)"
+      >
+        <s-picker-item
+          v-for="(type, index) in fnTypeArr"
+          :value="type.value"
+          :selected="index === 0"
+        >
           {{ t(type.label) }}
-        </option>
-      </select>
-      <select
-        v-model="dataItem.graphType"
+        </s-picker-item>
+      </s-picker>
+      <s-picker
+        :label="t('inputs.graphType')"
+        v-model.lazy="dataItem.graphType"
         v-if="dataItem.graphType !== 'text'"
         @change="graphTypeChange(dataItem)"
       >
-        <option v-for="type in allowedGraphType" :value="type.value">
+        <s-picker-item
+          v-for="(type, index) in allowedGraphType"
+          :value="type.value"
+          :selected="index === 0"
+        >
           {{ t(type.label) }}
-        </option>
-      </select>
-      <div style="flex-grow: 2"></div>
+        </s-picker-item>
+      </s-picker>
+      <div style="flex-grow: 1"></div>
       <button
         class="fold blockBtn"
         :class="{ active: !blockFolded }"
@@ -24,9 +37,15 @@
       >
         {{ t(blockFolded ? "buttons.expand" : "buttons.collapse") }}
       </button>
-      <button class="delete blockBtn" @click="emit('delete')">
-        {{ t("buttons.del") }}
-      </button>
+      <s-icon-button @click="emit('delete')">
+        <s-icon name="add">
+          <svg viewBox="0 -960 960 960">
+            <path
+              d="m376-300 104-104 104 104 56-56-104-104 104-104-56-56-104 104-104-104-56 56 104 104-104 104 56 56Zm-96 180q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520Zm-400 0v520-520Z"
+            ></path>
+          </svg>
+        </s-icon>
+      </s-icon-button>
     </div>
 
     <div class="inputs">
@@ -63,8 +82,8 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
-const { t } = useI18n()
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
 
 import {
   fnTypeArr,
@@ -85,6 +104,7 @@ const dataItem = defineModel<InternalDatum>();
 const block = ref<HTMLDivElement>();
 const blockFolded = ref(true);
 function fnTypeChange(dataItem: InternalDatum) {
+  console.log(dataItem);
   inputTypeArr.forEach((key) => delete dataItem[key]);
   if (dataItem.fnType === "text") {
     dataItem.graphType = "text";
@@ -121,7 +141,6 @@ const allowedGraphType = computed(() =>
 <style>
 .plot-data {
   border-bottom: var(--c-border) 1px solid;
-  background: var(--c-bk2);
   position: relative;
   padding: 20px 15px 20px 35px;
   overflow-x: hidden;
@@ -150,25 +169,15 @@ const allowedGraphType = computed(() =>
   opacity: 1;
   filter: brightness(0.5);
 }
-
 .selectors {
   margin-bottom: 10px;
   position: relative;
   display: flex;
   gap: 10px;
+  align-items: center;
 }
-.selectors select {
-  border: var(--c-border) 1px solid;
-  background: var(--c-bk3);
-  border-radius: 5px;
-  flex-grow: 1;
-  padding: 8px 8px;
-  color: var(--text);
-  font-size: 15px;
-  width: 6.5em;
-}
-.selectors select:focus {
-  border-color: var(--c-accent);
+.selectors s-picker {
+  width: 8em;
 }
 .datablock-drag {
   position: absolute;
