@@ -136,8 +136,10 @@ onMounted(() => {
 function handleDrag() {
   onResize.value = true;
   const xfull = window.innerWidth;
+  const restrictRange = (x: number, min: number, max: number) =>
+    Math.max(min, Math.min(x, max));
   const mousemove = (event: MouseEvent) =>
-    (sideRatio.value = (event.clientX / xfull) * 100);
+    (sideRatio.value = restrictRange((event.clientX / xfull) * 100, 25, 75));
   document.addEventListener("mousemove", mousemove);
   document.addEventListener("mouseup", () => {
     document.removeEventListener("mousemove", mousemove);
