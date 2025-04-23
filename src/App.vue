@@ -13,8 +13,9 @@
             <s-scroll-view>
               <VueDraggable
                 v-model="graphData"
-                :animation="300"
+                :animation="200"
                 handle=".datablock-drag"
+                :key="draggerKey"
               >
                 <DataBlock
                   v-for="(dataItem, i) in graphData"
@@ -78,9 +79,9 @@
             :data="toOriginalDatum(graphData)"
             :width="graphWidth"
             :height="graphHeight"
-            :key="key"
+            :key="graphKey"
             @requireFullUpdate="fullUpdate"
-            @requirePostUpdate="key++"
+            @requirePostUpdate="graphKey++"
             v-model="fullUpdateState"
           />
         </div>
@@ -91,7 +92,7 @@
 
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
 import Navbar from "./components/nav.vue";
 import Graph from "./components/graph.vue";
@@ -99,7 +100,7 @@ import DataBlock from "./components/dataBlock.vue";
 import CodeDisplay from "./components/codeDisplay.vue";
 import { VueDraggable } from "vue-draggable-plus";
 import type { FunctionPlotDatum } from "function-plot";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import JSON5 from "json5";
 import base64 from "base-64";
 import utf8 from "utf8";
@@ -113,7 +114,7 @@ const graphData = ref<InternalDatum[]>([
 const innerDrawer = ref<HTMLElementTagNameMap["s-drawer"]>();
 const graphWidth = ref(0),
   graphHeight = ref(0);
-const key = ref(0);
+const graphKey = ref(0);
 const fullUpdateState = ref(false);
 const sideRatio = ref(33);
 const onResize = ref(false);
@@ -131,7 +132,7 @@ onMounted(() => {
 
 function fullUpdate() {
   fullUpdateState.value = true;
-  key.value++;
+  graphKey.value++;
 }
 
 onMounted(() => {
@@ -186,6 +187,9 @@ function handleImport() {
     importStr.value = "";
   }
 }
+
+const draggerKey = ref(0);
+watch(locale, () => draggerKey.value++);
 </script>
 
 <style>
