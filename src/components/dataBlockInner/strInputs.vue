@@ -1,10 +1,12 @@
 <template>
-  <div v-for="input in fnType.inputs" class="input-box">
+  <div v-for="(input, index) in fnType.inputs" class="input-box">
     <span class="input-title styled">{{ t(input.title) }}</span>
     <s-text-field
-      v-model="dataItem[input.value]"
+      v-model.trim="dataItem[input.value]"
       :label="t(input.placeholder)"
       class="styled"
+      ref="inputBox"
+      @blur="handleBlur(index)"
     >
     </s-text-field>
   </div>
@@ -15,7 +17,19 @@ import { useI18n } from "vue-i18n";
 const { t } = useI18n();
 
 import { InputProps } from "../../consts";
+import { ref } from "vue";
 const { dataItem, fnType } = defineProps<InputProps>();
+
+const inputBox = ref<HTMLElementTagNameMap["s-text-field"][]>();
+
+// Chromium 文本框输入三个字形以上的连字时渲染不生效
+// 需要在失去焦点时手动添加空格再删除以触发渲染
+
+function handleBlur(index: number) {
+  inputBox.value![index].value = inputBox.value![index].value + " ";
+  inputBox.value![index].value = inputBox.value![index].value.trim();
+}
+const emit = defineEmits(["blur"]);
 </script>
 
 <style>
