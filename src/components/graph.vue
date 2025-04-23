@@ -104,11 +104,14 @@ onMounted(async () => {
   width: fit-content;
   height: fit-content;
   margin: auto;
-  filter: invert(100%) hue-rotate(180deg) brightness(133%);
   color: black;
   user-select: none;
 }
-
+@media (prefers-color-scheme: dark) {
+  #graphRender {
+    filter: invert(100%) hue-rotate(180deg) brightness(133%);
+  }
+}
 .onresize #graphRender {
   left: 50%;
   right: unset;
