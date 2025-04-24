@@ -1,5 +1,7 @@
-import { createI18n } from "vue-i18n";
-export default createI18n({
+import type { createI18n } from "vue-i18n";
+type I18nOpt = Parameters<typeof createI18n>[0];
+
+export default {
   legacy: false,
   locale: "zh-CN",
   messages: {
@@ -106,4 +108,4 @@ export default createI18n({
       },
     },
   },
-});
+} as I18nOpt;

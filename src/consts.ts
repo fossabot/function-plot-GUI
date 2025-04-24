@@ -77,6 +77,14 @@ export type InternalDatum = Omit<FunctionPlotDatum, "fnType" | "graphType"> & {
   hidden?: boolean;
 };
 
+export function getNewDatum(): InternalDatum {
+  return {
+    key: Math.random(),
+    fnType: "linear",
+    graphType: "polyline",
+  };
+}
+
 export function toOriginalDatum(items: InternalDatum[], forExport?: boolean) {
   const cloned = cloneDeep(items);
   return cloned.flatMap((item) => {
