@@ -1,7 +1,7 @@
 import { createApp } from "vue";
 
 import i18n from "./i18n";
-import "./style.css";
+import "./public.css";
 import App from "./App.vue";
 
 import "sober";

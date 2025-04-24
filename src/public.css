@@ -1,0 +1,46 @@
+:root {
+  color-scheme: dark;
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  cursor: default;
+  user-select: none;
+}
+
+:root,
+input,
+select,
+button,
+textarea {
+  font-family: "HarmonyOS Sans SC", sans-serif;
+}
+
+pre,
+input[type="text"],
+input[type="number"] {
+  font-family: "Jetbrains Mono", monospace;
+}
+
+* {
+  outline: none;
+}
+
+@font-face {
+  font-family: "KaTeX";
+  src: url("/fonts/KaTeX_AllInOne.woff2");
+}
+
+.styled::part(input),
+.styled {
+  font-family: "KaTeX", "Times new roman";
+  font-variant-ligatures: common-ligatures discretionary-ligatures contextual
+    historical-ligatures;
+}
+
+.monospace,
+.monospace::part(input) {
+  font-family: "Jetbrains Mono", monospace;
+}
