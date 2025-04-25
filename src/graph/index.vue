@@ -13,7 +13,7 @@
 <script setup lang="ts">
 import Graph from "./graph.vue";
 import { computed, onMounted, ref } from "vue";
-import { debounce } from "lodash-es";
+import { throttle } from "lodash-es";
 import { useProfile } from "@/consts";
 
 const graphWidth = ref(0),
@@ -24,10 +24,10 @@ const fullUpdateState = ref(false);
 const shellRef = ref<HTMLDivElement>();
 onMounted(() => {
   const observer = new ResizeObserver(
-    debounce(() => {
+    throttle(() => {
       graphWidth.value = shellRef.value!.clientWidth;
       graphHeight.value = shellRef.value!.clientHeight;
-    }, 250)
+    }, 180)
   );
   observer.observe(shellRef.value!);
 });
@@ -45,7 +45,7 @@ emitter.on("require-full-update", () => {
   fullUpdateState.value = true;
   graphKey.value++;
 });
-emitter.on('require-post-update', () => {
+emitter.on("require-post-update", () => {
   graphKey.value++;
 });
 </script>
