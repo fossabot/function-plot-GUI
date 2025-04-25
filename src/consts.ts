@@ -77,6 +77,14 @@ export type InternalDatum = Omit<FunctionPlotDatum, "fnType" | "graphType"> & {
   hidden?: boolean;
 };
 
+export function getNewDatum(): InternalDatum {
+  return {
+    key: Math.random(),
+    fnType: "linear",
+    graphType: "polyline",
+  };
+}
+
 export function toOriginalDatum(items: InternalDatum[], forExport?: boolean) {
   const cloned = cloneDeep(items);
   return cloned.flatMap((item) => {
@@ -376,3 +384,15 @@ export const fnTypeArr = [
     ],
   },
 ] as const satisfies FnType[];
+
+
+// Datum define
+import { defineStore } from "pinia";
+import { ref } from "vue";
+export const useProfile = defineStore("profile", () => {
+  const data = ref<InternalDatum[]>([
+    { fnType: "linear", graphType: "polyline", fn: "x^2", key: 1 },
+  ]);
+  const getOriginalCopy = () => toOriginalDatum(data.value);
+  return { data, getOriginalCopy };
+});
