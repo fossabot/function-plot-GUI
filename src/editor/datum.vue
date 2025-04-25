@@ -6,6 +6,7 @@
           :label="t('inputs.fnType')"
           v-model.lazy="dataItem.fnType"
           @change="fnTypeChange(dataItem)"
+          :key="selectKey"
         >
           <s-picker-item
             v-for="(type, index) in fnTypeArr"
@@ -20,6 +21,7 @@
           v-model.lazy="dataItem.graphType"
           v-if="dataItem.graphType !== 'text'"
           @change="graphTypeChange(dataItem)"
+          :key="selectKey"
         >
           <s-picker-item
             v-for="(type, index) in allowedGraphType"
@@ -106,7 +108,7 @@
 </template>
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
 import {
   fnTypeArr,
@@ -192,6 +194,10 @@ const fnType = computed(() => getFnType(dataItem.value?.fnType));
 const allowedGraphType = computed(() =>
   getAllowedGraphType(dataItem.value?.fnType)
 );
+
+import { watch } from "vue";
+const selectKey = ref(0);
+watch(locale, () => selectKey.value++);
 </script>
 
 <style>
