@@ -58,6 +58,9 @@ import { Snackbar } from "sober";
 function handleImport() {
   if (importStr.value !== "") {
     try {
+      const parsed = JSON5.parse(importStr.value);
+      if (typeof parsed !== "object" || parsed === null) throw null;
+      if(typeof parsed.data !== "object" || Array.isArray(parsed.data)) throw null;
       profile.data = toInternalDatum(
         (JSON5.parse(importStr.value).data as FunctionPlotDatum[]) ?? []
       );
