@@ -101,12 +101,18 @@ onMounted(async () => {
   margin: auto;
   color: black;
   user-select: none;
+  transition: filter 1ms;
 }
+
 @media (prefers-color-scheme: dark) {
-  #graphRender {
+  s-page.auto #graphRender {
     filter: invert(100%) hue-rotate(180deg) brightness(133%);
   }
 }
+s-page.dark #graphRender {
+  filter: invert(100%) hue-rotate(180deg) brightness(133%);
+}
+
 .onresize #graphRender {
   left: 50%;
   right: unset;

@@ -9,15 +9,30 @@
       </span>
     </div>
 
+    <s-tooltip slot="action" id="themeTrigger">
+      <s-icon-button slot="trigger" @click="theme.toogle">
+        <SIconAutoTheme v-if="theme.index === 0" />
+        <s-icon
+          v-else
+          :name="theme.index - 1 ? 'light_mode' : 'dark_mode'"
+        ></s-icon>
+      </s-icon-button>
+      {{ t("buttons.toogleTheme") }}
+    </s-tooltip>
+
     <s-picker
       slot="action"
       v-model.lazy="locale"
       id="language"
       :label="t('inputs.language')"
     >
-      <s-icon-button slot="trigger">
-        <SIconLanguage />
-      </s-icon-button>
+      <s-tooltip slot="trigger">
+        <s-icon-button slot="trigger">
+          <SIconLanguage />
+        </s-icon-button>
+        {{ t("buttons.language") }}
+      </s-tooltip>
+
       <s-picker-item value="zh-CN" selected>简体中文</s-picker-item>
       <s-picker-item value="en-US">English</s-picker-item>
     </s-picker>
@@ -31,29 +46,44 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watchEffect } from "vue";
+import { onMounted, watch } from "vue";
 import { useI18n } from "vue-i18n";
 
 const { locale, t } = useI18n();
+onMounted(() => {
+  const localLocale = localStorage.getItem("lang");
+  const lang = localLocale ?? navigator.language;
+  if (lang.startsWith("zh")) locale.value = "zh-CN";
+  if (lang.startsWith("en")) locale.value = "en-US";
+  document.documentElement.setAttribute("lang", locale.value);
+  watch(locale, () => {
+    document.documentElement.setAttribute("lang", locale.value);
+    localStorage.setItem("lang", locale.value);
+  });
+});
 
 import SIconLanguage from "@/ui/icons/language.vue";
 import SIconGtihub from "@/ui/icons/github.vue";
-
-const lang = ref("");
-
-watchEffect(() => console.log(lang.value));
+import SIconAutoTheme from "@/ui/icons/autotheme.vue";
 
 function openGithub() {
   window.open("https://github.com/Linho1219/function-plot-GUI");
 }
 
 const emit = defineEmits(["toggleDrawer"]);
+
+import { useTheme } from "@/consts";
+const theme = useTheme();
 </script>
 
 <style>
 #navbar {
   box-shadow: #0005 0 0 15px;
   z-index: 9;
+}
+
+#themeTrigger s-icon {
+  z-index: -1;
 }
 
 .nav-title {

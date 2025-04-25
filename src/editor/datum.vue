@@ -1,110 +1,114 @@
 <template>
-  <div class="plot-data" v-if="dataItem" ref="block">
-    <div class="selectors">
-      <s-picker
-        :label="t('inputs.fnType')"
-        v-model.lazy="dataItem.fnType"
-        @change="fnTypeChange(dataItem)"
-      >
-        <s-picker-item
-          v-for="(type, index) in fnTypeArr"
-          :value="type.value"
-          :selected="index === 0"
+  <s-fold :folded="hidden" v-if="dataItem" class="plot-data-fold">
+    <div class="plot-data" ref="block" :class="{ hidden: dataItem.hidden }">
+      <div class="selectors">
+        <s-picker
+          :label="t('inputs.fnType')"
+          v-model.lazy="dataItem.fnType"
+          @change="fnTypeChange(dataItem)"
+          :key="selectKey"
         >
-          {{ t(type.label) }}
-        </s-picker-item>
-      </s-picker>
-      <s-picker
-        :label="t('inputs.graphType')"
-        v-model.lazy="dataItem.graphType"
-        v-if="dataItem.graphType !== 'text'"
-        @change="graphTypeChange(dataItem)"
-      >
-        <s-picker-item
-          v-for="(type, index) in allowedGraphType"
-          :value="type.value"
-          :selected="index === 0"
+          <s-picker-item
+            v-for="(type, index) in fnTypeArr"
+            :value="type.value"
+            :selected="index === 0"
+          >
+            {{ t(type.label) }}
+          </s-picker-item>
+        </s-picker>
+        <s-picker
+          :label="t('inputs.graphType')"
+          v-model.lazy="dataItem.graphType"
+          v-if="dataItem.graphType !== 'text'"
+          @change="graphTypeChange(dataItem)"
+          :key="selectKey"
         >
-          {{ t(type.label) }}
-        </s-picker-item>
-      </s-picker>
-      <div style="flex-grow: 1"></div>
-      <div class="dataBlockBtns">
-        <s-tooltip>
-          <s-icon-button
-            slot="trigger"
-            @click="emit('delete')"
-            style="color: var(--s-color-error)"
+          <s-picker-item
+            v-for="(type, index) in allowedGraphType"
+            :value="type.value"
+            :selected="index === 0"
           >
-            <SIconDelete />
-          </s-icon-button>
-          {{ t("buttons.del") }}
-        </s-tooltip>
-        <s-tooltip>
-          <s-icon-button
-            slot="trigger"
-            @click="dataItem.hidden = !dataItem.hidden"
-            :type="dataItem.hidden ? 'filled-tonal' : 'standard'"
-          >
-            <SIconHide />
-          </s-icon-button>
-          {{ t("buttons.hide") }}
-        </s-tooltip>
-        <s-tooltip>
-          <s-icon-button
-            slot="trigger"
-            @click="
-              blockFolded = !blockFolded;
-              console.log(foldShell);
-            "
-          >
-            <s-icon :name="blockFolded ? 'chevron_down' : 'chevron_up'">
-            </s-icon>
-          </s-icon-button>
-          {{ t(blockFolded ? "buttons.expand" : "buttons.collapse") }}
-        </s-tooltip>
-        <span class="datablock-drag">
-          <SIconDrag />
-        </span>
+            {{ t(type.label) }}
+          </s-picker-item>
+        </s-picker>
+        <div style="flex-grow: 1"></div>
+        <div class="dataBlockBtns">
+          <s-tooltip>
+            <s-icon-button
+              slot="trigger"
+              @click="deleteDatum"
+              style="color: var(--s-color-error)"
+            >
+              <SIconDelete />
+            </s-icon-button>
+            {{ t("buttons.del") }}
+          </s-tooltip>
+          <s-tooltip>
+            <s-icon-button
+              slot="trigger"
+              @click="dataItem.hidden = !dataItem.hidden"
+              :type="dataItem.hidden ? 'filled-tonal' : 'standard'"
+            >
+              <SIconHide />
+            </s-icon-button>
+            {{ t("buttons.hide") }}
+          </s-tooltip>
+          <s-tooltip>
+            <s-icon-button
+              slot="trigger"
+              @click="
+                blockFolded = !blockFolded;
+                console.log(foldShell);
+              "
+            >
+              <s-icon :name="blockFolded ? 'chevron_down' : 'chevron_up'">
+              </s-icon>
+            </s-icon-button>
+            {{ t(blockFolded ? "buttons.expand" : "buttons.collapse") }}
+          </s-tooltip>
+          <span class="datablock-drag">
+            <SIconDrag />
+          </span>
+        </div>
+      </div>
+
+      <div class="inputs">
+        <StrInputs
+          :dataItem="dataItem"
+          :fnType="fnType"
+          :blockFolded="blockFolded"
+        />
+        <CoordInputs
+          v-if="fnType.coord"
+          :dataItem="dataItem"
+          :fnType="fnType"
+          :blockFolded="blockFolded"
+        />
+        <CoordArrInputs
+          v-if="fnType.coordArr"
+          :dataItem="dataItem"
+          :fnType="fnType"
+          :blockFolded="blockFolded"
+        />
+        <OptInputs
+          v-if="fnType.optInput"
+          :dataItem="dataItem"
+          :fnType="fnType"
+          :blockFolded="blockFolded"
+        />
+        <SwitchInputs
+          v-if="fnType.switches"
+          :dataItem="dataItem"
+          :fnType="fnType"
+          :blockFolded="blockFolded"
+        />
       </div>
     </div>
-
-    <div class="inputs">
-      <StrInputs
-        :dataItem="dataItem"
-        :fnType="fnType"
-        :blockFolded="blockFolded"
-      />
-      <CoordInputs
-        v-if="fnType.coord"
-        :dataItem="dataItem"
-        :fnType="fnType"
-        :blockFolded="blockFolded"
-      />
-      <CoordArrInputs
-        v-if="fnType.coordArr"
-        :dataItem="dataItem"
-        :fnType="fnType"
-        :blockFolded="blockFolded"
-      />
-      <OptInputs
-        v-if="fnType.optInput"
-        :dataItem="dataItem"
-        :fnType="fnType"
-        :blockFolded="blockFolded"
-      />
-      <SwitchInputs
-        v-if="fnType.switches"
-        :dataItem="dataItem"
-        :fnType="fnType"
-        :blockFolded="blockFolded"
-      />
-    </div>
-  </div>
+  </s-fold>
 </template>
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
 import {
   fnTypeArr,
@@ -113,7 +117,7 @@ import {
   getFnType,
   InternalDatum,
 } from "../consts";
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import StrInputs from "./inputs/strInputs.vue";
 import CoordInputs from "./inputs/coordInputs.vue";
 import SwitchInputs from "./inputs/switchInputs.vue";
@@ -124,12 +128,35 @@ import SIconDelete from "@/ui/icons/delete.vue";
 import SIconHide from "@/ui/icons/hide.vue";
 import SIconDrag from "@/ui/icons/drag.vue";
 
-const emit = defineEmits(["delete"]);
 const dataItem = defineModel<InternalDatum>();
+const props = defineProps<{ index: number }>();
 const block = ref<HTMLDivElement>();
 const blockFolded = ref(true);
 
 const foldShell = ref<HTMLElementTagNameMap["s-fold"]>();
+
+const hidden = ref(true);
+
+onMounted(() => setTimeout(() => (hidden.value = false), 0));
+import { Snackbar } from "sober";
+import { useProfile } from "../consts";
+const profile = useProfile();
+function deleteDatum() {
+  hidden.value = true;
+  const backup = cloneDeep(dataItem.value)!;
+  setTimeout(() => {
+    profile.data.splice(props.index, 1);
+  }, 200);
+  Snackbar.builder({
+    text: t("title.deleteSuccess"),
+    action: {
+      text: t("buttons.undo"),
+      click: () => {
+        profile.data.splice(props.index, 0, backup);
+      },
+    },
+  });
+}
 
 function fnTypeChange(dataItem: InternalDatum) {
   console.log(dataItem);
@@ -149,6 +176,7 @@ function fnTypeChange(dataItem: InternalDatum) {
 const scatteredSet = new WeakSet<InternalDatum>();
 
 import emitter from "@/mitt";
+import { cloneDeep } from "lodash-es";
 function graphTypeChange(dataItem: InternalDatum) {
   if (dataItem.graphType === "scatter") {
     if (!scatteredSet.has(dataItem)) {
@@ -166,14 +194,27 @@ const fnType = computed(() => getFnType(dataItem.value?.fnType));
 const allowedGraphType = computed(() =>
   getAllowedGraphType(dataItem.value?.fnType)
 );
+
+import { watch } from "vue";
+const selectKey = ref(0);
+watch(locale, () => selectKey.value++);
 </script>
 
 <style>
 .plot-data {
-  border-bottom: var(--s-color-outline-variant) 1px solid;
   position: relative;
   padding: 20px 15px;
   overflow-x: hidden;
+  transition:
+    opacity 0.15s,
+    filter 0.15s;
+}
+.plot-data.hidden {
+  opacity: 0.6;
+  filter: contrast(0.6) saturate(0.8);
+}
+.plot-data-fold {
+  border-bottom: var(--s-color-outline-variant) 1px solid;
 }
 .selectors {
   margin-bottom: 10px;

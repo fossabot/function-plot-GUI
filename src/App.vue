@@ -1,9 +1,8 @@
 <template>
-  <s-page theme="auto" id="soberpage">
+  <s-page :theme="theme.initialValue" id="soberpage" ref="soberPage" :class="theme.value">
     <s-drawer>
       <Navbar @toggle-drawer="toogleDrawer" />
       <s-drawer
-        theme="auto"
         id="content"
         :class="{ onDrawerResize }"
         ref="innerDrawer"
@@ -27,9 +26,16 @@ import Navbar from "./ui/navbar.vue";
 import Graph from "./graph/index.vue";
 import Editor from "./editor/index.vue";
 
-import { ref } from "vue";
-
-
+import { ref, watchEffect } from "vue";
+import { useTheme } from "@/consts";
+const theme = useTheme();
+const soberPage = ref<HTMLElementTagNameMap["s-page"]>();
+watchEffect(() =>
+  soberPage.value?.toggle(
+    theme.value,
+    document.getElementById("themeTrigger") ?? undefined
+  )
+);
 
 // Drawer toogle
 const innerDrawer = ref<HTMLElementTagNameMap["s-drawer"]>();

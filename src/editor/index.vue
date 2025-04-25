@@ -5,12 +5,11 @@
         v-model="profile.data"
         :animation="200"
         handle=".datablock-drag"
-        :key="draggerKey"
       >
         <Datum
           v-for="(dataItem, i) in profile.data"
           v-model="profile.data[i]"
-          @delete="profile.data.splice(i, 1)"
+          :index="i"
           :key="dataItem.key"
         />
       </VueDraggable>
@@ -27,7 +26,7 @@
 
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
-const { t, locale } = useI18n();
+const { t } = useI18n();
 
 import { VueDraggable } from "vue-draggable-plus";
 import ImportBtn from "./import.vue";
@@ -37,8 +36,4 @@ import OutputDrawer from "./output.vue";
 import { getNewDatum } from "@/consts";
 import { useProfile } from "@/consts";
 const profile = useProfile();
-
-import { ref, watch } from "vue";
-const draggerKey = ref(0);
-watch(locale, () => draggerKey.value++);
 </script>

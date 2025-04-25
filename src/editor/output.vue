@@ -9,6 +9,16 @@
         ></s-icon>
         {{ t(folded ? "buttons.expand" : "buttons.collapse") }}
       </s-button>
+
+      <s-tooltip align="right">
+        <s-icon-button
+          slot="trigger"
+          @click="copyCode"
+        >
+          <SIconCopy />
+        </s-icon-button>
+        {{ t("buttons.copy") }}
+      </s-tooltip>
     </div>
     <s-fold :folded="folded">
       <s-scroll-view id="formattedCode">
@@ -21,6 +31,8 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
 const { t } = useI18n();
+
+import SIconCopy from "@/ui/icons/copy.vue";
 
 import JSON5 from "json5";
 import prettier from "prettier/standalone";
@@ -35,7 +47,7 @@ watch(
   profile,
   () => {
     prettier
-      .format(JSON5.stringify({ data: profile.data }), {
+      .format(JSON5.stringify({ data: profile.getOriginalCopy(true) }), {
         parser: "json5",
         printWidth: 40,
         plugins: [prettierPluginBabel, prettierPluginEstree],
@@ -46,6 +58,15 @@ watch(
 );
 
 const folded = ref(true);
+
+import { Snackbar } from "sober";
+function copyCode() {
+  navigator.clipboard.writeText(formatted.value);
+  Snackbar.builder({
+    text: t("title.copySuccess"),
+    type: "success",
+  });
+}
 </script>
 
 <style>
@@ -78,12 +99,13 @@ const folded = ref(true);
 }
 
 .plot-data.output pre {
-  user-select: all;
+  user-select: text;
+  cursor: text;
   margin: 0;
 }
 
 ::selection {
-  background-color: var(--s-color-primary);
-  color: var(--s-color-scrim);
+  background: var(--s-color-primary);
+  color: var(--s-color-on-primary);
 }
 </style>
