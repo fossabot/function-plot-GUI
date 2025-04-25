@@ -21,6 +21,7 @@ export default {
         repo: "GitHub 仓库",
         toogleTheme: '切换主题',
         copy: "复制",
+        undo: "撤销",
       },
       graphType: {
         interval: "默认",
@@ -57,6 +58,7 @@ export default {
         importSuccess: "导入成功",
         importFail: "导入失败",
         copySuccess: "已复制",
+        deleteSuccess: "已删除",
       },
     },
     "en-US": {
@@ -75,6 +77,7 @@ export default {
         repo: "GitHub Repo",
         toogleTheme: 'Toggle Theme',
         copy: "Copy",
+        undo: "Undo",
       },
       graphType: {
         interval: "Interval",
@@ -111,6 +114,7 @@ export default {
         importSuccess: "Import success",
         importFail: "Import failed",
         copySuccess: "Copied",
+        deleteSuccess: "Deleted",
       },
     },
   },

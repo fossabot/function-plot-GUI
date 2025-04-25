@@ -10,7 +10,7 @@
         <Datum
           v-for="(dataItem, i) in profile.data"
           v-model="profile.data[i]"
-          @delete="profile.data.splice(i, 1)"
+          :index="i"
           :key="dataItem.key"
         />
       </VueDraggable>
