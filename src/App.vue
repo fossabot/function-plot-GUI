@@ -1,9 +1,8 @@
 <template>
-  <s-page theme="auto" id="soberpage" ref="soberPage" :class="theme.value">
+  <s-page :theme="theme.initialValue" id="soberpage" ref="soberPage" :class="theme.value">
     <s-drawer>
       <Navbar @toggle-drawer="toogleDrawer" />
       <s-drawer
-        theme="auto"
         id="content"
         :class="{ onDrawerResize }"
         ref="innerDrawer"
