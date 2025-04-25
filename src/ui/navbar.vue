@@ -1,7 +1,7 @@
 <template>
   <s-appbar id="navbar">
-    <s-icon-button slot="navigation">
-      <s-icon name="menu" @click="emit('toggleDrawer')"></s-icon>
+    <s-icon-button slot="navigation" @click="emit('toggleDrawer')">
+      <s-icon name="menu"></s-icon>
     </s-icon-button>
     <div slot="headline">
       <span class="nav-title">
