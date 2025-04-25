@@ -108,6 +108,7 @@ export function toOriginalDatum(items: InternalDatum[], forExport?: boolean) {
       delete (<any>item).graphType;
     }
     delete (<any>item).key;
+    delete (<any>item).hidden;
     return item;
   }) as FunctionPlotDatum[];
 }
@@ -388,11 +389,19 @@ export const fnTypeArr = [
 
 // Datum define
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 export const useProfile = defineStore("profile", () => {
   const data = ref<InternalDatum[]>([
     { fnType: "linear", graphType: "polyline", fn: "x^2", key: 1 },
   ]);
-  const getOriginalCopy = () => toOriginalDatum(data.value);
+  const getOriginalCopy = (forExport?: boolean) => toOriginalDatum(data.value, forExport);
   return { data, getOriginalCopy };
 });
+// Theme define
+export const useTheme = defineStore("theme", () => {
+  const themeValues = ["auto", "dark", "light"] as const;
+  const index = ref(0);
+  const value = computed(() => themeValues[index.value]);
+  const toogle = () => index.value = (index.value + 1) % themeValues.length
+  return { index, value, toogle }
+})
