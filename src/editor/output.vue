@@ -1,20 +1,19 @@
 <template>
   <div class="plot-data output">
-    <span class="output-title">{{ t("title.output") }} </span>
-    <s-fold folded>
-      <s-button
-        slot="trigger"
-        type="text"
-        @click="folded = !folded"
-        id="codeFoldButton"
-      >
+    <span id="outputTitle">{{ t("title.output") }} </span>
+    <div id="outputBtns">
+      <s-button type="text" @click="folded = !folded" id="outputFoldButton">
         <s-icon
           slot="start"
           :name="folded ? 'chevron_up' : 'chevron_down'"
         ></s-icon>
-        {{ t(folded ? "buttons.expand" : "buttons.collapse") }}</s-button
-      >
-      <pre id="formattedCode">{{ formatted }}</pre>
+        {{ t(folded ? "buttons.expand" : "buttons.collapse") }}
+      </s-button>
+    </div>
+    <s-fold :folded="folded">
+      <s-scroll-view id="formattedCode">
+        <pre>{{ formatted }}</pre>
+      </s-scroll-view>
     </s-fold>
   </div>
 </template>
@@ -52,31 +51,39 @@ const folded = ref(true);
 <style>
 .plot-data.output {
   border-top: var(--s-color-outline-variant) 1px solid;
-  padding: 8px 15px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
   overflow: hidden;
+  padding: 0;
+  position: relative;
 }
-.plot-data.output .output-title {
+
+#outputTitle {
   font-size: 18px;
   font-weight: bold;
-  position: absolute;
-  top: 8px;
-  left: 15px;
+  padding: 8px 15px;
   line-height: 40px;
 }
+
+#outputBtns {
+  position: absolute;
+  bottom: 8px;
+  right: 15px;
+  display: flex;
+}
+
+#formattedCode {
+  height: 200px;
+  padding: 0 15px 15px 15px;
+}
+
 .plot-data.output pre {
-  flex-grow: 1;
-  overflow: scroll;
   user-select: all;
   margin: 0;
 }
-#codeFoldButton {
-  margin-left: 100%;
-  transform: translateX(-100%);
-}
-#formattedCode {
-  height: 200px;
+
+::selection {
+  background-color: var(--s-color-primary);
+  color: var(--s-color-scrim);
 }
 </style>
