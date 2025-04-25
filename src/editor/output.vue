@@ -28,16 +28,15 @@ import prettier from "prettier/standalone";
 import prettierPluginBabel from "prettier/plugins/babel";
 import prettierPluginEstree from "prettier/plugins/estree";
 import { ref, watch } from "vue";
-import { FunctionPlotDatum } from "function-plot";
-// const { dataArr } = defineProps<{
-//   dataArr: FunctionPlotDatum[];
-// }>();
+import { useProfile } from "@/consts";
+const profile = useProfile();
+
 const formatted = ref("");
 watch(
-  () => dataArr,
+  profile,
   () => {
     prettier
-      .format(JSON5.stringify({ data: dataArr }), {
+      .format(JSON5.stringify({ data: profile.data }), {
         parser: "json5",
         printWidth: 40,
         plugins: [prettierPluginBabel, prettierPluginEstree],

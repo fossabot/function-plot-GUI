@@ -35,7 +35,7 @@ import Datum from "./datum.vue";
 import OutputDrawer from "./output.vue";
 
 import { getNewDatum } from "@/consts";
-import { useProfile } from "@/App.vue";
+import { useProfile } from "@/consts";
 const profile = useProfile();
 
 import { ref, watch } from "vue";

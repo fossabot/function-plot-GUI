@@ -30,7 +30,7 @@ const { t } = useI18n();
 
 import SIconImport from "@/ui/icons/import.vue";
 
-import { useProfile } from "@/App.vue";
+import { useProfile } from "@/consts";
 const profile = useProfile();
 
 import { onMounted, ref } from "vue";

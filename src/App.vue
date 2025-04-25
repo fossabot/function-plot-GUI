@@ -27,17 +27,9 @@ import Navbar from "./ui/navbar.vue";
 import Graph from "./graph/index.vue";
 import Editor from "./editor/index.vue";
 
-// Datum define
-import { defineStore } from "pinia";
 import { ref } from "vue";
-import { InternalDatum, toOriginalDatum } from "@/consts";
-export const useProfile = defineStore("profile", () => {
-  const data = ref<InternalDatum[]>([
-    { fnType: "linear", graphType: "polyline", fn: "x^2", key: 1 },
-  ]);
-  const getOriginalCopy = () => toOriginalDatum(data.value);
-  return { data, getOriginalCopy };
-});
+
+
 
 // Drawer toogle
 const innerDrawer = ref<HTMLElementTagNameMap["s-drawer"]>();

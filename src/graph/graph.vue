@@ -2,26 +2,17 @@
   <div id="graphRender" ref="plotRef"></div>
   <div class="buttons" id="topright">
     <s-tooltip align="right">
-      <s-icon-button slot="trigger" @click="emit('requireFullUpdate')">
-        <s-icon>
-          <svg viewBox="0 -960 960 960">
-            <path
-              d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z"
-            ></path>
-          </svg>
-        </s-icon>
+      <s-icon-button
+        slot="trigger"
+        @click="emitter.emit('require-full-update')"
+      >
+        <SIconRefresh />
       </s-icon-button>
       {{ t("buttons.reset") }}
     </s-tooltip>
     <s-tooltip align="right" v-if="errorMsg !== undefined">
-      <s-icon-button slot="trigger">
-        <s-icon id="warningIcon">
-          <svg viewBox="0 -960 960 960">
-            <path
-              d="m40-120 440-760 440 760H40Zm138-80h604L480-720 178-200Zm302-40q17 0 28.5-11.5T520-280q0-17-11.5-28.5T480-320q-17 0-28.5 11.5T440-280q0 17 11.5 28.5T480-240Zm-40-120h80v-200h-80v200Zm40-100Z"
-            ></path>
-          </svg>
-        </s-icon>
+      <s-icon-button slot="trigger" style="color: var(--s-color-warning)">
+        <SIconWarn />
       </s-icon-button>
       <pre class="tooltipMsgPre">{{ errorMsg }}</pre>
     </s-tooltip>
@@ -32,6 +23,9 @@
 import { useI18n } from "vue-i18n";
 const { t } = useI18n();
 
+import SIconRefresh from "@/ui/icons/refresh.vue";
+import SIconWarn from "@/ui/icons/warn.vue";
+
 import { onMounted, ref, watch } from "vue";
 import { cloneDeep, throttle } from "lodash-es";
 import type { FunctionPlotDatum } from "function-plot";
@@ -41,7 +35,8 @@ const { data, width, height } = defineProps<{
   width: number;
   height: number;
 }>();
-const emit = defineEmits(["requireFullUpdate", "requirePostUpdate"]);
+
+import emitter from "@/mitt";
 const fullUpdateState = defineModel<boolean>();
 
 const plotRef = ref<HTMLDivElement | null>(null);
@@ -81,11 +76,11 @@ onMounted(async () => {
           });
         if (fullUpdateState.value) {
           fullUpdateState.value = false;
-          emit("requirePostUpdate");
+          emitter.emit("require-post-update");
         } else errorMsg.value = undefined;
       } catch (e) {
         // console.log(e);
-        if (!fullUpdateState.value) emit("requireFullUpdate");
+        if (!fullUpdateState.value) emitter.emit("require-full-update");
         errorMsg.value = (e as Error).message;
       }
     }, 200),
@@ -128,10 +123,6 @@ onMounted(async () => {
   right: 25px;
   display: flex;
   flex-direction: column;
-}
-
-#warningIcon {
-  color: var(--s-color-warning);
 }
 
 .tooltipMsgPre {

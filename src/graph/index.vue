@@ -1,12 +1,10 @@
 <template>
   <div id="graph" ref="shellRef">
     <Graph
-      :data="toOriginalDatum(graphData)"
+      :data="graphData"
       :width="graphWidth"
       :height="graphHeight"
       :key="graphKey"
-      @requireFullUpdate="fullUpdate"
-      @requirePostUpdate="graphKey++"
       v-model="fullUpdateState"
     />
   </div>
@@ -14,7 +12,9 @@
 
 <script setup lang="ts">
 import Graph from "./graph.vue";
+import { computed, onMounted, ref } from "vue";
 import { debounce } from "lodash-es";
+import { useProfile } from "@/consts";
 
 const graphWidth = ref(0),
   graphHeight = ref(0);
@@ -32,8 +32,20 @@ onMounted(() => {
   observer.observe(shellRef.value!);
 });
 
-function fullUpdate() {
+const profile = useProfile();
+
+const graphData = computed(() => {
+  void profile.data;
+  return profile.getOriginalCopy();
+});
+
+import emitter from "@/mitt";
+
+emitter.on("require-full-update", () => {
   fullUpdateState.value = true;
   graphKey.value++;
-}
+});
+emitter.on('require-post-update', () => {
+  graphKey.value++;
+});
 </script>
