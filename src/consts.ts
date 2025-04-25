@@ -133,6 +133,11 @@ export function toInternalDatum(items: FunctionPlotDatum[]) {
 export type InputProps = {
   dataItem: InternalDatum;
   fnType: FnType;
+};
+
+export type InputPropsWithFold = {
+  dataItem: InternalDatum;
+  fnType: FnType;
   blockFolded: boolean;
 };
 

@@ -36,15 +36,6 @@ const emit = defineEmits(["blur"]);
 </script>
 
 <style>
-.inputs {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.inputs .input-box {
-  position: relative;
-  display: flex;
-}
 .inputs .input-box .input-title {
   font-size: 25px;
   margin: auto 5px;

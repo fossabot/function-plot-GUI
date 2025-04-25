@@ -73,36 +73,47 @@
       </div>
 
       <div class="inputs">
-        <StrInputs
-          :dataItem="dataItem"
-          :fnType="fnType"
-          :blockFolded="blockFolded"
-        />
+        <StrInputs :dataItem="dataItem" :fnType="fnType" />
         <CoordInputs
           v-if="fnType.coord"
           :dataItem="dataItem"
           :fnType="fnType"
-          :blockFolded="blockFolded"
+          :blockFolded="false"
         />
         <CoordArrInputs
           v-if="fnType.coordArr"
           :dataItem="dataItem"
           :fnType="fnType"
-          :blockFolded="blockFolded"
-        />
-        <OptInputs
-          v-if="fnType.optInput"
-          :dataItem="dataItem"
-          :fnType="fnType"
-          :blockFolded="blockFolded"
         />
         <SwitchInputs
           v-if="fnType.switches"
           :dataItem="dataItem"
           :fnType="fnType"
-          :blockFolded="blockFolded"
+          :blockFolded="false"
         />
       </div>
+      <s-fold :folded="blockFolded">
+        <div class="inputs optional">
+          <s-divider>{{ t("title.moreOptions") }}</s-divider>
+          <CoordInputs
+            v-if="fnType.coord"
+            :dataItem="dataItem"
+            :fnType="fnType"
+            :blockFolded="true"
+          />
+          <OptInputs
+            v-if="fnType.optInput"
+            :dataItem="dataItem"
+            :fnType="fnType"
+          />
+          <SwitchInputs
+            v-if="fnType.switches"
+            :dataItem="dataItem"
+            :fnType="fnType"
+            :blockFolded="true"
+          />
+        </div>
+      </s-fold>
     </div>
   </s-fold>
 </template>
@@ -201,6 +212,20 @@ watch(locale, () => selectKey.value++);
 </script>
 
 <style>
+.inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.inputs.optional {
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+.inputs .input-box {
+  position: relative;
+  display: flex;
+}
 .plot-data {
   position: relative;
   padding: 20px 15px;

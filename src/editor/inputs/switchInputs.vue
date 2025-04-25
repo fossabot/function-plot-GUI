@@ -1,7 +1,7 @@
 <template>
   <div
     v-for="input in fnType.switches?.filter(
-      ({ folded }) => !(folded && blockFolded)
+      ({ folded }) => !!folded === blockFolded
     ) ?? []"
     class="input-box switches"
     @click="
@@ -19,9 +19,9 @@
 import { useI18n } from "vue-i18n";
 const { t } = useI18n();
 
-import { InputProps } from "../../consts";
+import { InputPropsWithFold } from "../../consts";
 
-const { dataItem, fnType } = defineProps<InputProps>();
+const { dataItem, fnType } = defineProps<InputPropsWithFold>();
 </script>
 
 <style>

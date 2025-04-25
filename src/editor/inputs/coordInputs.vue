@@ -1,7 +1,7 @@
 <template>
   <div
     v-for="input in fnType.coord?.filter(
-      ({ folded }) => !(folded && blockFolded)
+      ({ folded }) => !!folded === blockFolded
     ) ?? []"
     class="input-box coord"
     :class="{ optional: input.optional }"
@@ -33,9 +33,9 @@
 import { useI18n } from "vue-i18n";
 const { t } = useI18n();
 
-import { CoordType, InternalDatum, InputProps } from "../../consts";
+import { CoordType, InternalDatum,  InputPropsWithFold } from "../../consts";
 
-const { dataItem, fnType } = defineProps<InputProps>();
+const { dataItem, fnType } = defineProps<InputPropsWithFold>();
 
 function handleCoordInput(
   dataItem: InternalDatum,

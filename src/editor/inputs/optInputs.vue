@@ -1,6 +1,5 @@
 <template>
   <div
-    v-if="!blockFolded"
     v-for="input in fnType.optInput ?? []"
     class="input-box opt-input optional"
   >
