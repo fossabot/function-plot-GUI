@@ -24,7 +24,7 @@ export default {
         undo: "撤销",
       },
       graphType: {
-        interval: "默认",
+        interval: "微矩形",
         polyline: "多段线",
         scatter: "散点",
         text: "文本",
