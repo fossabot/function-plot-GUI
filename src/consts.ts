@@ -82,6 +82,7 @@ export function getNewDatum(): InternalDatum {
     key: Math.random(),
     fnType: "linear",
     graphType: "polyline",
+    fn: "",
   };
 }
 

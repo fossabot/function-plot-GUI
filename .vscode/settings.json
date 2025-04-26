@@ -32,5 +32,13 @@
       "folderNames": ["icons"],
       "rootFolderNames": ["icons"]
     },
+    {
+      "name": "animate",
+      "base": "animation",
+      "color": "purple-400",
+      "lightColor": "purple-100",
+      "folderNames": ["animatedList"],
+      "rootFolderNames": ["animatedList"]
+    },
   ]
 }

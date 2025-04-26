@@ -6,50 +6,37 @@
     :animation="200"
     handle="span.coordarr-drag"
   >
-    <div
-      v-for="(data, index) in privateData"
-      class="input-box coord coordarr"
-      :key="data.id"
-    >
-      <span class="coordarr-drag">
-        <s-icon name="menu">
-          <svg viewBox="0 -960 960 960">
-            <path
-              d="M360-160q-33 0-56.5-23.5T280-240q0-33 23.5-56.5T360-320q33 0 56.5 23.5T440-240q0 33-23.5 56.5T360-160Zm240 0q-33 0-56.5-23.5T520-240q0-33 23.5-56.5T600-320q33 0 56.5 23.5T680-240q0 33-23.5 56.5T600-160ZM360-400q-33 0-56.5-23.5T280-480q0-33 23.5-56.5T360-560q33 0 56.5 23.5T440-480q0 33-23.5 56.5T360-400Zm240 0q-33 0-56.5-23.5T520-480q0-33 23.5-56.5T600-560q33 0 56.5 23.5T680-480q0 33-23.5 56.5T600-400ZM360-640q-33 0-56.5-23.5T280-720q0-33 23.5-56.5T360-800q33 0 56.5 23.5T440-720q0 33-23.5 56.5T360-640Zm240 0q-33 0-56.5-23.5T520-720q0-33 23.5-56.5T600-800q33 0 56.5 23.5T680-720q0 33-23.5 56.5T600-640Z"
-            ></path>
-          </svg>
-        </s-icon>
-      </span>
-
-      <span class="coord-label">{{
-        t(fnType.coordArr.label) + fnType.coordArr.fir
-      }}</span>
-      <s-text-field
-        type="number"
-        class="styled"
-        v-model="data.payload[0]"
-        :label="t(fnType.coordArr.placeholder[0])"
-      >
-      </s-text-field>
-      <span class="coord-label">{{ fnType.coordArr.sep }}</span>
-      <s-text-field
-        type="number"
-        class="styled"
-        v-model="data.payload[1]"
-        :label="t(fnType.coordArr.placeholder[1])"
-      >
-      </s-text-field>
-      <span class="coord-label">{{ fnType.coordArr.fin }}</span>
-      <s-icon-button @click="privateData.splice(index, 1)">
-        <s-icon>
-          <svg viewBox="0 -960 960 960">
-            <path
-              d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"
-            ></path>
-          </svg>
-        </s-icon>
-      </s-icon-button>
-    </div>
+    <AnimatedList>
+      <AnimatedListItem v-for="(data, index) in privateData" :key="data.id">
+        <div class="input-box coord coordarr">
+          <span class="coordarr-drag">
+            <SIconDragAlt />
+          </span>
+          <span class="coord-label">{{
+            t(fnType.coordArr.label) + fnType.coordArr.fir
+          }}</span>
+          <s-text-field
+            type="number"
+            class="styled"
+            v-model="data.payload[0]"
+            :label="t(fnType.coordArr.placeholder[0])"
+          >
+          </s-text-field>
+          <span class="coord-label">{{ fnType.coordArr.sep }}</span>
+          <s-text-field
+            type="number"
+            class="styled"
+            v-model="data.payload[1]"
+            :label="t(fnType.coordArr.placeholder[1])"
+          >
+          </s-text-field>
+          <span class="coord-label">{{ fnType.coordArr.fin }}</span>
+          <s-icon-button @click="privateData.splice(index, 1)">
+            <SIconDelete />
+          </s-icon-button>
+        </div>
+      </AnimatedListItem>
+    </AnimatedList>
   </VueDraggable>
   <s-button
     v-if="fnType.coordArr"
@@ -73,6 +60,12 @@ const { t } = useI18n();
 import { InputProps } from "../../consts";
 import { onMounted, ref, watch } from "vue";
 import { VueDraggable } from "vue-draggable-plus";
+
+import SIconDragAlt from "@/ui/icons/dragalt.vue";
+import SIconDelete from "@/ui/icons/delete.vue";
+
+import AnimatedList from "@/ui/animatedList/animatedList.vue";
+import AnimatedListItem from "@/ui/animatedList/animatedListItem.vue";
 
 const { dataItem, fnType } = defineProps<InputProps>();
 
@@ -108,7 +101,10 @@ onMounted(() => {
 .coordarr-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
+}
+
+.input-box.coord.coordarr{
+  margin-top: 10px;
 }
 
 .coordarr-drag {
@@ -118,7 +114,7 @@ onMounted(() => {
   border-radius: 5px;
 }
 
-.sortable-chosen > .coordarr-drag {
+.sortable-chosen .coordarr-drag {
   background: var(--s-color-outline-variant);
   z-index: 999;
 }
