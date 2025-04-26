@@ -32,6 +32,9 @@ const { t } = useI18n();
 import SIconCopy from "@/ui/icons/copy.vue";
 
 import JSON5 from "json5";
+import base64 from "base-64";
+import utf8 from "utf8";
+
 import prettier from "prettier/standalone";
 import prettierPluginBabel from "prettier/plugins/babel";
 import prettierPluginEstree from "prettier/plugins/estree";
@@ -43,8 +46,14 @@ const formatted = ref("");
 watch(
   profile,
   () => {
+    const code = JSON5.stringify({ data: profile.getOriginalCopy(true) });
+    const url =
+      window.location.href.match(/https?:\/\/[^/]+\//) +
+      "?code=" +
+      encodeURIComponent(base64.encode(utf8.encode(code)).replace(/=+$/, ""));
+    window.history.replaceState(null, "", url);
     prettier
-      .format(JSON5.stringify({ data: profile.getOriginalCopy(true) }), {
+      .format(code, {
         parser: "json5",
         printWidth: 40,
         plugins: [prettierPluginBabel, prettierPluginEstree],
