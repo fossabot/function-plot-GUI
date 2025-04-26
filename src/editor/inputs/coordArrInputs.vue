@@ -6,39 +6,37 @@
     :animation="200"
     handle="span.coordarr-drag"
   >
-    <TransitionGroup name="coord-trans">
-      <div
-        class="input-box coord coordarr"
-        v-for="(data, index) in privateData"
-        :key="data.id"
-      >
-        <span class="coordarr-drag">
-          <SIconDragAlt />
-        </span>
-        <span class="coord-label">{{
-          t(fnType.coordArr.label) + fnType.coordArr.fir
-        }}</span>
-        <s-text-field
-          type="number"
-          class="styled"
-          v-model="data.payload[0]"
-          :label="t(fnType.coordArr.placeholder[0])"
-        >
-        </s-text-field>
-        <span class="coord-label">{{ fnType.coordArr.sep }}</span>
-        <s-text-field
-          type="number"
-          class="styled"
-          v-model="data.payload[1]"
-          :label="t(fnType.coordArr.placeholder[1])"
-        >
-        </s-text-field>
-        <span class="coord-label">{{ fnType.coordArr.fin }}</span>
-        <s-icon-button @click="privateData.splice(index, 1)">
-          <SIconDelete />
-        </s-icon-button>
-      </div>
-    </TransitionGroup>
+    <AnimatedList>
+      <AnimatedListItem v-for="(data, index) in privateData" :key="data.id">
+        <div class="input-box coord coordarr">
+          <span class="coordarr-drag">
+            <SIconDragAlt />
+          </span>
+          <span class="coord-label">{{
+            t(fnType.coordArr.label) + fnType.coordArr.fir
+          }}</span>
+          <s-text-field
+            type="number"
+            class="styled"
+            v-model="data.payload[0]"
+            :label="t(fnType.coordArr.placeholder[0])"
+          >
+          </s-text-field>
+          <span class="coord-label">{{ fnType.coordArr.sep }}</span>
+          <s-text-field
+            type="number"
+            class="styled"
+            v-model="data.payload[1]"
+            :label="t(fnType.coordArr.placeholder[1])"
+          >
+          </s-text-field>
+          <span class="coord-label">{{ fnType.coordArr.fin }}</span>
+          <s-icon-button @click="privateData.splice(index, 1)">
+            <SIconDelete />
+          </s-icon-button>
+        </div>
+      </AnimatedListItem>
+    </AnimatedList>
   </VueDraggable>
   <s-button
     v-if="fnType.coordArr"
@@ -65,6 +63,9 @@ import { VueDraggable } from "vue-draggable-plus";
 
 import SIconDragAlt from "@/ui/icons/dragalt.vue";
 import SIconDelete from "@/ui/icons/delete.vue";
+
+import AnimatedList from "@/ui/animatedList/animatedList.vue";
+import AnimatedListItem from "@/ui/animatedList/animatedListItem.vue";
 
 const { dataItem, fnType } = defineProps<InputProps>();
 
@@ -100,7 +101,10 @@ onMounted(() => {
 .coordarr-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+}
+
+.input-box.coord.coordarr{
+  margin-top: 10px;
 }
 
 .coordarr-drag {
@@ -110,7 +114,7 @@ onMounted(() => {
   border-radius: 5px;
 }
 
-.sortable-chosen > .coordarr-drag {
+.sortable-chosen .coordarr-drag {
   background: var(--s-color-outline-variant);
   z-index: 999;
 }
@@ -123,25 +127,5 @@ onMounted(() => {
   width: 0;
   flex-grow: 1;
   font-size: 20px;
-}
-</style>
-
-<style>
-.coord-trans-enter-active,
-.coord-trans-leave-active {
-  transition:
-    margin-bottom var(--s-motion-duration-short4)
-      var(--s-motion-easing-emphasized),
-    clip-path var(--s-motion-duration-short4) var(--s-motion-easing-emphasized);
-}
-.coord-trans-enter-to,
-.coord-trans-leave-from {
-  margin-bottom: 0;
-  clip-path: inset(-10px 0 0 0);
-}
-.coord-trans-enter-from,
-.coord-trans-leave-to {
-  margin-bottom: -58px;
-  clip-path: inset(-10px 0 100% 0);
 }
 </style>
