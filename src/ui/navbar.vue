@@ -46,33 +46,26 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, watch } from "vue";
+import { watch } from "vue";
 import { useI18n } from "vue-i18n";
 
 const { locale, t } = useI18n();
-onMounted(() => {
-  const localLocale = localStorage.getItem("lang");
-  const lang = localLocale ?? navigator.language;
-  if (lang.startsWith("zh")) locale.value = "zh-CN";
-  if (lang.startsWith("en")) locale.value = "en-US";
+
+watch(locale, () => {
   document.documentElement.setAttribute("lang", locale.value);
-  watch(locale, () => {
-    document.documentElement.setAttribute("lang", locale.value);
-    localStorage.setItem("lang", locale.value);
-  });
+  localStorage.setItem("lang", locale.value);
 });
 
 import SIconLanguage from "@/ui/icons/language.vue";
 import SIconGtihub from "@/ui/icons/github.vue";
 import SIconAutoTheme from "@/ui/icons/autotheme.vue";
 
-function openGithub() {
+const openGithub = () =>
   window.open("https://github.com/Linho1219/function-plot-GUI");
-}
 
 const emit = defineEmits(["toggleDrawer"]);
 
-import { useTheme } from "@/consts";
+import { useTheme } from "@/states";
 const theme = useTheme();
 </script>
 

@@ -44,3 +44,9 @@ input[type="number"] {
 .monospace::part(input) {
   font-family: "Jetbrains Mono", monospace;
 }
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    background-color: #111415;
+  }
+}

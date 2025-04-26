@@ -14,7 +14,7 @@
 import Graph from "./graph.vue";
 import { computed, onMounted, ref } from "vue";
 import { throttle } from "lodash-es";
-import { useProfile } from "@/consts";
+import { useProfile } from "@/states";
 
 const graphWidth = ref(0),
   graphHeight = ref(0);

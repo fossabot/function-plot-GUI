@@ -1,9 +1,22 @@
 import type { createI18n } from "vue-i18n";
 type I18nOpt = Parameters<typeof createI18n>[0];
 
+const locale = (() => {
+  if (localStorage) {
+    const localLocale = localStorage.getItem("lang");
+    const langStr = localLocale ?? navigator.language;
+    if (langStr.startsWith("zh")) return "zh-CN";
+    if (langStr.startsWith("en")) return "en-US";
+  }
+  return "en-US";
+})();
+
+if (localStorage && !localStorage.getItem("lang"))
+  localStorage.setItem("lang", locale);
+
 export default {
   legacy: false,
-  locale: "zh-CN",
+  locale,
   messages: {
     "zh-CN": {
       buttons: {
@@ -24,7 +37,7 @@ export default {
         undo: "撤销",
       },
       graphType: {
-        interval: "默认",
+        interval: "微矩形",
         polyline: "多段线",
         scatter: "散点",
         text: "文本",
