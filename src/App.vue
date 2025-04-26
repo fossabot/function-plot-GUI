@@ -1,19 +1,16 @@
 <template>
-  <s-page :theme="theme.initialValue" id="soberpage" ref="soberPage" :class="theme.value">
+  <s-page
+    :theme="theme.initialValue"
+    id="soberpage"
+    ref="soberPage"
+    :class="theme.value"
+  >
     <s-drawer>
       <Navbar @toggle-drawer="toogleDrawer" />
-      <s-drawer
-        id="content"
-        :class="{ onDrawerResize }"
-        ref="innerDrawer"
-      >
-        <div
-          slot="start"
-          id="editor"
-          :style="{ width: drawerSizeRatio + 'vw' }"
-        >
+      <s-drawer id="content" :class="{ onDrawerResize }" ref="innerDrawer">
+        <div slot="start" id="editor" :style="{ width: drawerSize + 'px' }">
           <Editor />
-          <div id="divider" @mousedown="handleDrawerResize"></div>
+          <div id="divider" @pointerdown="handleDrawerResize"></div>
         </div>
         <Graph />
       </s-drawer>
@@ -26,7 +23,7 @@ import Navbar from "./ui/navbar.vue";
 import Graph from "./graph/index.vue";
 import Editor from "./editor/index.vue";
 
-import { ref, watchEffect } from "vue";
+import { computed, ref, watch, watchEffect } from "vue";
 import { useTheme } from "@/consts";
 const theme = useTheme();
 const soberPage = ref<HTMLElementTagNameMap["s-page"]>();
@@ -42,30 +39,43 @@ const innerDrawer = ref<HTMLElementTagNameMap["s-drawer"]>();
 const toogleDrawer = () => innerDrawer.value?.toggle();
 
 // Drawer resize
-const drawerSizeRatio = ref(33);
+import { useWindowSize } from "@vueuse/core";
+const { width: windowWidth } = useWindowSize();
+const toSize = (percent: number) => (percent / 100) * windowWidth.value;
+
+const drawerMinSize = computed(() => 450);
+const drawerMaxSize = computed(() => toSize(75));
+
+const restrictRange = (x: number) =>
+  Math.min(Math.max(drawerMinSize.value, x), drawerMaxSize.value);
+
+const drawerSize = ref(restrictRange(toSize(33)));
 const onDrawerResize = ref(false);
+
+watch(windowWidth, () => (drawerSize.value = restrictRange(drawerSize.value)));
+
 function handleDrawerResize() {
   onDrawerResize.value = true;
-  const xfull = window.innerWidth;
-  const restrictRange = (x: number, min: number, max: number) =>
-    Math.max(min, Math.min(x, max));
-  const toRatio = (x: number) => (x / xfull) * 100;
+
   const mousemove = (event: MouseEvent) =>
-    (drawerSizeRatio.value = restrictRange(toRatio(event.clientX), 25, 75));
-  document.addEventListener("mousemove", mousemove);
-  document.addEventListener("mouseup", () => {
-    document.removeEventListener("mousemove", mousemove);
+    (drawerSize.value = restrictRange(event.clientX));
+  const mouseup = () => {
+    document.body.removeEventListener("pointermove", mousemove);
+    document.body.removeEventListener("pointerup", mouseup);
     onDrawerResize.value = false;
-  });
+  };
+  document.body.addEventListener("pointermove", mousemove);
+  document.body.addEventListener("pointerup", mouseup);
 }
 </script>
 
 <style>
 html,
-body {
+body,:root {
   margin: 0;
   padding: 0;
   overflow: hidden;
+  user-select: none;
 }
 s-page {
   position: absolute;

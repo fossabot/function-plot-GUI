@@ -247,6 +247,8 @@ watch(locale, () => selectKey.value++);
   display: flex;
   gap: 10px;
   align-items: center;
+  flex-wrap: wrap-reverse;
+  justify-content: flex-end;
 }
 .selectors s-picker {
   width: 8em;

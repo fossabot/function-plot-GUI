@@ -44,5 +44,6 @@ const emit = defineEmits(["blur"]);
 .inputs s-text-field {
   font-size: 22px;
   flex-grow: 1;
+  width: 0;
 }
 </style>
