@@ -1,6 +1,6 @@
 <template>
   <div id="editor">
-    <s-tab v-model.lazy="currentTab">
+    <s-tab v-if="false" v-model.lazy="currentTab">
       <s-tab-item value="0">
         <div slot="text">{{ t("title.functions") }}</div>
       </s-tab-item>
