@@ -1,19 +1,13 @@
 <template>
   <div id="editor">
     <s-tab v-model.lazy="currentTab">
-      <s-tab-item value="0">
-        <div slot="text">{{ t("title.functions") }}</div>
-      </s-tab-item>
-      <s-tab-item value="1">
-        <div slot="text">{{ t("title.graphOptions") }}</div>
+      <s-tab-item v-for="(item, index) in tabs" :value="String(index)">
+        <div slot="text">{{ t(item.caption) }}</div>
       </s-tab-item>
     </s-tab>
     <div id="editor-inner">
       <Transition :name="transitionName">
-        <DatumList v-show="currentTabIndex === 0" />
-      </Transition>
-      <Transition :name="transitionName">
-        <GraphOptions v-show="currentTabIndex === 1" />
+        <component :is="tabs[currentTabIndex].component" />
       </Transition>
       <ImportBtn />
     </div>
@@ -34,7 +28,10 @@ import { computed, ref, watch } from "vue";
 const currentTab = ref("0");
 const currentTabIndex = computed(() => Number(currentTab.value));
 const transitionName = ref("");
-
+const tabs = [
+  { caption: "title.functions", component: DatumList },
+  { caption: "title.graphOptions", component: GraphOptions },
+];
 watch(currentTabIndex, (newVal, oldVal) => {
   if (newVal > oldVal) transitionName.value = "slide-left";
   else transitionName.value = "slide-right";
