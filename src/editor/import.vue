@@ -60,10 +60,13 @@ function handleImport() {
     try {
       const parsed = JSON5.parse(importStr.value);
       if (typeof parsed !== "object" || parsed === null) throw null;
-      if(typeof parsed.data !== "object" || !Array.isArray(parsed.data)) throw null;
-      profile.data = toInternalDatum(
+      if (typeof parsed.data !== "object" || !Array.isArray(parsed.data))
+        throw null;
+      const newData = toInternalDatum(
         (JSON5.parse(importStr.value).data as FunctionPlotDatum[]) ?? []
       );
+      profile.data = [];
+      profile.data = newData;
       Snackbar.builder({
         text: t("title.importSuccess"),
         type: "success",
