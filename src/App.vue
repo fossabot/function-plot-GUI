@@ -8,7 +8,7 @@
     <s-drawer>
       <Navbar @toggle-drawer="toogleDrawer" />
       <s-drawer id="content" :class="{ onDrawerResize }" ref="innerDrawer">
-        <div slot="start" id="editor" :style="{ width: drawerSize + 'px' }">
+        <div slot="start" id="drawer" :style="{ width: drawerSize + 'px' }">
           <Editor />
           <div id="divider" @pointerdown="handleDrawerResize"></div>
         </div>
@@ -49,7 +49,7 @@ const drawerMaxSize = computed(() => toSize(75));
 const restrictRange = (x: number) =>
   Math.min(Math.max(drawerMinSize.value, x), drawerMaxSize.value);
 
-const drawerSize = ref(restrictRange(toSize(33)));
+const drawerSize = ref(restrictRange(toSize(25)));
 const onDrawerResize = ref(false);
 
 watch(windowWidth, () => (drawerSize.value = restrictRange(drawerSize.value)));
@@ -71,7 +71,8 @@ function handleDrawerResize() {
 
 <style>
 html,
-body,:root {
+body,
+:root {
   margin: 0;
   padding: 0;
   overflow: hidden;
@@ -91,21 +92,17 @@ s-page {
   flex-grow: 1;
   display: flex;
 }
-#editor {
+#drawer {
   border-right: var(--s-color-outline-variant) 1px solid;
   position: relative;
   display: flex;
   flex-direction: column;
   margin-right: 3px; /* 为宽度调节条留空间 */
 }
-.editor-inner {
+#editor {
   height: 0;
   flex-grow: 1;
   position: relative;
-}
-
-.editor-inner s-scroll-view {
-  height: 100%;
 }
 
 #graph {
