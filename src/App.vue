@@ -24,7 +24,7 @@ import Graph from "./graph/index.vue";
 import Editor from "./editor/index.vue";
 
 import { computed, ref, watch, watchEffect } from "vue";
-import { useTheme } from "@/consts";
+import { useTheme } from "@/states";
 const theme = useTheme();
 const soberPage = ref<HTMLElementTagNameMap["s-page"]>();
 watchEffect(() =>

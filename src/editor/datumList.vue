@@ -34,7 +34,7 @@ import AnimatedListItem from "@/ui/animatedList/animatedListItem.vue";
 import Datum from "./datum.vue";
 
 import { getNewDatum } from "@/consts";
-import { useProfile } from "@/consts";
+import { useProfile } from "@/states";
 const profile = useProfile();
 </script>
 

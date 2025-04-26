@@ -39,7 +39,7 @@ import prettier from "prettier/standalone";
 import prettierPluginBabel from "prettier/plugins/babel";
 import prettierPluginEstree from "prettier/plugins/estree";
 import { ref, watch } from "vue";
-import { useProfile } from "@/consts";
+import { useProfile } from "@/states";
 const profile = useProfile();
 
 const formatted = ref("");

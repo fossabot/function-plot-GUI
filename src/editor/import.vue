@@ -30,29 +30,13 @@ const { t } = useI18n();
 
 import SIconImport from "@/ui/icons/import.vue";
 
-import { useProfile } from "@/consts";
+import { useProfile } from "@/states";
 const profile = useProfile();
 
 import { ref } from "vue";
 import JSON5 from "json5";
-import base64 from "base-64";
-import utf8 from "utf8";
 import type { FunctionPlotDatum } from "function-plot";
 import { toInternalDatum } from "@/consts";
-
-const rawCode = window?.location.search.match(/\?code=(.+)$/)?.[1];
-if (rawCode)
-  try {
-    const code = utf8.decode(base64.decode(decodeURIComponent(rawCode)));
-    const data = toInternalDatum(
-      (JSON5.parse(code).data as FunctionPlotDatum[]) ?? []
-    );
-    profile.data = toInternalDatum(<FunctionPlotDatum[]>data);
-    console.log(code);
-    console.log(data);
-  } catch (e) {
-    if (e instanceof Error) console.error(e);
-  }
 
 const importStr = ref("");
 import { Snackbar } from "sober";

@@ -142,7 +142,7 @@ const blockFolded = ref(true);
 const foldShell = ref<HTMLElementTagNameMap["s-fold"]>();
 
 import { Snackbar } from "sober";
-import { useProfile } from "../consts";
+import { useProfile } from "@/states";
 const profile = useProfile();
 function deleteDatum() {
   const backup = cloneDeep(dataItem.value)!;
