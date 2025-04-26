@@ -43,7 +43,7 @@ import { useWindowSize } from "@vueuse/core";
 const { width: windowWidth } = useWindowSize();
 const toSize = (percent: number) => (percent / 100) * windowWidth.value;
 
-const drawerMinSize = computed(() => 450);
+const drawerMinSize = computed(() => 480);
 const drawerMaxSize = computed(() => toSize(75));
 
 const restrictRange = (x: number) =>
