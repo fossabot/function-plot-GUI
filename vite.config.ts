@@ -2,6 +2,8 @@ import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import { resolve } from "node:path";
 
+import "dotenv/config";
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
@@ -21,5 +23,8 @@ export default defineConfig({
         replacement: resolve(__dirname, "./src"),
       },
     ],
+  },
+  server: {
+    allowedHosts: [process.env.DEVHOST ?? "localhost"],
   },
 });
