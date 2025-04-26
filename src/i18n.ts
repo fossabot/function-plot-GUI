@@ -60,6 +60,7 @@ export default {
         copySuccess: "已复制",
         deleteSuccess: "已删除",
         moreOptions: "更多选项",
+        copyFail: "复制失败",
       },
     },
     "en-US": {
@@ -117,6 +118,7 @@ export default {
         copySuccess: "Copied",
         deleteSuccess: "Deleted",
         moreOptions: "More options",
+        copyFail: "Copy failed",
       },
     },
   },

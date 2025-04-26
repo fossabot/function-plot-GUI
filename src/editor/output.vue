@@ -11,10 +11,7 @@
       </s-button>
 
       <s-tooltip align="right">
-        <s-icon-button
-          slot="trigger"
-          @click="copyCode"
-        >
+        <s-icon-button slot="trigger" @click="copyCode">
           <SIconCopy />
         </s-icon-button>
         {{ t("buttons.copy") }}
@@ -22,7 +19,7 @@
     </div>
     <s-fold :folded="folded">
       <s-scroll-view id="formattedCode">
-        <pre>{{ formatted }}</pre>
+        <pre ref="formattedCodePre">{{ formatted }}</pre>
       </s-scroll-view>
     </s-fold>
   </div>
@@ -60,12 +57,29 @@ watch(
 const folded = ref(true);
 
 import { Snackbar } from "sober";
+const formattedCodePre = ref<HTMLPreElement>();
 function copyCode() {
-  navigator.clipboard.writeText(formatted.value);
-  Snackbar.builder({
-    text: t("title.copySuccess"),
-    type: "success",
-  });
+  try {
+    navigator.clipboard.writeText(formatted.value);
+    Snackbar.builder({
+      text: t("title.copySuccess"),
+      type: "success",
+    });
+  } catch (e) {
+    if (e instanceof Error) console.error(e);
+    if (window.location.href.match(/^http:\/\//))
+      Snackbar.builder({
+        text:
+          t("title.copyFail") +
+          ": Pages over HTTP are not allowed to use clipboard API",
+        type: "error",
+      });
+    else
+      Snackbar.builder({
+        text: t("title.copyFail"),
+        type: "error",
+      });
+  }
 }
 </script>
 
