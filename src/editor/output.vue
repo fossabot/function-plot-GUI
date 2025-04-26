@@ -1,5 +1,5 @@
 <template>
-  <div class="plot-data output">
+  <div id="output">
     <span id="outputTitle">{{ t("title.output") }} </span>
     <div id="outputBtns">
       <s-button type="text" @click="folded = !folded" id="outputFoldButton">
@@ -84,7 +84,7 @@ function copyCode() {
 </script>
 
 <style>
-.plot-data.output {
+#output {
   border-top: var(--s-color-outline-variant) 1px solid;
   display: flex;
   flex-direction: column;
@@ -112,7 +112,7 @@ function copyCode() {
   padding: 0 15px 15px 15px;
 }
 
-.plot-data.output pre {
+#formattedCode pre {
   user-select: text;
   cursor: text;
   margin: 0;
