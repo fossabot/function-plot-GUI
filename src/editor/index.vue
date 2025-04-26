@@ -21,7 +21,9 @@ const { t } = useI18n();
 
 import ImportBtn from "./import.vue";
 import DatumList from "./datumList.vue";
+import AnnotaionList from "./annotaions.vue";
 import GraphOptions from "./options.vue";
+
 import OutputDrawer from "./output.vue";
 
 import { computed, ref, watch } from "vue";
@@ -30,6 +32,7 @@ const currentTabIndex = computed(() => Number(currentTab.value));
 const transitionName = ref("");
 const tabs = [
   { caption: "title.functions", component: DatumList },
+  { caption: "title.annotaions", component: AnnotaionList },
   { caption: "title.graphOptions", component: GraphOptions },
 ];
 watch(currentTabIndex, (newVal, oldVal) => {
