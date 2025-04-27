@@ -85,9 +85,6 @@ s-page {
   left: 0;
   right: 0;
 }
-* {
-  --s-color-outline: #6a757a;
-}
 #content {
   flex-grow: 1;
   display: flex;

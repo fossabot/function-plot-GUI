@@ -1,17 +1,16 @@
 <template>
-  <s-dialog>
+  <s-dialog class="import-dialog">
     <s-tooltip class="data-import" slot="trigger">
       <s-fab slot="trigger">
         <SIconImport />
       </s-fab>
       {{ t("buttons.import") }}
     </s-tooltip>
-    <div slot="headline">{{ t("title.source") }}</div>
+    <div slot="headline" class="dialog-title">{{ t("title.source") }}</div>
     <s-text-field
       slot="text"
       label="JSON5 / JSON"
       multiLine
-      style="min-height: 180px; min-width: 40vw"
       v-model.lazy="importStr"
       class="monospace"
     ></s-text-field>
@@ -66,3 +65,14 @@ function handleImport() {
   }
 }
 </script>
+
+<style>
+.dialog-title {
+  user-select: none;
+}
+.import-dialog s-text-field {
+  min-height: 180px;
+  width: 40vw;
+  max-width: 500px;
+}
+</style>

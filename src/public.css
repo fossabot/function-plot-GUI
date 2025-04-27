@@ -50,3 +50,34 @@ input[type="number"] {
     background-color: #111415;
   }
 }
+
+s-page {
+  --s-color-scrim: #000000;
+  --s-color-primary: #00639a;
+  --s-color-on-primary: #ffffff;
+  --s-color-primary-container: #cee5ff;
+  --s-color-on-primary-container: #001d32;
+  --s-color-secondary: #51606f;
+  --s-color-on-secondary: #ffffff;
+  --s-color-secondary-container: #d5e4f7;
+  --s-color-on-secondary-container: #0e1d2a;
+  --s-color-tertiary: #68587a;
+  --s-color-on-tertiary: #ffffff;
+  --s-color-tertiary-container: #eedbff;
+  --s-color-on-tertiary-container: #231533;
+  --s-color-inverse-primary: #96ccff;
+  --s-color-dark-primary: #96ccff;
+  --s-color-dark-on-primary: #003353;
+  --s-color-dark-primary-container: #004a75;
+  --s-color-dark-on-primary-container: #cee5ff;
+  --s-color-dark-secondary: #b9c8da;
+  --s-color-dark-on-secondary: #233240;
+  --s-color-dark-secondary-container: #3a4857;
+  --s-color-dark-on-secondary-container: #d5e4f7;
+  --s-color-dark-tertiary: #d3bfe6;
+  --s-color-dark-on-tertiary: #382a49;
+  --s-color-dark-tertiary-container: #4f4061;
+  --s-color-dark-on-tertiary-container: #eedbff;
+  --s-color-dark-inverse-primary: #00639a;
+  --s-color-dark-outline: #6a757a;
+}
