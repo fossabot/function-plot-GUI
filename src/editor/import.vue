@@ -75,4 +75,8 @@ function handleImport() {
   width: 40vw;
   max-width: 500px;
 }
+.inner-tip {
+  font-size: 18px;
+  font-family: var(--font-mono);
+}
 </style>

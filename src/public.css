@@ -8,6 +8,14 @@
   -moz-osx-font-smoothing: grayscale;
   cursor: default;
   user-select: none;
+
+  --font-base:
+    "HarmonyOS Sans SC", MiSans, "Noto Sans", "Source Hans Sans", "Segoe UI",
+    Tahoma, Geneva, Verdana, "Microsoft YaHei UI", sans-serif;
+  --font-mono:
+    "Jetbrains Mono", "Source Code Pro", "Sarasa Term SC", Consolas,
+    "Courier New", monospace;
+  --font-math: "KaTeX", "Cambria Math", "Times new roman", sans-serif;
 }
 
 :root,
@@ -15,13 +23,13 @@ input,
 select,
 button,
 textarea {
-  font-family: "HarmonyOS Sans SC", sans-serif;
+  font-family: var(--font-base);
 }
 
 pre,
 input[type="text"],
 input[type="number"] {
-  font-family: "Jetbrains Mono", monospace;
+  font-family: var(--font-mono);
 }
 
 * {
@@ -35,14 +43,14 @@ input[type="number"] {
 
 .styled::part(input),
 .styled {
-  font-family: "KaTeX", "Times new roman";
+  font-family: var(--font-math);
   font-variant-ligatures: common-ligatures discretionary-ligatures contextual
     historical-ligatures;
 }
 
 .monospace,
 .monospace::part(input) {
-  font-family: "Jetbrains Mono", monospace;
+  font-family: var(--font-mono);
 }
 
 @media (prefers-color-scheme: dark) {
