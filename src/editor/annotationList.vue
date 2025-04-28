@@ -1,8 +1,16 @@
 <template>
   <s-scroll-view>
     <AnimatedList>
-      <AnimatedListItem v-for="(item, index) in profile.annotations">
-        <Annotation :index="index" :annotation="item" class="datumFolder" />
+      <AnimatedListItem
+        v-for="(item, index) in profile.annotations"
+        :key="item.key"
+      >
+        <Annotation
+          :index="index"
+          :annotation="item"
+          class="datumFolder"
+          :key="item.key"
+        />
       </AnimatedListItem>
     </AnimatedList>
     <div class="plot-data add-data" @click="profile.addAnnotation">

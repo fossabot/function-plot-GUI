@@ -8,6 +8,18 @@
         {{ t("annotation.vertical") }}
       </s-segmented-button-item>
     </s-segmented-button>
+
+    <s-tooltip>
+      <s-icon-button
+        slot="trigger"
+        @click="deleteAnnotation"
+        style="color: var(--s-color-error)"
+      >
+        <SIconDelete />
+      </s-icon-button>
+      {{ t("buttons.del") }}
+    </s-tooltip>
+
     <s-text-field
       class="styled"
       type="number"
@@ -35,4 +47,11 @@ import { watch } from "vue";
 watch([() => props.annotation.axis, () => props.annotation.text], () =>
   emitter.emit("require-post-update", "anntaions axis change")
 );
+
+import SIconDelete from "@/ui/icons/delete.vue";
+import { useProfile } from "@/states";
+const profile = useProfile();
+function deleteAnnotation() {
+  profile.annotations.splice(props.index, 1);
+}
 </script>

@@ -1,7 +1,4 @@
-import type {
-  FunctionPlotAnnotation,
-  FunctionPlotDatum,
-} from "function-plot";
+import type { FunctionPlotAnnotation, FunctionPlotDatum } from "function-plot";
 import { cloneDeep } from "lodash-es";
 
 export type ValueLabel = { value: string; label: string; default?: boolean };
@@ -399,6 +396,7 @@ export type InternalAnnotation = {
   axis: "x" | "y";
   value: string;
   text: string;
+  key: number;
 };
 
 export function toOriginalAnnotation(items: InternalAnnotation[]) {
@@ -419,6 +417,7 @@ export function toInternalAnnotation(items: FunctionPlotAnnotation[]) {
       axis,
       value,
       text: item.text ?? "",
+      key: Math.random(),
     });
   });
   return cloned;

@@ -48,6 +48,7 @@ export const useProfile = defineStore("profile", () => {
       axis: "y",
       value: "0",
       text: "",
+      key: Math.random(),
     });
 
   return {
