@@ -1,4 +1,7 @@
-import type { FunctionPlotDatum } from "function-plot";
+import type {
+  FunctionPlotAnnotation,
+  FunctionPlotDatum,
+} from "function-plot";
 import { cloneDeep } from "lodash-es";
 
 export type ValueLabel = { value: string; label: string; default?: boolean };
@@ -392,3 +395,31 @@ export const fnTypeArr = [
   },
 ] as const satisfies FnType[];
 
+export type InternalAnnotation = {
+  axis: "x" | "y";
+  value: string;
+  text: string;
+};
+
+export function toOriginalAnnotation(items: InternalAnnotation[]) {
+  return items.map(({ axis, value, text }) => ({
+    [axis]: Number(value),
+    ...(text ? { text } : {}),
+  })) as FunctionPlotAnnotation[];
+}
+
+export function toInternalAnnotation(items: FunctionPlotAnnotation[]) {
+  const cloned: InternalAnnotation[] = [];
+  items.forEach((item) => {
+    let axis: "x" | "y";
+    if ("x" in item && typeof item.x === "number") axis = "x";
+    else axis = "y";
+    const value = String(item[axis]);
+    cloned.push({
+      axis,
+      value,
+      text: item.text ?? "",
+    });
+  });
+  return cloned;
+}

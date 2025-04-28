@@ -3,27 +3,61 @@ import base64 from "base-64";
 import utf8 from "utf8";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
-import { InternalDatum, toInternalDatum, toOriginalDatum } from "./consts";
-import { FunctionPlotDatum } from "function-plot";
+import {
+  getNewDatum,
+  InternalAnnotation,
+  InternalDatum,
+  toInternalAnnotation,
+  toInternalDatum,
+  toOriginalAnnotation,
+  toOriginalDatum,
+} from "./consts";
+import { FunctionPlotOptions } from "function-plot";
 
 // Datum define
 export const useProfile = defineStore("profile", () => {
+  const importedProfile = (() => {
+    const rawCode = window?.location.search.match(/\?code=(.+)$/)?.[1];
+    if (!rawCode) return null;
+    try {
+      const obj = JSON5.parse(
+        utf8.decode(base64.decode(decodeURIComponent(rawCode)))
+      );
+      if (typeof obj === "object" && obj !== null)
+        return obj as FunctionPlotOptions;
+      else return null;
+    } catch (e) {
+      return null;
+    }
+  })();
   const data = ref<InternalDatum[]>(
-    (() => {
-      const rawCode = window?.location.search.match(/\?code=(.+)$/)?.[1];
-      if (rawCode)
-        try {
-          const code = utf8.decode(base64.decode(decodeURIComponent(rawCode)));
-          const data = toInternalDatum(
-            (JSON5.parse(code).data as FunctionPlotDatum[]) ?? []
-          );
-          return toInternalDatum(<FunctionPlotDatum[]>data);
-        } catch (e) {}
-    })() ?? [{ fnType: "linear", graphType: "polyline", fn: "x^2", key: 1 }]
+    toInternalDatum(
+      importedProfile?.data ?? [{ graphType: "polyline", fn: "x^2" }]
+    )
   );
-  const getOriginalCopy = (forExport?: boolean) =>
+  const getOriginalData = (forExport?: boolean) =>
     toOriginalDatum(data.value, forExport);
-  return { data, getOriginalCopy };
+  const addData = () => data.value.push(getNewDatum());
+
+  const annotations = ref<InternalAnnotation[]>(
+    toInternalAnnotation(importedProfile?.annotations ?? [])
+  );
+  const getOriginalAnnotaion = () => toOriginalAnnotation(annotations.value);
+  const addAnnotation = () =>
+    annotations.value.push({
+      axis: "y",
+      value: "0",
+      text: "",
+    });
+
+  return {
+    data,
+    getOriginalData,
+    addData,
+    annotations,
+    getOriginalAnnotaion,
+    addAnnotation,
+  };
 });
 
 // Theme define
