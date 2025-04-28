@@ -181,12 +181,12 @@ function graphTypeChange(dataItem: InternalDatum) {
   if (dataItem.graphType === "scatter") {
     if (!scatteredSet.has(dataItem)) {
       scatteredSet.add(dataItem);
-      emitter.emit("require-full-update");
+      emitter.emit("require-full-update",'scatter appear');
     }
   } else {
     if (scatteredSet.has(dataItem)) {
       scatteredSet.delete(dataItem);
-      emitter.emit("require-full-update");
+      emitter.emit("require-full-update",'scatter disappear');
     }
   }
 }

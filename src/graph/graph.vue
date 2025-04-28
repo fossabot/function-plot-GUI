@@ -4,7 +4,7 @@
     <s-tooltip align="right">
       <s-icon-button
         slot="trigger"
-        @click="emitter.emit('require-full-update')"
+        @click="emitter.emit('require-full-update', 'manual')"
       >
         <SIconRefresh />
       </s-icon-button>
@@ -27,14 +27,16 @@ import SIconRefresh from "@/ui/icons/refresh.vue";
 import SIconWarn from "@/ui/icons/warn.vue";
 
 import { onMounted, ref, watch } from "vue";
-import { cloneDeep, throttle } from "lodash-es";
+import { throttle } from "lodash-es";
 import type { FunctionPlotDatum } from "function-plot";
 import { getFnType } from "../consts";
-const { data, width, height } = defineProps<{
-  data: FunctionPlotDatum[];
+const { width, height } = defineProps<{
   width: number;
   height: number;
 }>();
+
+import { useProfile } from "@/states";
+const profile = useProfile();
 
 import emitter from "@/mitt";
 const fullUpdateState = defineModel<boolean>();
@@ -55,9 +57,10 @@ function findError(graphData: FunctionPlotDatum[]) {
 onMounted(async () => {
   const functionPlot = (await import("function-plot")).default;
   watch(
-    [() => width, () => height, () => data],
+    [() => width, () => height, profile],
     throttle(() => {
-      const graphData = cloneDeep(data);
+      if (import.meta.env.DEV) console.log("graph update");
+      const graphData = profile.getOriginalData();
       const flag = findError(graphData);
       if (flag) {
         errorMsg.value = `Invalid input in function ${flag + 1}`;
@@ -67,20 +70,19 @@ onMounted(async () => {
         plotRef.value &&
           functionPlot({
             target: plotRef.value,
-            data: <FunctionPlotDatum[]>(
-              // (flag ? graphData.slice(0, flag) : graphData)
-              graphData
-            ),
+            data: <FunctionPlotDatum[]>graphData,
             width: width - 20,
             height: height - 20,
+            annotations: profile.getOriginalAnnotaion(),
           });
         if (fullUpdateState.value) {
           fullUpdateState.value = false;
-          emitter.emit("require-post-update");
+          emitter.emit("require-post-update", "once after error");
         } else errorMsg.value = undefined;
       } catch (e) {
         // console.log(e);
-        if (!fullUpdateState.value) emitter.emit("require-full-update");
+        if (!fullUpdateState.value)
+          emitter.emit("require-full-update", "error");
         errorMsg.value = (e as Error).message;
       }
     }, 200),
@@ -104,13 +106,17 @@ onMounted(async () => {
   transition: filter 1ms;
 }
 
+:root {
+  --graph-filter: invert(100%) hue-rotate(180deg) contrast(0.8) brightness(1.3);
+}
+
 @media (prefers-color-scheme: dark) {
   s-page.auto #graphRender {
-    filter: invert(100%) hue-rotate(180deg) brightness(133%);
+    filter: var(--graph-filter);
   }
 }
 s-page.dark #graphRender {
-  filter: invert(100%) hue-rotate(180deg) brightness(133%);
+  filter: var(--graph-filter);
 }
 
 .onresize #graphRender {

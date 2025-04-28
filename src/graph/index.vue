@@ -1,7 +1,6 @@
 <template>
   <div id="graph" ref="shellRef">
     <Graph
-      :data="graphData"
       :width="graphWidth"
       :height="graphHeight"
       :key="graphKey"
@@ -12,9 +11,8 @@
 
 <script setup lang="ts">
 import Graph from "./graph.vue";
-import { computed, onMounted, ref } from "vue";
+import { onMounted, ref } from "vue";
 import { throttle } from "lodash-es";
-import { useProfile } from "@/states";
 
 const graphWidth = ref(0),
   graphHeight = ref(0);
@@ -32,20 +30,17 @@ onMounted(() => {
   observer.observe(shellRef.value!);
 });
 
-const profile = useProfile();
-
-const graphData = computed(() => {
-  void profile.data;
-  return profile.getOriginalCopy();
-});
-
 import emitter from "@/mitt";
 
-emitter.on("require-full-update", () => {
+emitter.on("require-full-update", (str) => {
   fullUpdateState.value = true;
   graphKey.value++;
+  if (import.meta.env.DEV)
+    console.log(`fullUpdateState: ${fullUpdateState.value}, ${str}`);
 });
-emitter.on("require-post-update", () => {
+emitter.on("require-post-update", (str) => {
   graphKey.value++;
+  if (import.meta.env.DEV)
+    console.log(`postUpdateState: ${fullUpdateState.value}, ${str}`);
 });
 </script>
