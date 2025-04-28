@@ -21,7 +21,7 @@ const { t } = useI18n();
 
 import ImportBtn from "./import.vue";
 import DatumList from "./datumList.vue";
-import AnnotaionList from "./annotaions.vue";
+import AnnotaionList from "./annotationList.vue";
 import GraphOptions from "./options.vue";
 
 import OutputDrawer from "./output.vue";

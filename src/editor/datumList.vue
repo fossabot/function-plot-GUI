@@ -15,7 +15,7 @@
         </AnimatedListItem>
       </AnimatedList>
     </VueDraggable>
-    <div class="plot-data add-data" @click="profile.data.push(getNewDatum())">
+    <div class="plot-data add-data" @click="profile.addData">
       <s-icon name="add" />
       {{ t("buttons.add") }}
       <s-ripple attached></s-ripple>
@@ -33,7 +33,6 @@ import AnimatedList from "@/ui/animatedList/animatedList.vue";
 import AnimatedListItem from "@/ui/animatedList/animatedListItem.vue";
 import Datum from "./datum.vue";
 
-import { getNewDatum } from "@/consts";
 import { useProfile } from "@/states";
 const profile = useProfile();
 </script>

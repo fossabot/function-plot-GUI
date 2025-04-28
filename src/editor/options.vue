@@ -12,7 +12,7 @@
         <s-text-field :label="t('inputs.caption')"></s-text-field>
       </div>
 
-      <s-divider>{{ t("title.horizontal") }}</s-divider>
+      <s-divider>{{ t("title.horizontalAxis") }}</s-divider>
       <div class="option">
         <span class="label">{{ t("inputs.grow") }}</span>
         <s-picker :label="t('inputs.grow')" :key="locale">
@@ -31,7 +31,7 @@
         <s-text-field :label="t('inputs.caption')"></s-text-field>
       </div>
 
-      <s-divider>{{ t("title.vertical") }}</s-divider>
+      <s-divider>{{ t("title.verticalAxis") }}</s-divider>
       <div class="option">
         <span class="label">{{ t("inputs.grow") }}</span>
         <s-picker :label="t('inputs.grow')" :key="locale">
