@@ -26,7 +26,7 @@ const { t } = useI18n();
 import SIconRefresh from "@/ui/icons/refresh.vue";
 import SIconWarn from "@/ui/icons/warn.vue";
 
-import { onMounted, ref, watch } from "vue";
+import { onMounted, onUnmounted, ref, watch, WatchHandle } from "vue";
 import { throttle } from "lodash-es";
 import type { FunctionPlotDatum } from "function-plot";
 import { getFnType } from "../consts";
@@ -54,40 +54,45 @@ function findError(graphData: FunctionPlotDatum[]) {
   return 0;
 }
 
+let unwatchHandler: WatchHandle | null = null;
+
 onMounted(async () => {
   const functionPlot = (await import("function-plot")).default;
-  watch(
-    [() => width, () => height, profile],
-    throttle(() => {
-      if (import.meta.env.DEV) console.log("graph update");
-      const graphData = profile.getOriginalData();
-      const flag = findError(graphData);
-      if (flag) {
-        errorMsg.value = `Invalid input in function ${flag + 1}`;
-        return;
-      }
-      try {
-        plotRef.value &&
-          functionPlot({
-            target: plotRef.value,
-            data: <FunctionPlotDatum[]>graphData,
-            width: width - 20,
-            height: height - 20,
-            annotations: profile.getOriginalAnnotaion(),
-          });
-        if (fullUpdateState.value) {
-          fullUpdateState.value = false;
-          emitter.emit("require-post-update", "once after error");
-        } else errorMsg.value = undefined;
-      } catch (e) {
-        // console.log(e);
-        if (!fullUpdateState.value)
-          emitter.emit("require-full-update", "error");
-        errorMsg.value = (e as Error).message;
-      }
-    }, 200),
-    { immediate: true }
-  );
+  const handleUpdate = throttle(() => {
+    if (import.meta.env.DEV) console.log("graph update");
+    const graphData = profile.getOriginalData();
+    const flag = findError(graphData);
+    if (flag) {
+      errorMsg.value = `Invalid input in function ${flag + 1}`;
+      return;
+    }
+    try {
+      plotRef.value &&
+        functionPlot({
+          target: plotRef.value,
+          data: <FunctionPlotDatum[]>graphData,
+          width: width - 20,
+          height: height - 20,
+          annotations: profile.getOriginalAnnotaion(),
+          ...profile.getOriginalOptions(),
+        });
+      if (fullUpdateState.value) {
+        fullUpdateState.value = false;
+        emitter.emit("require-post-update", "once after error");
+      } else errorMsg.value = undefined;
+    } catch (e) {
+      // console.log(e);
+      if (!fullUpdateState.value) emitter.emit("require-full-update", "error");
+      errorMsg.value = (e as Error).message;
+    }
+  }, 200);
+  unwatchHandler = watch([() => width, () => height, profile], handleUpdate, {
+    immediate: true,
+  });
+});
+
+onUnmounted(() => {
+  if (unwatchHandler) unwatchHandler();
 });
 </script>
 

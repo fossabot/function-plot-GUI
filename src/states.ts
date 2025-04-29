@@ -7,10 +7,13 @@ import {
   getNewDatum,
   InternalAnnotation,
   InternalDatum,
+  InternalGraphOptions,
   toInternalAnnotation,
   toInternalDatum,
+  toInternalGraphOptions,
   toOriginalAnnotation,
   toOriginalDatum,
+  toOriginalGraphOptions,
 } from "./consts";
 import { FunctionPlotOptions } from "function-plot";
 
@@ -51,6 +54,11 @@ export const useProfile = defineStore("profile", () => {
       key: Math.random(),
     });
 
+  const options = ref<InternalGraphOptions>(
+    toInternalGraphOptions(importedProfile ?? {})
+  );
+  const getOriginalOptions = () => toOriginalGraphOptions(options.value);
+
   return {
     data,
     getOriginalData,
@@ -58,6 +66,8 @@ export const useProfile = defineStore("profile", () => {
     annotations,
     getOriginalAnnotaion,
     addAnnotation,
+    options,
+    getOriginalOptions,
   };
 });
 

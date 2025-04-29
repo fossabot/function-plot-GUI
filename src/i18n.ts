@@ -69,6 +69,7 @@ export default {
         log: "对数",
         caption: "标题",
         grid: "网格线",
+        reverse: "反向绘制",
       },
       title: {
         output: "输出代码",
@@ -144,6 +145,7 @@ export default {
         log: "Logarithmic",
         caption: "Caption",
         grid: "Grid",
+        reverse: "Reversed direction",
       },
       title: {
         output: "Output code",

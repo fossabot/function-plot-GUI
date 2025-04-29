@@ -5,48 +5,58 @@
 
       <div class="option">
         <span class="label">{{ t("inputs.grid") }}</span>
-        <s-switch></s-switch>
+        <s-switch
+          v-model.lazy="profile.options.grid"
+          type="checkbox"
+        ></s-switch>
       </div>
       <div class="option">
         <span class="label">{{ t("inputs.caption") }}</span>
-        <s-text-field :label="t('inputs.caption')"></s-text-field>
+        <s-text-field
+          :label="t('inputs.caption')"
+          v-model="profile.options.title"
+        ></s-text-field>
       </div>
 
       <s-divider>{{ t("title.horizontalAxis") }}</s-divider>
       <div class="option">
+        <span class="label">{{ t("inputs.reverse") }}</span>
+        <s-switch></s-switch>
+      </div>
+      <div class="option">
         <span class="label">{{ t("inputs.grow") }}</span>
-        <s-picker :label="t('inputs.grow')" :key="locale">
-          <s-picker-item value="linear" selected>{{
+        <s-segmented-button>
+          <s-segmented-button-item value="y">{{
             t("inputs.linear")
-          }}</s-picker-item>
-          <s-picker-item value="log">{{ t("inputs.log") }}</s-picker-item>
-        </s-picker>
+          }}</s-segmented-button-item>
+          <s-segmented-button-item value="x">
+            {{ t("inputs.log") }}
+          </s-segmented-button-item>
+        </s-segmented-button>
       </div>
       <div class="option">
         <span class="label">{{ t("inputs.caption") }}</span>
-        <s-text-field :label="t('inputs.caption')"></s-text-field>
-      </div>
-      <div class="option">
-        <span class="label">{{ t("inputs.range") }}</span>
         <s-text-field :label="t('inputs.caption')"></s-text-field>
       </div>
 
       <s-divider>{{ t("title.verticalAxis") }}</s-divider>
       <div class="option">
+        <span class="label">{{ t("inputs.reverse") }}</span>
+        <s-switch></s-switch>
+      </div>
+      <div class="option">
         <span class="label">{{ t("inputs.grow") }}</span>
-        <s-picker :label="t('inputs.grow')" :key="locale">
-          <s-picker-item value="linear" selected>{{
+        <s-segmented-button>
+          <s-segmented-button-item value="y">{{
             t("inputs.linear")
-          }}</s-picker-item>
-          <s-picker-item value="log">{{ t("inputs.log") }}</s-picker-item>
-        </s-picker>
+          }}</s-segmented-button-item>
+          <s-segmented-button-item value="x">
+            {{ t("inputs.log") }}
+          </s-segmented-button-item>
+        </s-segmented-button>
       </div>
       <div class="option">
         <span class="label">{{ t("inputs.caption") }}</span>
-        <s-text-field :label="t('inputs.caption')"></s-text-field>
-      </div>
-      <div class="option">
-        <span class="label">{{ t("inputs.range") }}</span>
         <s-text-field :label="t('inputs.caption')"></s-text-field>
       </div>
     </div>
@@ -55,7 +65,10 @@
 
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
-const { t, locale } = useI18n();
+const { t } = useI18n();
+
+import { useProfile } from "@/states";
+const profile = useProfile();
 </script>
 
 <style>
