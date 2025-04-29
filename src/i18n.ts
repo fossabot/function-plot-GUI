@@ -82,7 +82,7 @@ export default {
         moreOptions: "更多选项",
         copyFail: "复制失败",
         functions: "图线列表",
-        graphOptions: "绘制选项",
+        graphOptions: "全局选项",
         inDev: "开发中",
         global: "全局",
         horizontalAxis: "横轴",
