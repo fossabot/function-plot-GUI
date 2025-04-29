@@ -56,8 +56,8 @@ function findError(graphData: FunctionPlotDatum[]) {
 
 let unwatchHandler: WatchHandle | null = null;
 const emit = defineEmits(["require-post-update"]);
-onMounted(async () => {
-  const functionPlot = (await import("function-plot")).default;
+import functionPlot from "function-plot";
+onMounted(() => {
   const handleUpdate = throttle(() => {
     if (import.meta.env.DEV) console.log("graph update");
     const graphData = profile.getOriginalData();
@@ -67,15 +67,15 @@ onMounted(async () => {
       return;
     }
     try {
-      plotRef.value &&
-        functionPlot({
-          target: plotRef.value,
-          data: <FunctionPlotDatum[]>graphData,
-          width: width - 20,
-          height: height - 20,
-          annotations: profile.getOriginalAnnotaion(),
-          ...profile.getOriginalOptions(),
-        });
+      if (!plotRef.value) throw new Error("plotRef is null");
+      functionPlot({
+        target: plotRef.value,
+        data: graphData,
+        width: width - 20,
+        height: height - 20,
+        annotations: profile.getOriginalAnnotaion(),
+        ...profile.getOriginalOptions(),
+      });
       if (fullUpdateState.value) {
         fullUpdateState.value = false;
         emit("require-post-update", "once after error");
