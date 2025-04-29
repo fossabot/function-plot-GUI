@@ -62,7 +62,7 @@
           </s-icon-button>
           {{ t(blockFolded ? "buttons.expand" : "buttons.collapse") }}
         </s-tooltip>
-        <span class="datablock-drag">
+        <span class="datablock-drag drag-icon">
           <SIconDrag />
         </span>
       </div>
@@ -181,12 +181,12 @@ function graphTypeChange(dataItem: InternalDatum) {
   if (dataItem.graphType === "scatter") {
     if (!scatteredSet.has(dataItem)) {
       scatteredSet.add(dataItem);
-      emitter.emit("require-full-update");
+      emitter.emit("require-full-update",'scatter appear');
     }
   } else {
     if (scatteredSet.has(dataItem)) {
       scatteredSet.delete(dataItem);
-      emitter.emit("require-full-update");
+      emitter.emit("require-full-update",'scatter disappear');
     }
   }
 }
@@ -245,7 +245,7 @@ watch(locale, () => selectKey.value++);
 .dataBlockBtns {
   display: flex;
 }
-.datablock-drag {
+.drag-icon {
   width: 40px;
   height: 40px;
   text-align: center;
@@ -255,7 +255,7 @@ watch(locale, () => selectKey.value++);
   justify-content: center;
 }
 
-.sortable-chosen .datablock-drag {
+.sortable-chosen .drag-icon {
   background: var(--s-color-outline-variant);
 }
 .sortable-chosen {

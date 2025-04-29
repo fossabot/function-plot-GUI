@@ -5,7 +5,7 @@
     </s-icon-button>
     <div slot="headline">
       <span class="nav-title">
-        function-plot-GUI <span class="version"> v0.3 </span>
+        function-plot-GUI <span class="version"> v0.4 </span>
       </span>
     </div>
 

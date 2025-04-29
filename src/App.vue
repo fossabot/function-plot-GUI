@@ -43,7 +43,7 @@ import { useWindowSize } from "@vueuse/core";
 const { width: windowWidth } = useWindowSize();
 const toSize = (percent: number) => (percent / 100) * windowWidth.value;
 
-const drawerMinSize = computed(() => 480);
+const drawerMinSize = computed(() => 450);
 const drawerMaxSize = computed(() => toSize(75));
 
 const restrictRange = (x: number) =>
@@ -84,9 +84,6 @@ s-page {
   bottom: 0;
   left: 0;
   right: 0;
-}
-* {
-  --s-color-outline: #6a757a;
 }
 #content {
   flex-grow: 1;

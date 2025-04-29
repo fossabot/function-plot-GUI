@@ -46,7 +46,13 @@ const formatted = ref("");
 watch(
   profile,
   () => {
-    const code = JSON5.stringify({ data: profile.getOriginalCopy(true) });
+    const code = JSON5.stringify({
+      data: profile.getOriginalData(true),
+      ...(profile.annotations.length
+        ? { annotations: profile.getOriginalAnnotaion() }
+        : {}),
+      ...profile.getOriginalOptions(),
+    });
     const url =
       window.location.href.match(/https?:\/\/[^/]+\//) +
       "?code=" +

@@ -1,21 +1,21 @@
 <template>
   <s-scroll-view>
     <VueDraggable
-      v-model="profile.data"
+      v-model="profile.annotations"
       :animation="200"
-      handle=".datablock-drag"
+      handle=".annotation-drag"
+      @end="afterDragged"
     >
       <AnimatedList>
         <AnimatedListItem
-          v-for="(dataItem, i) in profile.data"
-          :key="dataItem.key"
-          class="datumFolder"
+          v-for="(item, index) in profile.annotations"
+          :key="item.key"
         >
-          <Datum v-model="profile.data[i]" :index="i" />
+          <Annotation :index="index" :annotation="item" class="datumFolder" />
         </AnimatedListItem>
       </AnimatedList>
     </VueDraggable>
-    <div class="plot-data add-data" @click="profile.addData">
+    <div class="plot-data add-data" @click="profile.addAnnotation">
       <s-icon name="add" />
       {{ t("buttons.add") }}
       <s-ripple attached></s-ripple>
@@ -27,18 +27,15 @@
 import { useI18n } from "vue-i18n";
 const { t } = useI18n();
 
-import { VueDraggable } from "vue-draggable-plus";
-
 import AnimatedList from "@/ui/animatedList/animatedList.vue";
 import AnimatedListItem from "@/ui/animatedList/animatedListItem.vue";
-import Datum from "./datum.vue";
+import { VueDraggable } from "vue-draggable-plus";
+import Annotation from "./annotation.vue";
 
 import { useProfile } from "@/states";
 const profile = useProfile();
-</script>
 
-<style>
-.datumFolder {
-  border-bottom: var(--s-color-outline-variant) 1px solid;
-}
-</style>
+import emitter from "@/mitt";
+const afterDragged = () =>
+  emitter.emit("require-full-update", "annotations order change");
+</script>

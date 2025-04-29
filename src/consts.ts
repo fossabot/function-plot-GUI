@@ -1,4 +1,8 @@
-import type { FunctionPlotDatum } from "function-plot";
+import type {
+  FunctionPlotAnnotation,
+  FunctionPlotDatum,
+  FunctionPlotOptions,
+} from "function-plot";
 import { cloneDeep } from "lodash-es";
 
 export type ValueLabel = { value: string; label: string; default?: boolean };
@@ -392,3 +396,104 @@ export const fnTypeArr = [
   },
 ] as const satisfies FnType[];
 
+export type InternalAnnotation = {
+  axis: "x" | "y";
+  value: string;
+  text: string;
+  key: number;
+};
+
+export function toOriginalAnnotation(items: InternalAnnotation[]) {
+  return items.map(({ axis, value, text }) => ({
+    [axis]: Number(value),
+    ...(text ? { text } : {}),
+  })) as FunctionPlotAnnotation[];
+}
+
+export function toInternalAnnotation(items: FunctionPlotAnnotation[]) {
+  const cloned: InternalAnnotation[] = [];
+  items.forEach((item) => {
+    let axis: "x" | "y";
+    if ("x" in item && typeof item.x === "number") axis = "x";
+    else axis = "y";
+    const value = String(item[axis]);
+    cloned.push({
+      axis,
+      value,
+      text: item.text ?? "",
+      key: Math.random(),
+    });
+  });
+  return cloned;
+}
+
+export type InternalGraphOptions = {
+  xAxis: {
+    invert: boolean;
+    label: string;
+    type: "linear" | "log";
+  };
+  yAxis: {
+    invert: boolean;
+    label: string;
+    type: "linear" | "log";
+  };
+  grid: boolean;
+  title: string;
+};
+
+export function toInternalGraphOptions(
+  original: Partial<FunctionPlotOptions>
+): InternalGraphOptions {
+  const { xAxis, yAxis, title, grid } = original;
+  return {
+    xAxis: {
+      invert: xAxis?.invert ?? false,
+      label: xAxis?.label ?? "",
+      type: xAxis?.type ?? "linear",
+    },
+    yAxis: {
+      invert: yAxis?.invert ?? false,
+      label: yAxis?.label ?? "",
+      type: yAxis?.type ?? "linear",
+    },
+    title: title ?? "",
+    grid: grid ?? false,
+  };
+}
+
+function removeUndefined(obj: object) {
+  Object.entries(obj).forEach(([key, value]) => {
+    if (value === undefined) {
+      delete (<any>obj)[key];
+    } else if (typeof value === "object" && value !== null) {
+      removeUndefined(value);
+    }
+  });
+}
+
+export function toOriginalGraphOptions(
+  internal: InternalGraphOptions
+): Partial<FunctionPlotOptions> {
+  const { xAxis, yAxis, title, grid } = internal;
+  const checkIfDefault = (value: any, defaultValue: any) =>
+    value === defaultValue ? undefined : value;
+  const cloned: Partial<FunctionPlotOptions> = {
+    xAxis: {
+      invert: checkIfDefault(xAxis.invert, false),
+      label: checkIfDefault(xAxis.label, ""),
+      type: checkIfDefault(xAxis.type, "linear"),
+    },
+    yAxis: {
+      invert: checkIfDefault(yAxis.invert, false),
+      label: checkIfDefault(yAxis.label, ""),
+      type: checkIfDefault(yAxis.type, "linear"),
+    },
+    title: checkIfDefault(title, ""),
+    grid: checkIfDefault(grid, false),
+  };
+  removeUndefined(cloned);
+  if (Object.keys(cloned.xAxis ?? {}).length === 0) delete cloned.xAxis;
+  if (Object.keys(cloned.yAxis ?? {}).length === 0) delete cloned.yAxis;
+  return cloned;
+}

@@ -4,7 +4,7 @@
     <s-tooltip align="right">
       <s-icon-button
         slot="trigger"
-        @click="emitter.emit('require-full-update')"
+        @click="emitter.emit('require-full-update', 'manual')"
       >
         <SIconRefresh />
       </s-icon-button>
@@ -26,15 +26,17 @@ const { t } = useI18n();
 import SIconRefresh from "@/ui/icons/refresh.vue";
 import SIconWarn from "@/ui/icons/warn.vue";
 
-import { onMounted, ref, watch } from "vue";
-import { cloneDeep, throttle } from "lodash-es";
+import { onMounted, onUnmounted, ref, watch, WatchHandle } from "vue";
+import { throttle } from "lodash-es";
 import type { FunctionPlotDatum } from "function-plot";
 import { getFnType } from "../consts";
-const { data, width, height } = defineProps<{
-  data: FunctionPlotDatum[];
+const { width, height } = defineProps<{
   width: number;
   height: number;
 }>();
+
+import { useProfile } from "@/states";
+const profile = useProfile();
 
 import emitter from "@/mitt";
 const fullUpdateState = defineModel<boolean>();
@@ -52,40 +54,45 @@ function findError(graphData: FunctionPlotDatum[]) {
   return 0;
 }
 
+let unwatchHandler: WatchHandle | null = null;
+const emit = defineEmits(["require-post-update"]);
 onMounted(async () => {
   const functionPlot = (await import("function-plot")).default;
-  watch(
-    [() => width, () => height, () => data],
-    throttle(() => {
-      const graphData = cloneDeep(data);
-      const flag = findError(graphData);
-      if (flag) {
-        errorMsg.value = `Invalid input in function ${flag + 1}`;
-        return;
-      }
-      try {
-        plotRef.value &&
-          functionPlot({
-            target: plotRef.value,
-            data: <FunctionPlotDatum[]>(
-              // (flag ? graphData.slice(0, flag) : graphData)
-              graphData
-            ),
-            width: width - 20,
-            height: height - 20,
-          });
-        if (fullUpdateState.value) {
-          fullUpdateState.value = false;
-          emitter.emit("require-post-update");
-        } else errorMsg.value = undefined;
-      } catch (e) {
-        // console.log(e);
-        if (!fullUpdateState.value) emitter.emit("require-full-update");
-        errorMsg.value = (e as Error).message;
-      }
-    }, 200),
-    { immediate: true }
-  );
+  const handleUpdate = throttle(() => {
+    if (import.meta.env.DEV) console.log("graph update");
+    const graphData = profile.getOriginalData();
+    const flag = findError(graphData);
+    if (flag) {
+      errorMsg.value = `Invalid input in function ${flag + 1}`;
+      return;
+    }
+    try {
+      plotRef.value &&
+        functionPlot({
+          target: plotRef.value,
+          data: <FunctionPlotDatum[]>graphData,
+          width: width - 20,
+          height: height - 20,
+          annotations: profile.getOriginalAnnotaion(),
+          ...profile.getOriginalOptions(),
+        });
+      if (fullUpdateState.value) {
+        fullUpdateState.value = false;
+        emit("require-post-update", "once after error");
+      } else errorMsg.value = undefined;
+    } catch (e) {
+      if (import.meta.env.DEV) console.error(e);
+      if (!fullUpdateState.value) emitter.emit("require-full-update", "error");
+      errorMsg.value = (e as Error).message;
+    }
+  }, 200);
+  unwatchHandler = watch([() => width, () => height, profile], handleUpdate, {
+    immediate: true,
+  });
+});
+
+onUnmounted(() => {
+  if (unwatchHandler) unwatchHandler();
 });
 </script>
 
@@ -104,13 +111,17 @@ onMounted(async () => {
   transition: filter 1ms;
 }
 
+:root {
+  --graph-filter: invert(100%) hue-rotate(180deg) contrast(0.8) brightness(1.3);
+}
+
 @media (prefers-color-scheme: dark) {
   s-page.auto #graphRender {
-    filter: invert(100%) hue-rotate(180deg) brightness(133%);
+    filter: var(--graph-filter);
   }
 }
 s-page.dark #graphRender {
-  filter: invert(100%) hue-rotate(180deg) brightness(133%);
+  filter: var(--graph-filter);
 }
 
 .onresize #graphRender {
@@ -135,5 +146,19 @@ s-page.dark #graphRender {
   margin: 0;
   padding: 0;
   font-size: 14px;
+}
+
+.inner-tip {
+  font-size: 18px;
+  font-family: var(--font-mono);
+}
+#graphRender .annotations,
+#graphRender .fn-text,
+#graphRender .axis-label {
+  font-size: 20px;
+}
+
+#graphRender .title {
+  font-weight: bold;
 }
 </style>
