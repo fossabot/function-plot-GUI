@@ -30,10 +30,6 @@ import { onMounted, onUnmounted, ref, watch, WatchHandle } from "vue";
 import { throttle } from "lodash-es";
 import type { FunctionPlotDatum } from "function-plot";
 import { getFnType } from "../consts";
-const { width, height } = defineProps<{
-  width: number;
-  height: number;
-}>();
 
 import { useProfile } from "@/states";
 const profile = useProfile();
@@ -41,7 +37,7 @@ const profile = useProfile();
 import emitter from "@/mitt";
 const fullUpdateState = defineModel<boolean>();
 
-const plotRef = ref<HTMLDivElement | null>(null);
+const plotRef = ref<HTMLDivElement>();
 const errorMsg = ref<string | undefined>(undefined);
 
 function findError(graphData: FunctionPlotDatum[]) {
@@ -53,6 +49,9 @@ function findError(graphData: FunctionPlotDatum[]) {
   }
   return 0;
 }
+
+import { useElementSize } from "@vueuse/core";
+const { width, height } = useElementSize(plotRef);
 
 let unwatchHandler: WatchHandle | null = null;
 const emit = defineEmits(["require-post-update"]);
@@ -71,8 +70,8 @@ onMounted(() => {
       functionPlot({
         target: plotRef.value,
         data: graphData,
-        width: width - 20,
-        height: height - 20,
+        width: width.value,
+        height: height.value,
         annotations: profile.getOriginalAnnotaion(),
         ...profile.getOriginalOptions(),
       });
@@ -85,8 +84,8 @@ onMounted(() => {
       if (!fullUpdateState.value) emitter.emit("require-full-update", "error");
       errorMsg.value = (e as Error).message;
     }
-  }, 200);
-  unwatchHandler = watch([() => width, () => height, profile], handleUpdate, {
+  }, 250);
+  unwatchHandler = watch([width, height, profile], handleUpdate, {
     immediate: true,
   });
 });
@@ -99,12 +98,10 @@ onUnmounted(() => {
 <style>
 #graphRender {
   position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  bottom: 0;
-  width: fit-content;
-  height: fit-content;
+  top: 10px;
+  right: 10px;
+  left: 10px;
+  bottom: 10px;
   margin: auto;
   color: black;
   user-select: none;

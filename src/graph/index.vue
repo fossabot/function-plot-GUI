@@ -1,8 +1,6 @@
 <template>
   <div id="graph" ref="shellRef">
     <Graph
-      :width="graphWidth"
-      :height="graphHeight"
       :key="graphKey"
       v-model="fullUpdateState"
       @require-post-update="handlePostUpdate"
@@ -12,27 +10,13 @@
 
 <script setup lang="ts">
 import Graph from "./graph.vue";
-import { onMounted, ref } from "vue";
-import { throttle } from "lodash-es";
+import { ref } from "vue";
 
-const graphWidth = ref(0),
-  graphHeight = ref(0);
 const graphKey = ref(0);
 const fullUpdateState = ref(false);
-
 const shellRef = ref<HTMLDivElement>();
-onMounted(() => {
-  const observer = new ResizeObserver(
-    throttle(() => {
-      graphWidth.value = shellRef.value!.clientWidth;
-      graphHeight.value = shellRef.value!.clientHeight;
-    }, 180)
-  );
-  observer.observe(shellRef.value!);
-});
 
 import emitter from "@/mitt";
-
 emitter.on("require-full-update", (str) => {
   fullUpdateState.value = true;
   graphKey.value++;
