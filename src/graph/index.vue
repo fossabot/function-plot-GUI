@@ -5,6 +5,7 @@
       :height="graphHeight"
       :key="graphKey"
       v-model="fullUpdateState"
+      @require-post-update="handlePostUpdate"
     />
   </div>
 </template>
@@ -38,10 +39,10 @@ emitter.on("require-full-update", (str) => {
   if (import.meta.env.DEV)
     console.log(`fullUpdateState: ${fullUpdateState.value}, ${str}`);
 });
-emitter.on("require-post-update", (str) => {
+const handlePostUpdate = (str: string) => {
   fullUpdateState.value = false;
   graphKey.value++;
   if (import.meta.env.DEV)
     console.log(`postUpdateState: ${fullUpdateState.value}, ${str}`);
-});
+};
 </script>

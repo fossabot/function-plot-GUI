@@ -37,5 +37,5 @@ const profile = useProfile();
 
 import emitter from "@/mitt";
 const afterDragged = () =>
-  emitter.emit("require-post-update", "annotations order change");
+  emitter.emit("require-full-update", "annotations order change");
 </script>

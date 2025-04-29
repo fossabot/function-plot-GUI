@@ -55,7 +55,7 @@ function findError(graphData: FunctionPlotDatum[]) {
 }
 
 let unwatchHandler: WatchHandle | null = null;
-
+const emit = defineEmits(["require-post-update"]);
 onMounted(async () => {
   const functionPlot = (await import("function-plot")).default;
   const handleUpdate = throttle(() => {
@@ -78,7 +78,7 @@ onMounted(async () => {
         });
       if (fullUpdateState.value) {
         fullUpdateState.value = false;
-        emitter.emit("require-post-update", "once after error");
+        emit("require-post-update", "once after error");
       } else errorMsg.value = undefined;
     } catch (e) {
       // console.log(e);
@@ -152,8 +152,13 @@ s-page.dark #graphRender {
   font-size: 18px;
   font-family: var(--font-mono);
 }
-.annotations,
-.fn-text {
+#graphRender .annotations,
+#graphRender .fn-text,
+#graphRender .axis-label {
   font-size: 20px;
+}
+
+#graphRender .title {
+  font-weight: bold;
 }
 </style>
