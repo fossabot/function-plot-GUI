@@ -81,7 +81,7 @@ onMounted(async () => {
         emit("require-post-update", "once after error");
       } else errorMsg.value = undefined;
     } catch (e) {
-      // console.log(e);
+      if (import.meta.env.DEV) console.error(e);
       if (!fullUpdateState.value) emitter.emit("require-full-update", "error");
       errorMsg.value = (e as Error).message;
     }
