@@ -32,7 +32,7 @@ const currentTabIndex = computed(() => Number(currentTab.value));
 const transitionName = ref("");
 const tabs = [
   { caption: "title.functions", component: DatumList },
-  { caption: "title.annotaions", component: AnnotaionList },
+  { caption: "title.annotations", component: AnnotaionList },
   { caption: "title.graphOptions", component: GraphOptions },
 ];
 watch(currentTabIndex, (newVal, oldVal) => {

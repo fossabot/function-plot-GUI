@@ -39,6 +39,7 @@ emitter.on("require-full-update", (str) => {
     console.log(`fullUpdateState: ${fullUpdateState.value}, ${str}`);
 });
 emitter.on("require-post-update", (str) => {
+  fullUpdateState.value = false;
   graphKey.value++;
   if (import.meta.env.DEV)
     console.log(`postUpdateState: ${fullUpdateState.value}, ${str}`);

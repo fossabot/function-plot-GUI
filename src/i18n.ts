@@ -85,7 +85,7 @@ export default {
         global: "全局",
         horizontalAxis: "横轴",
         verticalAxis: "纵轴",
-        annotaions: "标线列表",
+        annotations: "标线列表",
       },
       annotation: {
         horizontal: "水平",
@@ -160,7 +160,7 @@ export default {
         global: "Global",
         horizontalAxis: "Horizontal Axis",
         verticalAxis: "Vertical Axis",
-        annotaions: "Annotation list",
+        annotations: "Annotation list",
       },
       annotation: {
         horizontal: "Horizontal",

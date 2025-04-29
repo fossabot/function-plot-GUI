@@ -142,4 +142,13 @@ s-page.dark #graphRender {
   padding: 0;
   font-size: 14px;
 }
+
+.inner-tip {
+  font-size: 18px;
+  font-family: var(--font-mono);
+}
+.annotations,
+.fn-text {
+  font-size: 20px;
+}
 </style>

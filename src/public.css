@@ -59,6 +59,10 @@ input[type="number"] {
   }
 }
 
+.grow {
+  flex-grow: 1;
+}
+
 s-page {
   --s-color-scrim: #000000;
   --s-color-primary: #00639a;

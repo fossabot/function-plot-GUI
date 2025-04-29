@@ -1,18 +1,20 @@
 <template>
   <s-scroll-view>
-    <AnimatedList>
-      <AnimatedListItem
-        v-for="(item, index) in profile.annotations"
-        :key="item.key"
-      >
-        <Annotation
-          :index="index"
-          :annotation="item"
-          class="datumFolder"
+    <VueDraggable
+      v-model="profile.annotations"
+      :animation="200"
+      handle=".annotation-drag"
+      @end="afterDragged"
+    >
+      <AnimatedList>
+        <AnimatedListItem
+          v-for="(item, index) in profile.annotations"
           :key="item.key"
-        />
-      </AnimatedListItem>
-    </AnimatedList>
+        >
+          <Annotation :index="index" :annotation="item" class="datumFolder" />
+        </AnimatedListItem>
+      </AnimatedList>
+    </VueDraggable>
     <div class="plot-data add-data" @click="profile.addAnnotation">
       <s-icon name="add" />
       {{ t("buttons.add") }}
@@ -27,8 +29,13 @@ const { t } = useI18n();
 
 import AnimatedList from "@/ui/animatedList/animatedList.vue";
 import AnimatedListItem from "@/ui/animatedList/animatedListItem.vue";
+import { VueDraggable } from "vue-draggable-plus";
 import Annotation from "./annotation.vue";
 
 import { useProfile } from "@/states";
 const profile = useProfile();
+
+import emitter from "@/mitt";
+const afterDragged = () =>
+  emitter.emit("require-post-update", "annotations order change");
 </script>
