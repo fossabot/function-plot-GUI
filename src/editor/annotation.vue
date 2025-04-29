@@ -44,12 +44,14 @@
         v-model="props.annotation.value"
         :label="props.annotation.axis + '='"
       ></s-text-field>
-      <s-text-field
-        v-if="showText"
-        class="annotation-textfield"
-        :label="t('annotation.text')"
-        v-model.lazy="props.annotation.text"
-      ></s-text-field>
+      <Transition name="anntextslide">
+        <s-text-field
+          v-if="showText"
+          class="annotation-textfield"
+          :label="t('annotation.text')"
+          v-model.lazy="props.annotation.text"
+        ></s-text-field>
+      </Transition>
     </div>
   </div>
 </template>
@@ -67,7 +69,7 @@ const props = defineProps<{
 import emitter from "@/mitt";
 import { ref, watch } from "vue";
 watch([() => props.annotation.axis, () => props.annotation.text], () =>
-  emitter.emit("require-post-update", "annotations axis change")
+  emitter.emit("require-full-update", "annotations axis change")
 );
 
 import SIconDelete from "@/ui/icons/delete.vue";
@@ -77,18 +79,21 @@ import SIconTextfield from "@/ui/icons/textfield.vue";
 import { useProfile } from "@/states";
 const profile = useProfile();
 function deleteAnnotation() {
-  emitter.emit("require-post-update", "annotations axis change");
+  emitter.emit("require-full-update", "annotations axis change");
   profile.annotations.splice(props.index, 1);
 }
 
 const showText = ref(false);
+
+watch(showText, (value) => {
+  if (!value) props.annotation.text = "";
+});
 </script>
 
 <style>
 .plot-data.annotation {
   display: flex;
   flex-direction: column;
-  gap: 5px;
 }
 .annotation-value {
   font-size: 20px;
@@ -99,9 +104,33 @@ const showText = ref(false);
 .annotation-texts {
   display: flex;
   gap: 10px;
+  padding-top: 8px;
+  overflow: hidden;
 }
 .annotation-texts s-text-field {
   width: 0;
   flex-grow: 1;
+}
+</style>
+
+<style>
+.anntextslide-enter-from,
+.anntextslide-leave-to {
+  flex-grow: 0 !important;
+  margin-left: -10px;
+}
+
+.anntextslide-leave-active {
+  transition:
+    flex-grow var(--s-motion-duration-medium1) var(--s-motion-easing-emphasized),
+    margin-left var(--s-motion-duration-medium1)
+      var(--s-motion-easing-emphasized) 0.2s;
+}
+
+.anntextslide-enter-active {
+  transition:
+    flex-grow var(--s-motion-duration-medium1) var(--s-motion-easing-emphasized),
+    margin-left var(--s-motion-duration-medium1)
+      var(--s-motion-easing-emphasized);
 }
 </style>
