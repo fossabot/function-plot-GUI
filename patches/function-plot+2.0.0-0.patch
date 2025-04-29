@@ -1,3 +1,19 @@
+diff --git a/node_modules/function-plot/dist/chart.js b/node_modules/function-plot/dist/chart.js
+index 22e47a9..e57ce85 100644
+--- a/node_modules/function-plot/dist/chart.js
++++ b/node_modules/function-plot/dist/chart.js
+@@ -445,7 +445,10 @@ export class Chart extends EventEmitter.EventEmitter {
+             return d.data.map(datumDefaults);
+         }, (d) => {
+             // The key is the function set or other value that uniquely identifies the datum.
+-            return d.fn || d.r || d.x || d.text;
++            return JSON.stringify({
++              function: d.fn || d.r || d.x || d.text,
++              graphType: d.graphType || 'interval'
++            });
+         });
+         // exit
+         graphs.exit().remove();
 diff --git a/node_modules/function-plot/dist/graph-types/polyline.js b/node_modules/function-plot/dist/graph-types/polyline.js
 index 19ee726..018786b 100644
 --- a/node_modules/function-plot/dist/graph-types/polyline.js

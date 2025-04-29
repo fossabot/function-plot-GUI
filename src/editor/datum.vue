@@ -20,7 +20,6 @@
         :label="t('inputs.graphType')"
         v-model.lazy="dataItem.graphType"
         v-if="dataItem.graphType !== 'text'"
-        @change="graphTypeChange(dataItem)"
         :key="selectKey"
       >
         <s-picker-item v-for="type in allowedGraphType" :value="type.value">
@@ -173,23 +172,9 @@ function fnTypeChange(dataItem: InternalDatum) {
       block.value.querySelectorAll("input").forEach((ele) => (ele.value = ""));
   }
 }
-const scatteredSet = new WeakSet<InternalDatum>();
 
-import emitter from "@/mitt";
 import { cloneDeep } from "lodash-es";
-function graphTypeChange(dataItem: InternalDatum) {
-  if (dataItem.graphType === "scatter") {
-    if (!scatteredSet.has(dataItem)) {
-      scatteredSet.add(dataItem);
-      emitter.emit("require-full-update",'scatter appear');
-    }
-  } else {
-    if (scatteredSet.has(dataItem)) {
-      scatteredSet.delete(dataItem);
-      emitter.emit("require-full-update",'scatter disappear');
-    }
-  }
-}
+
 const fnType = computed(() => getFnType(dataItem.value?.fnType));
 const allowedGraphType = computed(() =>
   getAllowedGraphType(dataItem.value?.fnType)
