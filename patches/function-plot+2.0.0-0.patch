@@ -1,3 +1,17 @@
+diff --git a/node_modules/function-plot/dist/graph-types/polyline.js b/node_modules/function-plot/dist/graph-types/polyline.js
+index 19ee726..018786b 100644
+--- a/node_modules/function-plot/dist/graph-types/polyline.js
++++ b/node_modules/function-plot/dist/graph-types/polyline.js
+@@ -12,6 +12,9 @@ export default function polyline(chart) {
+             const yRange = chart.meta.yScale.range();
+             let yMax = yRange[0];
+             let yMin = yRange[1];
++            // Fix
++            if(yMax < yMin) [yMax, yMin] = [yMin, yMax];
++
+             // workaround, clamp assuming that the bounds are finite but huge
+             const diff = yMax - yMin;
+             yMax += diff * 1e6;
 diff --git a/node_modules/function-plot/dist/samplers/interval_worker_pool.js b/node_modules/function-plot/dist/samplers/interval_worker_pool.js
 index 144edd0..784870a 100644
 --- a/node_modules/function-plot/dist/samplers/interval_worker_pool.js
