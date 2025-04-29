@@ -83,7 +83,7 @@ function deleteAnnotation() {
   profile.annotations.splice(props.index, 1);
 }
 
-const showText = ref(false);
+const showText = ref(props.annotation.text !== "");
 
 watch(showText, (value) => {
   if (!value) props.annotation.text = "";
