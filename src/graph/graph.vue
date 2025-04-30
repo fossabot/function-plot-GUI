@@ -6,13 +6,13 @@
         slot="trigger"
         @click="emitter.emit('require-full-update', 'manual')"
       >
-        <SIconRefresh />
+        <SIconRefresh class="spin" />
       </s-icon-button>
       {{ t("buttons.reset") }}
     </s-tooltip>
     <s-tooltip align="right" v-if="errorMsg !== undefined">
       <s-icon-button slot="trigger" style="color: var(--s-color-warning)">
-        <SIconWarn />
+        <SIconWarn class="bouncein" />
       </s-icon-button>
       <pre class="tooltipMsgPre">{{ errorMsg }}</pre>
     </s-tooltip>
@@ -157,5 +157,36 @@ s-page.dark #graphRender {
 
 #graphRender .title {
   font-weight: bold;
+}
+
+s-icon.spin {
+  animation: rotate var(--s-motion-duration-medium4)
+    var(--s-motion-easing-emphasized);
+}
+
+s-icon.bouncein {
+  animation: bouncein var(--s-motion-duration-medium4)
+    var(--s-motion-easing-emphasized);
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes bouncein {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 </style>

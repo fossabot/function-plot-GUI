@@ -49,7 +49,7 @@
           v-if="showText"
           class="annotation-textfield"
           :label="t('annotation.text')"
-          v-model.lazy="props.annotation.text"
+          v-model="props.annotation.text"
         ></s-text-field>
       </Transition>
     </div>
