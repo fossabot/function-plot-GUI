@@ -39,6 +39,9 @@
       "lightColor": "purple-100",
       "folderNames": ["animatedList"],
       "rootFolderNames": ["animatedList"]
-    },
-  ]
+    }
+  ],
+  "material-icon-theme.files.associations": {
+    "*.md": "Readme"
+  }
 }
