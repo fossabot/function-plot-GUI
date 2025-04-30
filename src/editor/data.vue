@@ -1,3 +1,7 @@
+<!--
+ToDo: Refactor data editor to sigle component per fnType, instead of generating elements from consts
+      The UI is so deeply coupled with the data structure that it makes nosense to make a component for 'general' data
+-->
 <template>
   <div
     class="plot-data"
