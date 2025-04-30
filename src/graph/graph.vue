@@ -27,7 +27,7 @@ import SIconRefresh from "@/ui/icons/refresh.vue";
 import SIconWarn from "@/ui/icons/warn.vue";
 
 import { onMounted, onUnmounted, ref, watch, WatchHandle } from "vue";
-import { throttle } from "lodash-es";
+import throttle from "lodash-es/throttle";
 import type { FunctionPlotDatum } from "function-plot";
 import { getFnType } from "../consts";
 
@@ -35,7 +35,7 @@ import { useProfile } from "@/states";
 const profile = useProfile();
 
 import emitter from "@/mitt";
-const fullUpdateState = defineModel<boolean>();
+const fullUpdateState = defineModel<boolean>({ required: true });
 
 const plotRef = ref<HTMLDivElement>();
 const errorMsg = ref<string | undefined>(undefined);

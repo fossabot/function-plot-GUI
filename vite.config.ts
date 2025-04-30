@@ -48,7 +48,6 @@ export default defineConfig({
           ],
           vender: [
             "vue",
-            "lodash-es",
             "pinia",
             "vue-i18n",
             "vue-draggable-plus",

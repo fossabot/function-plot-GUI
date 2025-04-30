@@ -3,17 +3,11 @@ ToDo: Refactor data editor to sigle component per fnType, instead of generating 
       The UI is so deeply coupled with the data structure that it makes nosense to make a component for 'general' data
 -->
 <template>
-  <div
-    class="plot-data"
-    ref="block"
-    :class="{ hidden: dataItem.hidden }"
-    v-if="dataItem"
-  >
+  <div class="plot-data" :class="{ hidden: dataItem.hidden }">
     <div class="selectors">
       <s-picker
         :label="t('inputs.fnType')"
-        v-model.lazy="dataItem.fnType"
-        @change="fnTypeChange(dataItem)"
+        v-model.lazy="fnType"
         :key="selectKey"
       >
         <s-picker-item v-for="type in fnTypeArr" :value="type.value">
@@ -23,7 +17,7 @@ ToDo: Refactor data editor to sigle component per fnType, instead of generating 
       <s-picker
         :label="t('inputs.graphType')"
         v-model.lazy="dataItem.graphType"
-        v-if="dataItem.graphType !== 'text'"
+        v-show="dataItem.graphType !== 'text'"
         :key="selectKey"
       >
         <s-picker-item v-for="type in allowedGraphType" :value="type.value">
@@ -53,16 +47,10 @@ ToDo: Refactor data editor to sigle component per fnType, instead of generating 
           {{ t("buttons.hide") }}
         </s-tooltip>
         <s-tooltip>
-          <s-icon-button
-            slot="trigger"
-            @click="
-              blockFolded = !blockFolded;
-            "
-          >
-            <s-icon :name="blockFolded ? 'chevron_down' : 'chevron_up'">
-            </s-icon>
+          <s-icon-button slot="trigger" @click="folded = !folded">
+            <s-icon :name="folded ? 'chevron_down' : 'chevron_up'"> </s-icon>
           </s-icon-button>
-          {{ t(blockFolded ? "buttons.expand" : "buttons.collapse") }}
+          {{ t(folded ? "buttons.expand" : "buttons.collapse") }}
         </s-tooltip>
         <span class="datablock-drag drag-icon">
           <SIconDrag />
@@ -76,7 +64,7 @@ ToDo: Refactor data editor to sigle component per fnType, instead of generating 
         v-if="fnType.coord"
         :dataItem="dataItem"
         :fnType="fnType"
-        :blockFolded="false"
+        :folded="false"
       />
       <CoordArrInputs
         v-if="fnType.coordArr"
@@ -87,17 +75,17 @@ ToDo: Refactor data editor to sigle component per fnType, instead of generating 
         v-if="fnType.switches"
         :dataItem="dataItem"
         :fnType="fnType"
-        :blockFolded="false"
+        :folded="false"
       />
     </div>
-    <s-fold :folded="blockFolded">
+    <s-fold :folded="folded">
       <div class="inputs optional">
         <s-divider>{{ t("title.moreOptions") }}</s-divider>
         <CoordInputs
           v-if="fnType.coord"
           :dataItem="dataItem"
           :fnType="fnType"
-          :blockFolded="true"
+          :folded="true"
         />
         <OptInputs
           v-if="fnType.optInput"
@@ -108,35 +96,33 @@ ToDo: Refactor data editor to sigle component per fnType, instead of generating 
           v-if="fnType.switches"
           :dataItem="dataItem"
           :fnType="fnType"
-          :blockFolded="true"
+          :folded="true"
         />
       </div>
     </s-fold> -->
-    <component
-      :is="components[dataItem.fnType]"
-      :dataItem="dataItem"
-      :fnType="fnType"
-      :blockFolded="blockFolded"
-    />
+    <div class="relative">
+      <Transition name="input-component">
+        <component
+          :is="components[fnType]"
+          v-model="dataItem"
+          :folded="folded"
+        />
+      </Transition>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
 const { t, locale } = useI18n();
 
-import {
-  fnTypeArr,
-  getAllowedGraphType,
-  inputTypeArr,
-  getFnType,
-  InternalDatum,
-} from "../consts";
+import { fnTypeArr, getAllowedGraphType, InternalDatum } from "../consts";
 import { ref, computed } from "vue";
-import StrInputs from "./legacyInputs/strInputs.vue";
-import CoordInputs from "./legacyInputs/coordInputs.vue";
-import SwitchInputs from "./legacyInputs/switchInputs.vue";
-import CoordArrInputs from "./legacyInputs/coordArrInputs.vue";
-import OptInputs from "./legacyInputs/optInputs.vue";
+
+// import StrInputs from "./legacyInputs/strInputs.vue";
+// import CoordInputs from "./legacyInputs/coordInputs.vue";
+// import SwitchInputs from "./legacyInputs/switchInputs.vue";
+// import CoordArrInputs from "./legacyInputs/coordArrInputs.vue";
+// import OptInputs from "./legacyInputs/optInputs.vue";
 
 import linear from "./inputs/linear.vue";
 import implicit from "./inputs/implicit.vue";
@@ -160,14 +146,15 @@ import SIconDelete from "@/ui/icons/delete.vue";
 import SIconHide from "@/ui/icons/hide.vue";
 import SIconDrag from "@/ui/icons/drag.vue";
 
-const dataItem = defineModel<InternalDatum>();
+const dataItem = defineModel<InternalDatum>({ required: true });
 const props = defineProps<{ index: number }>();
-const block = ref<HTMLDivElement>();
-const blockFolded = ref(true);
+const folded = ref(true);
 
 import { Snackbar } from "sober";
 import { useProfile } from "@/states";
 const profile = useProfile();
+
+import cloneDeep from "lodash-es/cloneDeep";
 function deleteDatum() {
   const backup = cloneDeep(dataItem.value)!;
   profile.data.splice(props.index, 1);
@@ -182,24 +169,19 @@ function deleteDatum() {
   });
 }
 
-function fnTypeChange(dataItem: InternalDatum) {
-  console.log(dataItem);
-  inputTypeArr.forEach((key) => delete dataItem[key]);
-  if (dataItem.fnType === "text") {
-    dataItem.graphType = "text";
-  } else {
-    if (dataItem.fnType === "implicit") dataItem.graphType = "interval";
-    dataItem.graphType = getAllowedGraphType(dataItem.fnType)[0].value;
-    if (dataItem.fnType === "vector") dataItem.vector = [0, 0];
-    if (dataItem.fnType === "points") dataItem.points = [];
-    if (block.value)
-      block.value.querySelectorAll("input").forEach((ele) => (ele.value = ""));
-  }
-}
+// function fnTypeChange(dataItem: InternalDatum) {
+//   console.log(dataItem);
+//   inputTypeArr.forEach((key) => delete dataItem[key]);
+//   if (dataItem.fnType === "text") {
+//     dataItem.graphType = "text";
+//   } else {
+//     if (dataItem.fnType === "implicit") dataItem.graphType = "interval";
+//     dataItem.graphType = getAllowedGraphType(dataItem.fnType)[0].value;
+//     if (dataItem.fnType === "vector") dataItem.vector = [0, 0];
+//     if (dataItem.fnType === "points") dataItem.points = [];
+//   }
+// }
 
-import { cloneDeep } from "lodash-es";
-
-const fnType = computed(() => getFnType(dataItem.value?.fnType));
 const allowedGraphType = computed(() =>
   getAllowedGraphType(dataItem.value?.fnType)
 );
@@ -207,6 +189,8 @@ const allowedGraphType = computed(() =>
 import { watch } from "vue";
 const selectKey = ref(0);
 watch(locale, () => selectKey.value++);
+
+const fnType = ref(dataItem.value!.fnType);
 </script>
 
 <style>
@@ -227,7 +211,7 @@ watch(locale, () => selectKey.value++);
 .plot-data {
   position: relative;
   padding: 20px 15px;
-  overflow-x: hidden;
+  overflow: hidden;
   transition:
     opacity 0.15s,
     filter 0.15s;
@@ -269,5 +253,26 @@ watch(locale, () => selectKey.value++);
 }
 .sortable-chosen {
   z-index: 999;
+}
+</style>
+
+<style lang="scss">
+.input-component {
+  &-enter-from,
+  &-leave-to {
+    opacity: 0;
+  }
+  &-enter-active {
+    transition: opacity 0.3s 0.05s;
+  }
+  &-leave-active {
+    transition: opacity 0.15s;
+  }
+  &-leave-active {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+  }
 }
 </style>
