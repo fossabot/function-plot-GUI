@@ -64,8 +64,8 @@ import { VueDraggable } from "vue-draggable-plus";
 import SIconDragAlt from "@/ui/icons/dragalt.vue";
 import SIconDelete from "@/ui/icons/delete.vue";
 
-import AnimatedList from "@/ui/animatedList/animatedList.vue";
-import AnimatedListItem from "@/ui/animatedList/animatedListItem.vue";
+import AnimatedList from "@/ui/animatedanimatedList.vue";
+import AnimatedListItem from "@/ui/animatedanimatedListItem.vue";
 
 const { dataItem, fnType } = defineProps<InputProps>();
 

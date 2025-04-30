@@ -127,11 +127,11 @@ import {
   InternalDatum,
 } from "../consts";
 import { ref, computed } from "vue";
-import StrInputs from "./inputs/strInputs.vue";
-import CoordInputs from "./inputs/coordInputs.vue";
-import SwitchInputs from "./inputs/switchInputs.vue";
-import CoordArrInputs from "./inputs/coordArrInputs.vue";
-import OptInputs from "./inputs/optInputs.vue";
+import StrInputs from "./legacyInputs/strInputs.vue";
+import CoordInputs from "./legacyInputs/coordInputs.vue";
+import SwitchInputs from "./legacyInputs/switchInputs.vue";
+import CoordArrInputs from "./legacyInputs/coordArrInputs.vue";
+import OptInputs from "./legacyInputs/optInputs.vue";
 
 import SIconDelete from "@/ui/icons/delete.vue";
 import SIconHide from "@/ui/icons/hide.vue";

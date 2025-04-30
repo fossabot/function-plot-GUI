@@ -13,32 +13,28 @@
       "base": "lottie",
       "color": "blue-800",
       "lightColor": "light-blue-200",
-      "folderNames": ["graph"],
-      "rootFolderNames": ["graph"]
+      "folderNames": ["graph"]
     },
     {
       "name": "input-component",
       "base": "mock",
       "color": "cyan-800",
       "lightColor": "light-green-700",
-      "folderNames": ["inputs"],
-      "rootFolderNames": ["inputs"]
+      "folderNames": ["inputs"]
     },
     {
       "name": "icon",
       "base": "svg",
       "color": "purple-400",
       "lightColor": "purple-100",
-      "folderNames": ["icons"],
-      "rootFolderNames": ["icons"]
+      "folderNames": ["icons"]
     },
     {
       "name": "animate",
       "base": "animation",
       "color": "purple-400",
       "lightColor": "purple-100",
-      "folderNames": ["animatedList"],
-      "rootFolderNames": ["animatedList"]
+      "folderNames": ["animated"]
     }
   ],
   "material-icon-theme.files.associations": {
