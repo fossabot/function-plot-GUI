@@ -57,7 +57,6 @@ ToDo: Refactor data editor to sigle component per fnType, instead of generating 
             slot="trigger"
             @click="
               blockFolded = !blockFolded;
-              console.log(foldShell);
             "
           >
             <s-icon :name="blockFolded ? 'chevron_down' : 'chevron_up'">
@@ -71,7 +70,7 @@ ToDo: Refactor data editor to sigle component per fnType, instead of generating 
       </div>
     </div>
 
-    <div class="inputs">
+    <!-- <div class="inputs">
       <StrInputs :dataItem="dataItem" :fnType="fnType" />
       <CoordInputs
         v-if="fnType.coord"
@@ -112,7 +111,13 @@ ToDo: Refactor data editor to sigle component per fnType, instead of generating 
           :blockFolded="true"
         />
       </div>
-    </s-fold>
+    </s-fold> -->
+    <component
+      :is="components[dataItem.fnType]"
+      :dataItem="dataItem"
+      :fnType="fnType"
+      :blockFolded="blockFolded"
+    />
   </div>
 </template>
 <script setup lang="ts">
@@ -133,6 +138,24 @@ import SwitchInputs from "./legacyInputs/switchInputs.vue";
 import CoordArrInputs from "./legacyInputs/coordArrInputs.vue";
 import OptInputs from "./legacyInputs/optInputs.vue";
 
+import linear from "./inputs/linear.vue";
+import implicit from "./inputs/implicit.vue";
+import parametric from "./inputs/parametric.vue";
+import polar from "./inputs/polar.vue";
+import points from "./inputs/points.vue";
+import vector from "./inputs/vector.vue";
+import text from "./inputs/text.vue";
+
+const components = {
+  linear,
+  implicit,
+  parametric,
+  polar,
+  points,
+  vector,
+  text,
+};
+
 import SIconDelete from "@/ui/icons/delete.vue";
 import SIconHide from "@/ui/icons/hide.vue";
 import SIconDrag from "@/ui/icons/drag.vue";
@@ -141,8 +164,6 @@ const dataItem = defineModel<InternalDatum>();
 const props = defineProps<{ index: number }>();
 const block = ref<HTMLDivElement>();
 const blockFolded = ref(true);
-
-const foldShell = ref<HTMLElementTagNameMap["s-fold"]>();
 
 import { Snackbar } from "sober";
 import { useProfile } from "@/states";
@@ -167,8 +188,7 @@ function fnTypeChange(dataItem: InternalDatum) {
   if (dataItem.fnType === "text") {
     dataItem.graphType = "text";
   } else {
-    if (dataItem.graphType === "text" || dataItem.fnType === "implicit")
-      delete dataItem.graphType;
+    if (dataItem.fnType === "implicit") dataItem.graphType = "interval";
     dataItem.graphType = getAllowedGraphType(dataItem.fnType)[0].value;
     if (dataItem.fnType === "vector") dataItem.vector = [0, 0];
     if (dataItem.fnType === "points") dataItem.points = [];

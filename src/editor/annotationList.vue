@@ -27,8 +27,8 @@
 import { useI18n } from "vue-i18n";
 const { t } = useI18n();
 
-import AnimatedList from "@/ui/animatedanimatedList.vue";
-import AnimatedListItem from "@/ui/animatedanimatedListItem.vue";
+import AnimatedList from "@/ui/animated/animatedList.vue";
+import AnimatedListItem from "@/ui/animated/animatedListItem.vue";
 import { VueDraggable } from "vue-draggable-plus";
 import Annotation from "./annotation.vue";
 

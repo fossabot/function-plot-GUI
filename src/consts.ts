@@ -75,8 +75,8 @@ export type FnType = {
 };
 
 export type InternalDatum = Omit<FunctionPlotDatum, "fnType" | "graphType"> & {
-  fnType: "text" | FunctionPlotDatum["fnType"];
-  graphType: FunctionPlotDatum["graphType"];
+  fnType: "text" | NonNullable<FunctionPlotDatum["fnType"]>;
+  graphType: NonNullable<FunctionPlotDatum["graphType"]>;
   key: number;
   hidden?: boolean;
 };
