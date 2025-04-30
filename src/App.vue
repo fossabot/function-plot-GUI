@@ -94,7 +94,7 @@ s-page {
   position: relative;
   display: flex;
   flex-direction: column;
-  margin-right: 3px; /* 为宽度调节条留空间 */
+  margin-right: 3px; /* space for width adjust bar */
 }
 #editor {
   height: 0;

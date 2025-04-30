@@ -22,9 +22,9 @@ const { dataItem, fnType } = defineProps<InputProps>();
 
 const inputBox = ref<HTMLElementTagNameMap["s-text-field"][]>();
 
-// Chromium 文本框输入三个字形以上的连字时渲染不生效
-// 需要在失去焦点时手动对文本框赋值以触发渲染
-// 直接操作 .value 属性不会触发 Vue 的响应式更新，无需担忧性能
+// In Chromium, ligatures of three or more glyphs in text input fields may not render correctly
+// You need to manually assign the value to the input when it loses focus to trigger rendering
+// Directly setting the .value property does not trigger Vue's reactivity system, so there's no performance concern
 
 function handleBlur(index: number) {
   const element = inputBox.value![index];
