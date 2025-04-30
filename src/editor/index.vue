@@ -20,7 +20,7 @@ import { useI18n } from "vue-i18n";
 const { t } = useI18n();
 
 import ImportBtn from "./import.vue";
-import DatumList from "./datumList.vue";
+import DataList from "./dataList.vue";
 import AnnotaionList from "./annotationList.vue";
 import GraphOptions from "./options.vue";
 
@@ -31,7 +31,7 @@ const currentTab = ref("0");
 const currentTabIndex = computed(() => Number(currentTab.value));
 const transitionName = ref("");
 const tabs = [
-  { caption: "title.functions", component: DatumList },
+  { caption: "title.functions", component: DataList },
   { caption: "title.annotations", component: AnnotaionList },
   { caption: "title.graphOptions", component: GraphOptions },
 ];

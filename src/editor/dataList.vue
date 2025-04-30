@@ -11,7 +11,7 @@
           :key="dataItem.key"
           class="datumFolder"
         >
-          <Datum v-model="profile.data[i]" :index="i" />
+          <DataItem v-model="profile.data[i]" :index="i" />
         </AnimatedListItem>
       </AnimatedList>
     </VueDraggable>
@@ -31,7 +31,7 @@ import { VueDraggable } from "vue-draggable-plus";
 
 import AnimatedList from "@/ui/animatedList/animatedList.vue";
 import AnimatedListItem from "@/ui/animatedList/animatedListItem.vue";
-import Datum from "./datum.vue";
+import DataItem from "./data.vue";
 
 import { useProfile } from "@/states";
 const profile = useProfile();
