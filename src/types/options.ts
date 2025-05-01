@@ -1,5 +1,6 @@
 import { FunctionPlotOptions } from "function-plot";
 import { amendAttr, omitAttr } from "./utils";
+import cloneDeep from "lodash-es/cloneDeep";
 
 type PrivateAxis = {
   invert: boolean;
@@ -37,7 +38,7 @@ const checkAxisUseless = ({ invert, label, type }: PrivateAxis) =>
 export const toPublicOptions = (
   options: PrivateOptions
 ): Partial<FunctionPlotOptions> =>
-  omitAttr(options, {
+  omitAttr(cloneDeep(options), {
     title: "",
     grid: false,
     xAxis: checkAxisUseless,

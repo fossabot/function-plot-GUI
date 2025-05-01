@@ -1,5 +1,6 @@
 import { FunctionPlotDatum } from "function-plot";
 import { omitAttr, amendAttr } from "./utils";
+import cloneDeep from "lodash-es/cloneDeep";
 
 namespace PrivateDataTypes {
   type Global = {
@@ -12,26 +13,26 @@ namespace PrivateDataTypes {
     nSamples: number | undefined;
     closed: boolean;
   };
-  /** Normal functions, y=f(x) */
+  /** Normal functions: y=f(x) */
   export type Linear = Function & {
     fnType: "linear";
     graphType: "interval" | "polyline" | "scatter";
     fn: string;
   };
-  /** Implicit functions, F(x,y)=0 */
+  /** Implicit functions: F(x,y)=0 */
   export type Implicit = Function & {
     fnType: "implicit";
     graphType: "interval";
     fn: string;
   };
-  /** Parametric functions, x=f(t), y=g(t) */
+  /** Parametric functions: x=f(t), y=g(t) */
   export type Parametric = Function & {
     fnType: "parametric";
     graphType: "polyline" | "scatter";
     x: string;
     y: string;
   };
-  /** Polar functions, r=f(t) */
+  /** Polar functions: r=f(t) */
   export type Polar = Function & {
     fnType: "polar";
     graphType: "polyline" | "scatter";
@@ -71,10 +72,10 @@ namespace PrivateDataTypes {
 export type PrivateData = PrivateDataTypes.Combined;
 
 export function toPublicData(data: PrivateData): FunctionPlotDatum {
-  if (data.fnType === "text") {
+  if (data.fnType === "text")
     return omitAttr(
       {
-        ...data,
+        ...cloneDeep(data),
         fnType: undefined,
       },
       {
@@ -83,8 +84,7 @@ export function toPublicData(data: PrivateData): FunctionPlotDatum {
         color: "",
       }
     );
-  }
-  return omitAttr(data, {
+  return omitAttr(cloneDeep(data), {
     key: () => true,
     fnType: "linear",
     graphType: "interval",
