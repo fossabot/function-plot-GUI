@@ -34,23 +34,30 @@ const profile = useProfile();
 
 import { ref } from "vue";
 import JSON5 from "json5";
-import type { FunctionPlotDatum } from "function-plot";
-import { toInternalDatum } from "@/consts";
 
 const importStr = ref("");
 import { Snackbar } from "sober";
+import { toPrivateData } from "@/types/data";
+import { FunctionPlotOptions } from "function-plot";
+import { toPrivateAnnotation } from "@/types/annotation";
+import { toPrivateOptions } from "@/types/options";
+import emitter from "@/mitt";
 function handleImport() {
   if (importStr.value !== "") {
     try {
-      const parsed = JSON5.parse(importStr.value);
+      const parsed = JSON5.parse(importStr.value) as FunctionPlotOptions;
       if (typeof parsed !== "object" || parsed === null) throw null;
       if (typeof parsed.data !== "object" || !Array.isArray(parsed.data))
         throw null;
-      const newData = toInternalDatum(
-        (JSON5.parse(importStr.value).data as FunctionPlotDatum[]) ?? []
+      const newData = (parsed.data ?? []).map(toPrivateData);
+      profile.datum = newData;
+      const newAnnotations = (parsed.annotations ?? []).map(
+        toPrivateAnnotation
       );
-      profile.data = [];
-      profile.data = newData;
+      profile.annotations = newAnnotations;
+      const newOptions = toPrivateOptions(parsed);
+      profile.options = newOptions;
+      emitter.emit("require-full-update", "Data import");
       Snackbar.builder({
         text: t("title.importSuccess"),
         type: "success",
@@ -75,5 +82,4 @@ function handleImport() {
   width: 40vw;
   max-width: 500px;
 }
-
 </style>
