@@ -1,21 +1,23 @@
 <template>
-  <div id="graphRender" ref="plotRef"></div>
-  <div class="buttons" id="topright">
-    <s-tooltip align="right">
-      <s-icon-button
-        slot="trigger"
-        @click="emitter.emit('require-full-update', 'manual')"
-      >
-        <SIconRefresh class="spin" />
-      </s-icon-button>
-      {{ t("buttons.reset") }}
-    </s-tooltip>
-    <s-tooltip align="right" v-if="errorMsg !== undefined">
-      <s-icon-button slot="trigger" style="color: var(--s-color-warning)">
-        <SIconWarn class="bouncein" />
-      </s-icon-button>
-      <pre class="tooltipMsgPre">{{ errorMsg }}</pre>
-    </s-tooltip>
+  <div id="graph" ref="shellRef">
+    <div id="graphRender" ref="plotRef"></div>
+    <div class="buttons" id="topright">
+      <s-tooltip align="right">
+        <s-icon-button
+          slot="trigger"
+          @click="emitter.emit('require-full-update', 'manual')"
+        >
+          <SIconRefresh class="spin" />
+        </s-icon-button>
+        {{ t("buttons.reset") }}
+      </s-tooltip>
+      <s-tooltip align="right" v-if="errorMsg !== undefined">
+        <s-icon-button slot="trigger" style="color: var(--s-color-warning)">
+          <SIconWarn class="bouncein" />
+        </s-icon-button>
+        <pre class="tooltipMsgPre">{{ errorMsg }}</pre>
+      </s-tooltip>
+    </div>
   </div>
 </template>
 
@@ -26,83 +28,107 @@ const { t } = useI18n();
 import SIconRefresh from "@/ui/icons/refresh.vue";
 import SIconWarn from "@/ui/icons/warn.vue";
 
-import { onMounted, onUnmounted, ref, watch, WatchHandle } from "vue";
+import { onMounted, onUnmounted, Ref, ref, watch, WatchHandle } from "vue";
 import throttle from "lodash-es/throttle";
-import type { FunctionPlotDatum } from "function-plot";
-import { getFnType } from "../consts";
+import type { FunctionPlotOptions } from "function-plot";
 
 import { useProfile } from "@/states";
 const profile = useProfile();
 
 import emitter from "@/mitt";
-const fullUpdateState = defineModel<boolean>({ required: true });
+const lastIsError = defineModel<boolean>({ required: true });
 
 const plotRef = ref<HTMLDivElement>();
 const errorMsg = ref<string | undefined>(undefined);
 
-function findError(datum: FunctionPlotDatum[]) {
-  for (const [index, dataItem] of datum.entries()) {
-    const fnType = getFnType(dataItem.fnType);
-    for (const input of fnType.inputs) if (!dataItem[input.value]) return index;
-    for (const coord of fnType.coord ?? [])
-      if (!dataItem[coord.value] && !coord.optional) return index;
-  }
-  return 0;
-}
-
 import { useElementSize } from "@vueuse/core";
-const { width, height } = useElementSize(plotRef);
+const shellRef = ref<HTMLDivElement>();
+const { width, height } = useElementSize(shellRef);
 
-let unwatchHandler: WatchHandle | null = null;
 const emit = defineEmits(["require-post-update"]);
 import functionPlot from "function-plot";
 
-onMounted(() => {
+const waitForTruthy = (ref: Ref<any>) => {
+  return new Promise((resolve) => {
+    const revokeWatch = watch(
+      ref,
+      (newVal) => {
+        if (newVal) {
+          resolve(newVal);
+          revokeWatch();
+        }
+      },
+      { immediate: true }
+    );
+  });
+};
+
+const unwatchHandlers: WatchHandle[] = [];
+onUnmounted(() => {
+  unwatchHandlers.forEach((unwatch) => unwatch());
+});
+
+onMounted(async () => {
+  while (!plotRef.value) await waitForTruthy(plotRef);
+  while (!shellRef.value) await waitForTruthy(plotRef);
   const handleUpdate = throttle(() => {
-    if (import.meta.env.DEV) console.log("graph update");
-    const datum = profile.getPublicDatum();
-    const flag = findError(datum);
-    if (flag) {
-      errorMsg.value = `Invalid input in function ${flag + 1}`;
-      return;
-    }
+    const target = plotRef.value;
+
     try {
-      if (!plotRef.value) throw new Error("plotRef is null");
-      functionPlot({
-        target: plotRef.value,
-        data: datum,
-        width: width.value,
-        height: height.value,
-        annotations: profile.getPublicAnnotations(),
-        ...profile.getPublicOptions(),
-      });
-      if (fullUpdateState.value) {
-        fullUpdateState.value = false;
+      if (!target) throw new Error("plotRef is null");
+      const data = profile.getPublicDatum();
+      const annotations = profile.getPublicAnnotations();
+      const options = profile.getPublicOptions();
+      const fullOptions: FunctionPlotOptions = {
+        target,
+        data,
+        annotations,
+        width: width.value - 20,
+        height: height.value - 20,
+        ...options,
+      };
+      if (import.meta.env.DEV) console.log("graph update", fullOptions);
+      functionPlot(fullOptions);
+      if (lastIsError.value) {
+        lastIsError.value = false;
         emit("require-post-update", "once after error");
       } else errorMsg.value = undefined;
     } catch (e) {
       if (import.meta.env.DEV) console.error(e);
-      if (!fullUpdateState.value) emitter.emit("require-full-update", "error");
+      lastIsError.value = true;
       errorMsg.value = (e as Error).message;
     }
-  }, 250);
-  unwatchHandler = watch([width, height, profile], handleUpdate, {
-    immediate: true,
-  });
-});
+  }, 200);
 
-onUnmounted(() => {
-  if (unwatchHandler) unwatchHandler();
+  unwatchHandlers.push(watch(profile, handleUpdate, { immediate: true }));
+
+  let lastWidth = shellRef.value.clientWidth,
+    lastHeight = shellRef.value.clientHeight;
+  const isClose = (num1: number, num2: number, threshold: number = 2) =>
+    Math.abs(num1 - num2) < threshold;
+  unwatchHandlers.push(
+    watch([width, height], ([newWidth, newHeight]) => {
+      if (!newWidth || !newHeight) return;
+      newWidth = Math.round(newWidth);
+      newHeight = Math.round(newHeight);
+      if (isClose(newWidth, lastWidth) && isClose(newHeight, lastHeight))
+        return;
+      [lastWidth, lastHeight] = [newWidth, newHeight];
+      handleUpdate();
+    })
+  );
 });
 </script>
 
 <style>
 #graphRender {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  left: 10px;
-  bottom: 10px;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  width: fit-content;
+  height: fit-content;
   margin: auto;
   color: black;
   user-select: none;
