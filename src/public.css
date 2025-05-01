@@ -42,8 +42,9 @@ input[type="number"] {
   src: url("/fonts/KaTeX_AllInOne.woff2");
 }
 
+.styled,
 .styled::part(input),
-.styled {
+.styled-inner::part(input) {
   font-family: var(--font-math);
   font-variant-ligatures: common-ligatures discretionary-ligatures contextual
     historical-ligatures;

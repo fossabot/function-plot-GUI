@@ -33,7 +33,7 @@ export const useProfile = defineStore("profile", () => {
   const importedDatum = importedProfile?.data;
   const processedDatum = importedDatum
     ? importedDatum.map(toPrivateData)
-    : [toPrivateData({})];
+    : [toPrivateData({ fn: "x^2" })];
 
   const datum = ref(processedDatum);
 

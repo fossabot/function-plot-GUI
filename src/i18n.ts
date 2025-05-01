@@ -93,6 +93,7 @@ export default {
         horizontal: "水平",
         vertical: "竖直",
         text: "文本",
+        value: "值",
       },
     },
     "en-US": {
@@ -170,6 +171,7 @@ export default {
         horizontal: "Horizontal",
         vertical: "Vertical",
         text: "Text",
+        value: "Value",
       },
     },
   },

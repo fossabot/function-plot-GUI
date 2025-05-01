@@ -38,12 +38,16 @@
     </div>
 
     <div class="annotation-fields" :class="{ showText }">
-      <s-text-field
-        class="styled value"
-        type="number"
-        v-model="props.self.value"
-        :label="props.self.variable + '='"
-      ></s-text-field>
+      <div class="label-and-value">
+        <span class="label styled"> {{ props.self.variable + "=" }} </span>
+        <s-text-field
+          class="styled-inner value"
+          type="number"
+          v-model="props.self.value"
+          :label="t('annotation.value')"
+          @blur="handleValueBlur"
+        ></s-text-field>
+      </div>
       <Transition name="anntextslide">
         <s-text-field
           v-if="showText"
@@ -84,6 +88,10 @@ watch([() => props.self.variable, () => props.self.text], () =>
   emitter.emit("require-full-update", "annotations axis change")
 );
 
+function handleValueBlur() {
+  props.self.value = Number(props.self.value);
+}
+
 function deleteAnnotation() {
   emitter.emit("require-full-update", "annotations axis change");
   profile.annotations.splice(props.index, 1);
@@ -98,6 +106,7 @@ function deleteAnnotation() {
 
 .annotation-fields {
   display: flex;
+  align-items: center;
   gap: 10px;
   padding-top: 8px;
   overflow: hidden;
@@ -106,9 +115,20 @@ function deleteAnnotation() {
     width: 0;
     flex-grow: 1;
   }
-
-  .value {
-    font-size: 20px;
+  .label-and-value {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    gap: 3px;
+    .label {
+      font-size: 25px;
+      width: 1.9em;
+      text-align: right;
+      margin-bottom: -0.1em;
+    }
+    .value {
+      font-size: 22px;
+    }
   }
   .text {
     font-size: 16px;
