@@ -5,7 +5,7 @@ import cloneDeep from "lodash-es/cloneDeep";
 namespace PrivateDataTypes {
   type Global = {
     /** @private */
-    key: symbol;
+    key: number;
     color: string;
     hidden: boolean;
   };
@@ -99,7 +99,7 @@ export function toPublicData(data: PrivateData): FunctionPlotDatum {
 export function toPrivateData(input: FunctionPlotDatum) {
   const data = input as Partial<PrivateData>;
   const getGlobals = () => ({
-    key: Symbol(),
+    key: Math.random(),
     color: "",
     hidden: false,
   });

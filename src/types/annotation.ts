@@ -2,7 +2,7 @@ import { FunctionPlotAnnotation } from "function-plot";
 
 export type PrivateAnnotation = {
   /** @private */
-  key: symbol;
+  key: number;
   variable: "x" | "y";
   value: number;
   text: string;
@@ -25,7 +25,7 @@ export const toPrivateAnnotation = ({
   y,
   text,
 }: FunctionPlotAnnotation): PrivateAnnotation => ({
-  key: Symbol(),
+  key: Math.random(),
   variable: x !== undefined ? "x" : "y",
   value: x ?? y ?? 0,
   text: text ?? "",
