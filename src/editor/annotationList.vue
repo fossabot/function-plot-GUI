@@ -11,7 +11,7 @@
           v-for="(item, index) in profile.annotations"
           :key="item.key"
         >
-          <Annotation :index="index" :annotation="item" class="datumFolder" />
+          <Annotation :index="index" class="datumFolder" />
         </AnimatedListItem>
       </AnimatedList>
     </VueDraggable>

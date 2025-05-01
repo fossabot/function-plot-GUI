@@ -1,10 +1,10 @@
 <template>
   <div class="plot-data annotation">
     <div class="selectors">
-      <s-segmented-button v-model.lazy="props.annotation.axis">
-        <s-segmented-button-item value="y">{{
-          t("annotation.horizontal")
-        }}</s-segmented-button-item>
+      <s-segmented-button v-model.lazy="self.variable">
+        <s-segmented-button-item value="y">
+          {{ t("annotation.horizontal") }}
+        </s-segmented-button-item>
         <s-segmented-button-item value="x">
           {{ t("annotation.vertical") }}
         </s-segmented-button-item>
@@ -37,19 +37,19 @@
       </div>
     </div>
 
-    <div class="annotation-texts" :class="{ showText }">
+    <div class="annotation-fields" :class="{ showText }">
       <s-text-field
-        class="styled annotation-value"
+        class="styled value"
         type="number"
-        v-model="props.annotation.value"
-        :label="props.annotation.axis + '='"
+        v-model="self.value"
+        :label="self.variable + '='"
       ></s-text-field>
       <Transition name="anntextslide">
         <s-text-field
           v-if="showText"
-          class="annotation-textfield"
+          class="text"
           :label="t('annotation.text')"
-          v-model="props.annotation.text"
+          v-model="self.text"
         ></s-text-field>
       </Transition>
     </div>
@@ -57,20 +57,8 @@
 </template>
 
 <script setup lang="ts">
-import { InternalAnnotation } from "@/consts";
 import { useI18n } from "vue-i18n";
 const { t } = useI18n();
-
-const props = defineProps<{
-  index: number;
-  annotation: InternalAnnotation;
-}>();
-
-import emitter from "@/mitt";
-import { ref, watch } from "vue";
-watch([() => props.annotation.axis, () => props.annotation.text], () =>
-  emitter.emit("require-full-update", "annotations axis change")
-);
 
 import SIconDelete from "@/ui/icons/delete.vue";
 import SIconDrag from "@/ui/icons/drag.vue";
@@ -78,59 +66,75 @@ import SIconTextfield from "@/ui/icons/textfield.vue";
 
 import { useProfile } from "@/states";
 const profile = useProfile();
+const props = defineProps<{
+  index: number;
+}>();
+
+const self = toRef(profile.annotations, props.index);
+
+const showText = ref(self.value.text !== "");
+watch(showText, (value) => {
+  if (!value) self.value.text = "";
+});
+
+import emitter from "@/mitt";
+import { ref, toRef, watch } from "vue";
+watch([() => self.value.variable, () => self.value.text], () =>
+  emitter.emit("require-full-update", "annotations axis change")
+);
+
 function deleteAnnotation() {
   emitter.emit("require-full-update", "annotations axis change");
   profile.annotations.splice(props.index, 1);
 }
-
-const showText = ref(props.annotation.text !== "");
-
-watch(showText, (value) => {
-  if (!value) props.annotation.text = "";
-});
 </script>
 
-<style>
+<style lang="scss">
 .plot-data.annotation {
   display: flex;
   flex-direction: column;
 }
-.annotation-value {
-  font-size: 20px;
-}
-.annotation-textfield {
-  font-size: 16px;
-}
-.annotation-texts {
+
+.annotation-fields {
   display: flex;
   gap: 10px;
   padding-top: 8px;
   overflow: hidden;
-}
-.annotation-texts s-text-field {
-  width: 0;
-  flex-grow: 1;
-}
-</style>
 
-<style>
-.anntextslide-enter-from,
-.anntextslide-leave-to {
-  flex-grow: 0 !important;
-  margin-left: -10px;
-}
+  s-text-field {
+    width: 0;
+    flex-grow: 1;
+  }
 
-.anntextslide-leave-active {
-  transition:
-    flex-grow var(--s-motion-duration-medium1) var(--s-motion-easing-emphasized),
-    margin-left var(--s-motion-duration-medium1)
-      var(--s-motion-easing-emphasized) 0.2s;
+  .value {
+    font-size: 20px;
+  }
+  .text {
+    font-size: 16px;
+  }
 }
 
-.anntextslide-enter-active {
-  transition:
-    flex-grow var(--s-motion-duration-medium1) var(--s-motion-easing-emphasized),
-    margin-left var(--s-motion-duration-medium1)
-      var(--s-motion-easing-emphasized);
+.anntextslide {
+  &-enter-from,
+  &-leave-to {
+    flex-grow: 0 !important;
+    margin-left: -10px;
+  }
+
+  &-leave-active {
+    transition:
+      flex-grow var(--s-motion-duration-medium1)
+        var(--s-motion-easing-emphasized),
+      margin-left var(--s-motion-duration-medium1)
+        var(--s-motion-easing-emphasized) 0.2s;
+  }
+
+  &-enter-active {
+    transition:
+      flex-grow var(--s-motion-duration-medium1)
+        var(--s-motion-easing-emphasized),
+      margin-left var(--s-motion-duration-medium1)
+        var(--s-motion-easing-emphasized);
+  }
 }
 </style>
