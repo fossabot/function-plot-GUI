@@ -16,6 +16,7 @@
     "Jetbrains Mono", "Source Code Pro", "Sarasa Term SC", Consolas,
     "Courier New", monospace;
   --font-math: "KaTeX", "Cambria Math", "Times new roman", sans-serif;
+  --sc-font: var(--font-base);
 }
 
 :root,
