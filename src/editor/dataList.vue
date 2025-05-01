@@ -1,17 +1,17 @@
 <template>
   <s-scroll-view>
     <VueDraggable
-      v-model="profile.data"
+      v-model="profile.datum"
       :animation="200"
       handle=".datablock-drag"
     >
       <AnimatedList>
         <AnimatedListItem
-          v-for="(dataItem, i) in profile.data"
-          :key="dataItem.key"
+          v-for="(item, i) in profile.datum"
+          :key="item.key"
           class="datumFolder"
         >
-          <DataItem v-model="profile.data[i]" :index="i" />
+          <DataItem :self="item" :index="i"  />
         </AnimatedListItem>
       </AnimatedList>
     </VueDraggable>

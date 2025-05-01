@@ -1,8 +1,9 @@
 <template>
   <div class="input-inner">
     <span class="input-title styled">y=</span>
-    <s-text-field class="styled" ref="inputBox" label="f(x)"> </s-text-field>
-    <s-fold :folded="prop.folded">
+    <s-text-field class="styled" ref="inputBox" label="f(x)" v-model="self.fn">
+    </s-text-field>
+    <s-fold :folded="props.folded">
       <s-divider>{{ t("title.moreOptions") }}</s-divider>
       <p>
         Lorem ipsum dolor, sit amet consectetur adipisicing elit. Tempora ab hic
@@ -14,19 +15,18 @@
 </template>
 
 <script setup lang="ts">
-import { InternalDatum } from "@/consts";
-import { onMounted } from "vue";
+import { PrivateData, PrivateDataTypes } from "@/types/data";
+import { onMounted, Ref, toRef } from "vue";
 import { useI18n } from "vue-i18n";
 const { t } = useI18n();
 
-const dataItem = defineModel<InternalDatum>({ required: true });
-const prop = defineProps<{
+const props = defineProps<{
   folded: boolean;
+  self: PrivateData;
 }>();
+const self = toRef(props, "self") as Ref<PrivateDataTypes.Linear>;
+
 
 onMounted(() => {
-  if (dataItem.value.fnType !== "linear") {
-    console.log("format to linear");
-  }
 });
 </script>

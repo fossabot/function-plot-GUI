@@ -2,7 +2,7 @@ import { FunctionPlotDatum } from "function-plot";
 import { omitAttr, amendAttr } from "./utils";
 import cloneDeep from "lodash-es/cloneDeep";
 
-namespace PrivateDataTypes {
+export namespace PrivateDataTypes {
   type Global = {
     /** @private */
     key: number;

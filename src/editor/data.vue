@@ -3,8 +3,9 @@ ToDo: Refactor data editor to sigle component per fnType, instead of generating 
       The UI is so deeply coupled with the data structure that it makes nosense to make a component for 'general' data
 -->
 <template>
-  <div class="plot-data" :class="{ hidden: dataItem.hidden }">
+  <div class="plot-data" :class="{ hidden: props.self.hidden }">
     <div class="selectors">
+      <!-- fnType Picker -->
       <s-picker
         :label="t('inputs.fnType')"
         v-model.lazy="fnType"
@@ -14,18 +15,24 @@ ToDo: Refactor data editor to sigle component per fnType, instead of generating 
           {{ t(type.label) }}
         </s-picker-item>
       </s-picker>
+
+      <!-- graphType Picker -->
       <s-picker
         :label="t('inputs.graphType')"
-        v-model.lazy="dataItem.graphType"
-        v-show="dataItem.graphType !== 'text'"
+        v-model.lazy="props.self.graphType"
+        v-show="props.self.graphType !== 'text'"
         :key="selectKey"
       >
         <s-picker-item v-for="type in allowedGraphType" :value="type.value">
           {{ t(type.label) }}
         </s-picker-item>
       </s-picker>
+
       <div style="flex-grow: 1"></div>
+
+      <!-- Buttons -->
       <div class="dataBlockBtns">
+        <!-- Delete -->
         <s-tooltip>
           <s-icon-button
             slot="trigger"
@@ -36,22 +43,25 @@ ToDo: Refactor data editor to sigle component per fnType, instead of generating 
           </s-icon-button>
           {{ t("buttons.del") }}
         </s-tooltip>
+        <!-- Hide -->
         <s-tooltip>
           <s-icon-button
             slot="trigger"
-            @click="dataItem.hidden = !dataItem.hidden"
-            :type="dataItem.hidden ? 'filled-tonal' : 'standard'"
+            @click="props.self.hidden = !props.self.hidden"
+            :type="props.self.hidden ? 'filled-tonal' : 'standard'"
           >
             <SIconHide />
           </s-icon-button>
           {{ t("buttons.hide") }}
         </s-tooltip>
+        <!-- Fold -->
         <s-tooltip>
           <s-icon-button slot="trigger" @click="folded = !folded">
             <s-icon :name="folded ? 'chevron_down' : 'chevron_up'"> </s-icon>
           </s-icon-button>
           {{ t(folded ? "buttons.expand" : "buttons.collapse") }}
         </s-tooltip>
+        <!-- Drag -->
         <span class="datablock-drag drag-icon">
           <SIconDrag />
         </span>
@@ -104,7 +114,7 @@ ToDo: Refactor data editor to sigle component per fnType, instead of generating 
       <Transition name="input-component">
         <component
           :is="components[fnType]"
-          v-model="dataItem"
+          :self="props.self"
           :folded="folded"
         />
       </Transition>
@@ -115,7 +125,7 @@ ToDo: Refactor data editor to sigle component per fnType, instead of generating 
 import { useI18n } from "vue-i18n";
 const { t, locale } = useI18n();
 
-import { fnTypeArr, getAllowedGraphType, InternalDatum } from "../consts";
+import { fnTypeArr, getAllowedGraphType } from "../consts";
 import { ref, computed } from "vue";
 
 // import StrInputs from "./legacyInputs/strInputs.vue";
@@ -146,24 +156,22 @@ import SIconDelete from "@/ui/icons/delete.vue";
 import SIconHide from "@/ui/icons/hide.vue";
 import SIconDrag from "@/ui/icons/drag.vue";
 
-const dataItem = defineModel<InternalDatum>({ required: true });
-const props = defineProps<{ index: number }>();
+const props = defineProps<{ index: number; self: PrivateData }>();
 const folded = ref(true);
 
 import { Snackbar } from "sober";
 import { useProfile } from "@/states";
 const profile = useProfile();
 
-import cloneDeep from "lodash-es/cloneDeep";
 function deleteDatum() {
-  const backup = cloneDeep(dataItem.value)!;
-  profile.data.splice(props.index, 1);
+  const backup = props.self;
+  profile.datum.splice(props.index, 1);
   Snackbar.builder({
     text: t("title.deleteSuccess"),
     action: {
       text: t("buttons.undo"),
       click: () => {
-        profile.data.splice(props.index, 0, backup);
+        profile.datum.splice(props.index, 0, backup);
       },
     },
   });
@@ -182,15 +190,14 @@ function deleteDatum() {
 //   }
 // }
 
-const allowedGraphType = computed(() =>
-  getAllowedGraphType(dataItem.value?.fnType)
-);
+const allowedGraphType = computed(() => getAllowedGraphType(props.self.fnType));
 
 import { watch } from "vue";
+import { PrivateData } from "@/types/data";
 const selectKey = ref(0);
 watch(locale, () => selectKey.value++);
 
-const fnType = ref(dataItem.value!.fnType);
+const fnType = ref(props.self.fnType);
 </script>
 
 <style>

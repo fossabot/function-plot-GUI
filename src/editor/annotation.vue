@@ -1,7 +1,7 @@
 <template>
   <div class="plot-data annotation">
     <div class="selectors">
-      <s-segmented-button v-model.lazy="props.self.variable">
+      <s-segmented-button v-model.lazy="self.variable">
         <s-segmented-button-item value="y">
           {{ t("annotation.horizontal") }}
         </s-segmented-button-item>
@@ -39,11 +39,11 @@
 
     <div class="annotation-fields" :class="{ showText }">
       <div class="label-and-value">
-        <span class="label styled"> {{ props.self.variable + "=" }} </span>
+        <span class="label styled"> {{ self.variable + "=" }} </span>
         <s-text-field
           class="styled-inner value"
           type="number"
-          v-model="props.self.value"
+          v-model="self.value"
           :label="t('annotation.value')"
           @blur="handleValueBlur"
         ></s-text-field>
@@ -53,7 +53,7 @@
           v-if="showText"
           class="text"
           :label="t('annotation.text')"
-          v-model="props.self.text"
+          v-model="self.text"
         ></s-text-field>
       </Transition>
     </div>
@@ -70,26 +70,29 @@ import SIconTextfield from "@/ui/icons/textfield.vue";
 
 import { useProfile } from "@/states";
 import { PrivateAnnotation } from "@/types/annotation";
+
+import { ref, toRef, watch } from "vue";
+
 const profile = useProfile();
 const props = defineProps<{
   index: number;
   self: PrivateAnnotation;
 }>();
+const self = toRef(props, "self");
 
-const showText = ref(props.self.text !== "");
+const showText = ref(self.value.text !== "");
 watch(showText, (value) => {
-  if (!value) props.self.text = "";
+  if (!value) self.value.text = "";
 });
 
 import emitter from "@/mitt";
-import { ref, watch } from "vue";
 
-watch([() => props.self.variable, () => props.self.text], () =>
+watch([() => self.value.variable, () => self.value.text], () =>
   emitter.emit("require-full-update", "annotations axis change")
 );
 
 function handleValueBlur() {
-  props.self.value = Number(props.self.value);
+  self.value.value = Number(self.value.value);
 }
 
 function deleteAnnotation() {
