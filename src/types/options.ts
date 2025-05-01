@@ -23,13 +23,16 @@ export function toPrivateOptions(
     label: "",
     type: "linear",
   } as PrivateAxis;
-  const { xAxis, yAxis } = original;
-  return amendAttr<PrivateOptions>(original, {
-    xAxis: () => amendAttr<PrivateAxis>(xAxis ?? {}, defaultAxis),
-    yAxis: () => amendAttr<PrivateAxis>(yAxis ?? {}, defaultAxis),
-    title: "",
-    grid: false,
-  });
+  const { xAxis, yAxis, title, grid } = original;
+  return amendAttr<PrivateOptions>(
+    { xAxis, yAxis, title, grid },
+    {
+      xAxis: () => amendAttr<PrivateAxis>(xAxis ?? {}, defaultAxis),
+      yAxis: () => amendAttr<PrivateAxis>(yAxis ?? {}, defaultAxis),
+      title: "",
+      grid: false,
+    }
+  );
 }
 
 const checkAxisUseless = ({ invert, label, type }: PrivateAxis) =>
