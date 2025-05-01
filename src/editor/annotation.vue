@@ -1,7 +1,7 @@
 <template>
   <div class="plot-data annotation">
     <div class="selectors">
-      <s-segmented-button v-model.lazy="self.variable">
+      <s-segmented-button v-model.lazy="props.self.variable">
         <s-segmented-button-item value="y">
           {{ t("annotation.horizontal") }}
         </s-segmented-button-item>
@@ -41,15 +41,15 @@
       <s-text-field
         class="styled value"
         type="number"
-        v-model="self.value"
-        :label="self.variable + '='"
+        v-model="props.self.value"
+        :label="props.self.variable + '='"
       ></s-text-field>
       <Transition name="anntextslide">
         <s-text-field
           v-if="showText"
           class="text"
           :label="t('annotation.text')"
-          v-model="self.text"
+          v-model="props.self.text"
         ></s-text-field>
       </Transition>
     </div>
@@ -65,21 +65,22 @@ import SIconDrag from "@/ui/icons/drag.vue";
 import SIconTextfield from "@/ui/icons/textfield.vue";
 
 import { useProfile } from "@/states";
+import { PrivateAnnotation } from "@/types/annotation";
 const profile = useProfile();
 const props = defineProps<{
   index: number;
+  self: PrivateAnnotation;
 }>();
 
-const self = toRef(profile.annotations, props.index);
-
-const showText = ref(self.value.text !== "");
+const showText = ref(props.self.text !== "");
 watch(showText, (value) => {
-  if (!value) self.value.text = "";
+  if (!value) props.self.text = "";
 });
 
 import emitter from "@/mitt";
-import { ref, toRef, watch } from "vue";
-watch([() => self.value.variable, () => self.value.text], () =>
+import { ref, watch } from "vue";
+
+watch([() => props.self.variable, () => props.self.text], () =>
   emitter.emit("require-full-update", "annotations axis change")
 );
 
