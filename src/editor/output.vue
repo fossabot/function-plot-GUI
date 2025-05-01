@@ -42,17 +42,18 @@ import { ref, watch } from "vue";
 import { useProfile } from "@/states";
 const profile = useProfile();
 
+import { FunctionPlotOptions } from "function-plot";
 const formatted = ref("");
 watch(
   profile,
   () => {
-    const code = JSON5.stringify({
-      data: profile.getOriginalData(true),
-      ...(profile.annotations.length
-        ? { annotations: profile.getOriginalAnnotaion() }
-        : {}),
-      ...profile.getOriginalOptions(),
-    });
+    const resultObj: Omit<FunctionPlotOptions, "target"> = {
+      data: profile.getPublicDatum(true),
+      ...profile.getPublicOptions(),
+    };
+    if (profile.annotations.length)
+      resultObj.annotations = profile.getPublicAnnotations();
+    const code = JSON5.stringify(resultObj);
     const url =
       window.location.href.match(/https?:\/\/[^/]+\//) +
       "?code=" +
@@ -72,6 +73,7 @@ watch(
 const folded = ref(true);
 
 import { Snackbar } from "sober";
+
 const formattedCodePre = ref<HTMLPreElement>();
 function copyCode() {
   try {
