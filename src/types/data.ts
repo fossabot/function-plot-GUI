@@ -82,6 +82,7 @@ export function toPublicData(data: PrivateData): FunctionPlotDatum {
       {
         key: () => true,
         fnType: () => true,
+        hidden: false,
         color: "",
       }
     );
@@ -91,6 +92,7 @@ export function toPublicData(data: PrivateData): FunctionPlotDatum {
     graphType: "interval",
     skipTip: false,
     closed: false,
+    hidden: false,
     color: "",
     nSamples: undefined,
   });
