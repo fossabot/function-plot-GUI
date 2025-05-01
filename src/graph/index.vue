@@ -16,12 +16,10 @@ const lastIsError = ref(false);
 import emitter from "@/mitt";
 emitter.on("require-full-update", (str) => {
   graphKey.value++;
-  if (import.meta.env.DEV)
-    console.log(`lastIsError: ${lastIsError.value}, ${str}`);
+  console.log("FullUpdate:", str, `, lastIsError:`, lastIsError.value);
 });
 const handlePostUpdate = (str: string) => {
   graphKey.value++;
-  if (import.meta.env.DEV)
-    console.log(`postUpdateState: ${lastIsError.value}, ${str}`);
+  console.log("PostUpdate:", str, `, lastIsError:`, lastIsError.value);
 };
 </script>

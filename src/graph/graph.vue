@@ -87,14 +87,14 @@ onMounted(async () => {
         height: height.value - 20,
         ...options,
       };
-      if (import.meta.env.DEV) console.log("graph update", fullOptions);
+      console.log("Call functionPlot", fullOptions);
       functionPlot(fullOptions);
       if (lastIsError.value) {
         lastIsError.value = false;
         emit("require-post-update", "once after error");
       } else errorMsg.value = undefined;
     } catch (e) {
-      if (import.meta.env.DEV) console.error(e);
+      console.error(e);
       lastIsError.value = true;
       errorMsg.value = (e as Error).message;
     }
