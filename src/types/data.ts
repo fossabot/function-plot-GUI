@@ -7,6 +7,7 @@ namespace PrivateDataTypes {
     /** @private */
     key: symbol;
     color: string;
+    hidden: boolean;
   };
   type Function = Global & {
     skipTip: boolean;
@@ -95,81 +96,84 @@ export function toPublicData(data: PrivateData): FunctionPlotDatum {
   });
 }
 
-export function toPrivateData(data: Partial<PrivateData>) {
-  const functionGlobals = {
+export function toPrivateData(input: FunctionPlotDatum) {
+  const data = input as Partial<PrivateData>;
+  const getGlobals = () => ({
+    key: Symbol(),
+    color: "",
+    hidden: false,
+  });
+  const getFunctionGlobals = () => ({
+    ...getGlobals(),
     skipTip: false,
     closed: false,
-    color: "",
     nSamples: undefined,
-  };
+  });
   switch (data.fnType) {
-    case "polar":
-      return amendAttr<PrivateDataTypes.Polar>(data, {
-        key: Symbol(),
-        fnType: "polar",
-        graphType: "polyline",
-        r: "",
-        ...functionGlobals,
-      });
-    case "parametric":
-      return amendAttr<PrivateDataTypes.Parametric>(data, {
-        key: Symbol(),
-        fnType: "parametric",
-        graphType: "polyline",
-        x: "",
-        y: "",
-        ...functionGlobals,
-      });
-    case "points":
-      return amendAttr<PrivateDataTypes.Points>(data, {
-        key: Symbol(),
-        fnType: "points",
-        graphType: "polyline",
-        points: () => [],
-        closed: false,
-        color: "",
-      });
-    case "vector":
-      return amendAttr<PrivateDataTypes.Vector>(data, {
-        key: Symbol(),
-        fnType: "vector",
-        graphType: "polyline",
-        vector: () => [1, 0],
-        offset: () => [0, 0],
-        color: "",
-      });
     case "linear":
     case "implicit":
       return amendAttr<PrivateDataTypes.Linear | PrivateDataTypes.Implicit>(
         data,
         {
-          key: Symbol(),
           fnType: "linear",
           graphType: "interval",
           fn: "",
-          ...functionGlobals,
+          ...getFunctionGlobals(),
         }
       );
+    case "polar":
+      return amendAttr<PrivateDataTypes.Polar>(data, {
+        fnType: "polar",
+        graphType: "polyline",
+        r: "",
+        ...getFunctionGlobals(),
+      });
+    case "parametric":
+      return amendAttr<PrivateDataTypes.Parametric>(data, {
+        fnType: "parametric",
+        graphType: "polyline",
+        x: "",
+        y: "",
+        ...getFunctionGlobals(),
+      });
+    case "points":
+      return amendAttr<PrivateDataTypes.Points>(data, {
+        fnType: "points",
+        graphType: "polyline",
+        points: () => [],
+        closed: false,
+        ...getGlobals(),
+      });
+    case "vector":
+      return amendAttr<PrivateDataTypes.Vector>(data, {
+        fnType: "vector",
+        graphType: "polyline",
+        vector: () => [1, 1],
+        offset: () => [0, 0],
+        ...getGlobals(),
+      });
     case undefined:
       if ("text" in data && typeof data.text === "string") {
         return amendAttr<PrivateDataTypes.Text>(data, {
-          key: Symbol(),
           fnType: "text",
           graphType: "text",
           text: "",
           location: () => [0, 0],
-          color: "",
+          ...getGlobals(),
         });
       } else
         return amendAttr<PrivateDataTypes.Linear>(
           data as Partial<PrivateDataTypes.Linear>,
           {
-            key: Symbol(),
             fnType: "linear",
             graphType: "interval",
             fn: "",
-            ...functionGlobals,
+            ...getFunctionGlobals(),
           }
         );
+    default:
+      throw new TypeError(
+        `Unknown fnType "${data.fnType}" in toPrivateData function`
+      );
   }
 }

@@ -20,10 +20,6 @@ export const toPublicAnnotation = ({
   return result;
 };
 
-const throwTypeError = (message: string) => {
-  throw new TypeError(message);
-};
-
 export const toPrivateAnnotation = ({
   x,
   y,
@@ -31,6 +27,6 @@ export const toPrivateAnnotation = ({
 }: FunctionPlotAnnotation): PrivateAnnotation => ({
   key: Symbol(),
   variable: x !== undefined ? "x" : "y",
-  value: x ?? y ?? throwTypeError("Either x or y should be defined"),
+  value: x ?? y ?? 0,
   text: text ?? "",
 });
