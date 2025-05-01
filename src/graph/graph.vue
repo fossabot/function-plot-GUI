@@ -40,8 +40,8 @@ const fullUpdateState = defineModel<boolean>({ required: true });
 const plotRef = ref<HTMLDivElement>();
 const errorMsg = ref<string | undefined>(undefined);
 
-function findError(graphData: FunctionPlotDatum[]) {
-  for (const [index, dataItem] of graphData.entries()) {
+function findError(datum: FunctionPlotDatum[]) {
+  for (const [index, dataItem] of datum.entries()) {
     const fnType = getFnType(dataItem.fnType);
     for (const input of fnType.inputs) if (!dataItem[input.value]) return index;
     for (const coord of fnType.coord ?? [])
@@ -56,11 +56,12 @@ const { width, height } = useElementSize(plotRef);
 let unwatchHandler: WatchHandle | null = null;
 const emit = defineEmits(["require-post-update"]);
 import functionPlot from "function-plot";
+
 onMounted(() => {
   const handleUpdate = throttle(() => {
     if (import.meta.env.DEV) console.log("graph update");
-    const graphData = profile.getOriginalData();
-    const flag = findError(graphData);
+    const datum = profile.getPublicDatum();
+    const flag = findError(datum);
     if (flag) {
       errorMsg.value = `Invalid input in function ${flag + 1}`;
       return;
@@ -69,11 +70,11 @@ onMounted(() => {
       if (!plotRef.value) throw new Error("plotRef is null");
       functionPlot({
         target: plotRef.value,
-        data: graphData,
+        data: datum,
         width: width.value,
         height: height.value,
-        annotations: profile.getOriginalAnnotaion(),
-        ...profile.getOriginalOptions(),
+        annotations: profile.getPublicAnnotations(),
+        ...profile.getPublicOptions(),
       });
       if (fullUpdateState.value) {
         fullUpdateState.value = false;
