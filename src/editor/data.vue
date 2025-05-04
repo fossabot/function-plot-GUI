@@ -115,6 +115,7 @@ ToDo: Refactor data editor to sigle component per fnType, instead of generating 
         <component
           :is="components[fnType]"
           :self="props.self"
+          :index="props.index"
           :folded="folded"
         />
       </Transition>

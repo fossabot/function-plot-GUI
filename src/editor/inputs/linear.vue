@@ -23,10 +23,28 @@ const { t } = useI18n();
 const props = defineProps<{
   folded: boolean;
   self: PrivateData;
+  index: number;
 }>();
 const self = toRef(props, "self") as Ref<PrivateDataTypes.Linear>;
-
-
 onMounted(() => {
+  const original = self.value as PrivateData;
+  if (original.fnType !== "linear") {
+    const isAllowedGraphType = (
+      value: string
+    ): value is PrivateDataTypes.Linear["graphType"] =>
+      ["interval", "polyline", "scatter"].includes(value);
+    const graphType = isAllowedGraphType(original.graphType)
+      ? original.graphType
+      : "polyline";
+    self.value = {
+      skipTip: false,
+      nSamples: undefined,
+      closed: false,
+      ...original,
+      fnType: "linear",
+      fn: "",
+      graphType,
+    };
+  }
 });
 </script>

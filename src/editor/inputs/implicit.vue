@@ -3,32 +3,35 @@
 </template>
 
 <script setup lang="ts">
-import { InternalDatum } from "@/consts";
-import { onMounted } from "vue";
+import { PrivateData, PrivateDataTypes } from "@/types/data";
+import { onMounted, Ref, toRef } from "vue";
 import { useI18n } from "vue-i18n";
 const { t } = useI18n();
 
-const dataItem = defineModel<InternalDatum>({ required: true });
-const prop = defineProps<{
+const props = defineProps<{
   folded: boolean;
+  self: PrivateData;
+  index: number;
 }>();
-
-const allowedGraphType = ["interval"] as const;
-type AllowedGraphType = typeof allowedGraphType[number];
-function isAllowedGraphType(type: string): type is AllowedGraphType {
-  return (allowedGraphType as readonly string[]).includes(type);
-}
-
-
+const self = toRef(props, "self") as Ref<PrivateDataTypes.Implicit>;
 onMounted(() => {
-  if (dataItem.value.fnType !== "implicit") {
-    dataItem.value = {
+  const original = self.value as PrivateData;
+  if (original.fnType !== "implicit") {
+    const isAllowedGraphType = (
+      value: string
+    ): value is PrivateDataTypes.Implicit["graphType"] =>
+      ["interval"].includes(value);
+    const graphType = isAllowedGraphType(original.graphType)
+      ? original.graphType
+      : "interval";
+    self.value = {
+      skipTip: false,
+      nSamples: undefined,
+      closed: false,
+      ...original,
       fnType: "implicit",
-      graphType: isAllowedGraphType(dataItem.value.graphType)
-        ? dataItem.value.graphType
-        : allowedGraphType[0],
-      fn: "x-y",
-      key: dataItem.value.key,
+      fn: "",
+      graphType,
     };
   }
 });
