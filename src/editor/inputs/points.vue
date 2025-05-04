@@ -1,20 +1,18 @@
 <template>
-  <s-empty>points</s-empty>
+  Points
+  <s-divider>{{ t("title.moreOptions") }}</s-divider>
 </template>
 
 <script setup lang="ts">
-import { InternalDatum } from "@/consts";
-import { onMounted } from "vue";
+import { PrivateDataTypes } from "@/types/data";
+import { toRef } from "vue";
 import { useI18n } from "vue-i18n";
 const { t } = useI18n();
 
-const dataItem = defineModel<InternalDatum>({ required: true });
-const prop = defineProps<{
+const props = defineProps<{
   folded: boolean;
+  self: PrivateDataTypes.Points;
+  index: number;
 }>();
-
-onMounted(() => {
-  if (dataItem.value.fnType !== "points") {
-  }
-});
+const self = toRef(props, "self");
 </script>

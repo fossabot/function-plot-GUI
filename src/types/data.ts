@@ -14,10 +14,21 @@ export namespace PrivateDataTypes {
     nSamples: number | undefined;
     closed: boolean;
   };
+
+  export const allowedGraphTypes = {
+    linear: ["interval", "polyline", "scatter"],
+    implicit: ["interval"],
+    parametric: ["polyline", "scatter"],
+    polar: ["polyline", "scatter"],
+    points: ["polyline", "scatter"],
+    vector: ["polyline"],
+    text: ["text"],
+  } as const;
+
   /** Normal functions: y=f(x) */
   export type Linear = Function & {
     fnType: "linear";
-    graphType: "interval" | "polyline" | "scatter";
+    graphType: (typeof allowedGraphTypes)["linear"][number];
     fn: string;
   };
   /** Implicit functions: F(x,y)=0 */
@@ -29,34 +40,34 @@ export namespace PrivateDataTypes {
   /** Parametric functions: x=f(t), y=g(t) */
   export type Parametric = Function & {
     fnType: "parametric";
-    graphType: "polyline" | "scatter";
+    graphType: (typeof allowedGraphTypes)["parametric"][number];
     x: string;
     y: string;
   };
   /** Polar functions: r=f(t) */
   export type Polar = Function & {
     fnType: "polar";
-    graphType: "polyline" | "scatter";
+    graphType: (typeof allowedGraphTypes)["polar"][number];
     r: string;
   };
   /** Points */
   export type Points = Global & {
     fnType: "points";
-    graphType: "polyline" | "scatter";
+    graphType: (typeof allowedGraphTypes)["points"][number];
     points: [number, number][];
     closed: boolean;
   };
   /** Vector */
   export type Vector = Global & {
     fnType: "vector";
-    graphType: "polyline";
+    graphType: (typeof allowedGraphTypes)["vector"][number];
     vector: [number, number];
     offset: [number, number];
   };
   /** Text */
   export type Text = Global & {
     fnType: "text";
-    graphType: "text";
+    graphType: (typeof allowedGraphTypes)["text"][number];
     text: string;
     location: [number, number];
   };
@@ -69,6 +80,14 @@ export namespace PrivateDataTypes {
     | Points
     | Vector
     | Text;
+
+  export type Full = Linear &
+    Implicit &
+    Parametric &
+    Polar &
+    Points &
+    Vector &
+    Text;
 }
 export type PrivateData = PrivateDataTypes.Combined;
 
@@ -98,7 +117,7 @@ export function toPublicData(data: PrivateData): FunctionPlotDatum {
   });
 }
 
-export function toPrivateData(input: FunctionPlotDatum) {
+export function toPrivateData(input: Object) {
   const data = input as Partial<PrivateData>;
   const getGlobals = () => ({
     key: Math.random(),
@@ -173,9 +192,17 @@ export function toPrivateData(input: FunctionPlotDatum) {
             ...getFunctionGlobals(),
           }
         );
+    case "text":
+      return amendAttr<PrivateDataTypes.Text>(data, {
+        fnType: "text",
+        graphType: "text",
+        text: "",
+        location: () => [0, 0],
+        ...getGlobals(),
+      });
     default:
       throw new TypeError(
-        `Unknown fnType "${data.fnType}" in toPrivateData function`
+        `Unknown fnType "${(<any>data).fnType}" in toPrivateData function`
       );
   }
 }

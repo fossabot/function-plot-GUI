@@ -1,20 +1,36 @@
 <template>
-  <s-empty>text</s-empty>
+  <span class="input-title styled">r=</span>
+  <s-text-field
+    class="styled"
+    ref="inputBox"
+    label="f(x,y)"
+    v-model="self.text"
+  ></s-text-field>
+  <s-text-field
+    class="styled"
+    ref="inputBox"
+    label="x"
+    v-model="self.location[0]"
+  ></s-text-field>
+  <s-text-field
+    class="styled"
+    ref="inputBox"
+    label="y"
+    v-model="self.location[1]"
+  ></s-text-field>
+  <s-divider>{{ t("title.moreOptions") }}</s-divider>
 </template>
 
 <script setup lang="ts">
-import { InternalDatum } from "@/consts";
-import { onMounted } from "vue";
+import { PrivateDataTypes } from "@/types/data";
+import { toRef } from "vue";
 import { useI18n } from "vue-i18n";
 const { t } = useI18n();
 
-const dataItem = defineModel<InternalDatum>({ required: true });
-const prop = defineProps<{
+const props = defineProps<{
   folded: boolean;
+  self: PrivateDataTypes.Text;
+  index: number;
 }>();
-
-onMounted(() => {
-  if (dataItem.value.fnType !== "text") {
-  }
-});
+const self = toRef(props, "self");
 </script>

@@ -1,7 +1,3 @@
-<!--
-ToDo: Refactor data editor to sigle component per fnType, instead of generating elements from consts
-      The UI is so deeply coupled with the data structure that it makes nosense to make a component for 'general' data
--->
 <template>
   <div class="plot-data" :class="{ hidden: props.self.hidden }">
     <div class="selectors">
@@ -68,57 +64,13 @@ ToDo: Refactor data editor to sigle component per fnType, instead of generating 
       </div>
     </div>
 
-    <!-- <div class="inputs">
-      <StrInputs :dataItem="dataItem" :fnType="fnType" />
-      <CoordInputs
-        v-if="fnType.coord"
-        :dataItem="dataItem"
-        :fnType="fnType"
-        :folded="false"
-      />
-      <CoordArrInputs
-        v-if="fnType.coordArr"
-        :dataItem="dataItem"
-        :fnType="fnType"
-      />
-      <SwitchInputs
-        v-if="fnType.switches"
-        :dataItem="dataItem"
-        :fnType="fnType"
-        :folded="false"
-      />
-    </div>
-    <s-fold :folded="folded">
-      <div class="inputs optional">
-        <s-divider>{{ t("title.moreOptions") }}</s-divider>
-        <CoordInputs
-          v-if="fnType.coord"
-          :dataItem="dataItem"
-          :fnType="fnType"
-          :folded="true"
-        />
-        <OptInputs
-          v-if="fnType.optInput"
-          :dataItem="dataItem"
-          :fnType="fnType"
-        />
-        <SwitchInputs
-          v-if="fnType.switches"
-          :dataItem="dataItem"
-          :fnType="fnType"
-          :folded="true"
-        />
-      </div>
-    </s-fold> -->
     <div class="relative">
-      <Transition name="input-component">
-        <component
-          :is="components[fnType]"
-          :self="props.self"
-          :index="props.index"
-          :folded="folded"
-        />
-      </Transition>
+      <component
+        :is="components[props.self.fnType]"
+        :self="<PrivateDataTypes.Full>props.self"
+        :index="props.index"
+        :folded="folded"
+      />
     </div>
   </div>
 </template>
@@ -127,13 +79,7 @@ import { useI18n } from "vue-i18n";
 const { t, locale } = useI18n();
 
 import { fnTypeArr, getAllowedGraphType } from "../consts";
-import { ref, computed } from "vue";
-
-// import StrInputs from "./legacyInputs/strInputs.vue";
-// import CoordInputs from "./legacyInputs/coordInputs.vue";
-// import SwitchInputs from "./legacyInputs/switchInputs.vue";
-// import CoordArrInputs from "./legacyInputs/coordArrInputs.vue";
-// import OptInputs from "./legacyInputs/optInputs.vue";
+import { ref, computed, toRef } from "vue";
 
 import linear from "./inputs/linear.vue";
 import implicit from "./inputs/implicit.vue";
@@ -151,7 +97,7 @@ const components = {
   points,
   vector,
   text,
-};
+} as const;
 
 import SIconDelete from "@/ui/icons/delete.vue";
 import SIconHide from "@/ui/icons/hide.vue";
@@ -178,27 +124,28 @@ function deleteDatum() {
   });
 }
 
-// function fnTypeChange(dataItem: InternalDatum) {
-//   console.log(dataItem);
-//   inputTypeArr.forEach((key) => delete dataItem[key]);
-//   if (dataItem.fnType === "text") {
-//     dataItem.graphType = "text";
-//   } else {
-//     if (dataItem.fnType === "implicit") dataItem.graphType = "interval";
-//     dataItem.graphType = getAllowedGraphType(dataItem.fnType)[0].value;
-//     if (dataItem.fnType === "vector") dataItem.vector = [0, 0];
-//     if (dataItem.fnType === "points") dataItem.points = [];
-//   }
-// }
-
 const allowedGraphType = computed(() => getAllowedGraphType(props.self.fnType));
 
 import { watch } from "vue";
-import { PrivateData } from "@/types/data";
+import { PrivateData, PrivateDataTypes, toPrivateData } from "@/types/data";
 const selectKey = ref(0);
 watch(locale, () => selectKey.value++);
 
+const self = toRef(profile.datum, props.index);
+
 const fnType = ref(props.self.fnType);
+watch(fnType, (newFnType) => {
+  const newGraphType = (<readonly string[]>(
+    PrivateDataTypes.allowedGraphTypes[newFnType]
+  )).includes(props.self.graphType)
+    ? props.self.graphType
+    : PrivateDataTypes.allowedGraphTypes[newFnType][0];
+  self.value = toPrivateData({
+    key: self.value.key,
+    fnType: newFnType,
+    graphType: newGraphType,
+  });
+});
 </script>
 
 <style>
@@ -261,26 +208,5 @@ const fnType = ref(props.self.fnType);
 }
 .sortable-chosen {
   z-index: 999;
-}
-</style>
-
-<style lang="scss">
-.input-component {
-  &-enter-from,
-  &-leave-to {
-    opacity: 0;
-  }
-  &-enter-active {
-    transition: opacity 0.3s 0.05s;
-  }
-  &-leave-active {
-    transition: opacity 0.15s;
-  }
-  &-leave-active {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-  }
 }
 </style>
