@@ -2,23 +2,11 @@
   <div class="input-inner">
     <div class="field main-fn">
       <span class="label styled">x=</span>
-      <s-text-field
-        class="styled fn"
-        ref="inputBox"
-        label="f(t)"
-        v-model="self.x"
-      >
-      </s-text-field>
+      <FilledTextfield class="styled fn" label="f(t)" v-model="self.x" />
     </div>
     <div class="field main-fn">
       <span class="label styled">y=</span>
-      <s-text-field
-        class="styled fn"
-        ref="inputBox"
-        label="g(t)"
-        v-model="self.y"
-      >
-      </s-text-field>
+      <FilledTextfield class="styled fn" label="g(t)" v-model="self.y" />
     </div>
     <s-fold :folded="props.folded">
       <s-divider>{{ t("title.moreOptions") }}</s-divider>
@@ -36,6 +24,8 @@ import { PrivateDataTypes } from "@/types/data";
 import { toRef } from "vue";
 import { useI18n } from "vue-i18n";
 const { t } = useI18n();
+
+import FilledTextfield from "@/ui/components/filled-textfield.vue";
 
 const props = defineProps<{
   folded: boolean;

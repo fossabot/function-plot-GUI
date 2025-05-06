@@ -1,13 +1,11 @@
 <template>
   <div class="input-inner">
     <div class="field main-fn">
-      <s-text-field
+      <FilledTextfield
         class="styled fn"
-        ref="inputBox"
         label="F(x, y)"
         v-model="self.fn"
-      >
-      </s-text-field>
+      />
       <span class="label styled"> =0 </span>
     </div>
     <s-fold :folded="props.folded">
@@ -26,6 +24,8 @@ import { PrivateDataTypes } from "@/types/data";
 import { toRef } from "vue";
 import { useI18n } from "vue-i18n";
 const { t } = useI18n();
+
+import FilledTextfield from "@/ui/components/filled-textfield.vue";
 
 const props = defineProps<{
   folded: boolean;

@@ -2,8 +2,7 @@
   <div class="input-inner">
     <div class="field main-fn">
       <span class="label styled">y=</span>
-      <filledTextfield class="styled fn" label="f(x)" v-model="self.fn">
-      </filledTextfield>
+      <filledTextfield class="styled fn" label="f(x)" v-model="self.fn" />
     </div>
     <s-fold :folded="props.folded">
       <s-divider>{{ t("title.moreOptions") }}</s-divider>
@@ -36,19 +35,20 @@ import FilledTextfield from "@/ui/components/filled-textfield.vue";
 .input-inner {
   display: flex;
   flex-direction: column;
+  gap: 6px;
 
   .field.main-fn {
     display: flex;
     align-items: center;
     font-size: 25px;
     .label {
-      margin: 0 0.1em -0.1em 0;
+      margin: 0 0.1em 0 0;
       width: 1.8em;
       margin-left: 0;
       text-align: right;
     }
     .fn {
-      font-size: 22px;
+      font-size: 24px;
       width: 0;
       flex-grow: 1;
     }

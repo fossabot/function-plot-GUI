@@ -1,6 +1,6 @@
 <template>
   <div class="filled-textfield" :class="{ focus: isFocus }">
-    <label :class="{ lifted: isFocus || !isEmpty }">{{ props.label }}</label>
+    <label :class="{ lifted: !isEmpty }">{{ props.label }}</label>
     <input
       @focus="isFocus = true"
       @blur="isFocus = false"
@@ -26,18 +26,15 @@ const isEmpty = computed(() => value.value === "");
   background-color: var(--s-color-surface-container-high);
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
-  border-bottom: var(--s-color-outline) solid 0.15em;
+  border-bottom: var(--s-color-outline) solid 0.1em;
   transition:
     background-color 0.2s,
     border-bottom-color 0.2s;
-  padding: 1em 0.6em 0.3em 0.6em;
+  padding: 0;
   display: flex;
   &.focus {
     background-color: var(--s-color-surface-container-highest);
     border-bottom-color: var(--s-color-primary);
-    label {
-      color: var(--s-color-primary);
-    }
   }
   input {
     background-color: transparent;
@@ -48,7 +45,8 @@ const isEmpty = computed(() => value.value === "");
     display: block;
     width: 0;
     flex-grow: 1;
-    padding: 0;
+    padding: 0.4em 0.45em 0.3em 0.45em;
+    caret-color: var(--s-color-primary);
     line-height: 1.2;
     z-index: 1;
   }
@@ -56,14 +54,11 @@ const isEmpty = computed(() => value.value === "");
     color: var(--s-color-outline);
     position: absolute;
     line-height: 1.2;
-    transition:
-      transform 0.2s,
-      font-size 0.2s;
-    transform: translateY(-0.3em);
+    transition: opacity 0.1s;
+    padding: 0.35em 0.45em 0.3em 0.45em;
   }
   label.lifted {
-    transform: translateY(-120%);
-    font-size: 0.6em;
+    opacity: 0;
   }
 }
 </style>
