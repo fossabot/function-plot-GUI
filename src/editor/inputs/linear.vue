@@ -1,8 +1,10 @@
 <template>
   <div class="input-inner">
-    <span class="input-title styled">y=</span>
-    <s-text-field class="styled" ref="inputBox" label="f(x)" v-model="self.fn">
-    </s-text-field>
+    <div class="field main-fn">
+      <span class="label styled">y=</span>
+      <filledTextfield class="styled fn" label="f(x)" v-model="self.fn">
+      </filledTextfield>
+    </div>
     <s-fold :folded="props.folded">
       <s-divider>{{ t("title.moreOptions") }}</s-divider>
       <p>
@@ -26,4 +28,30 @@ const props = defineProps<{
   index: number;
 }>();
 const self = toRef(props, "self");
+
+import FilledTextfield from "@/ui/components/filled-textfield.vue";
 </script>
+
+<style lang="scss">
+.input-inner {
+  display: flex;
+  flex-direction: column;
+
+  .field.main-fn {
+    display: flex;
+    align-items: center;
+    font-size: 25px;
+    .label {
+      margin: 0 0.1em -0.1em 0;
+      width: 1.8em;
+      margin-left: 0;
+      text-align: right;
+    }
+    .fn {
+      font-size: 22px;
+      width: 0;
+      flex-grow: 1;
+    }
+  }
+}
+</style>

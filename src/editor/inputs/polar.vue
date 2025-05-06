@@ -1,8 +1,24 @@
 <template>
-  <span class="input-title styled">r=</span>
-  <s-text-field class="styled" ref="inputBox" label="f(x,y)" v-model="self.r">
-  </s-text-field>
-  <s-divider>{{ t("title.moreOptions") }}</s-divider>
+  <div class="input-inner">
+    <div class="field main-fn">
+      <span class="label styled">ρ=</span>
+      <s-text-field
+        class="styled fn"
+        ref="inputBox"
+        label="f(θ)"
+        v-model="self.r"
+      >
+      </s-text-field>
+    </div>
+  </div>
+  <s-fold :folded="props.folded">
+    <s-divider>{{ t("title.moreOptions") }}</s-divider>
+    <p>
+      Lorem ipsum dolor, sit amet consectetur adipisicing elit. Tempora ab hic
+      accusamus iure natus expedita laborum ea nam, reiciendis obcaecati animi
+      voluptatem nisi assumenda ipsam nihil fuga minima? Id, ab?
+    </p>
+  </s-fold>
 </template>
 
 <script setup lang="ts">

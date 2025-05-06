@@ -21,20 +21,6 @@
       "color": "cyan-800",
       "lightColor": "light-green-700",
       "folderNames": ["inputs"]
-    },
-    {
-      "name": "icon",
-      "base": "svg",
-      "color": "purple-400",
-      "lightColor": "purple-100",
-      "folderNames": ["icons"]
-    },
-    {
-      "name": "animate",
-      "base": "animation",
-      "color": "purple-400",
-      "lightColor": "purple-100",
-      "folderNames": ["animated"]
     }
   ],
   "material-icon-theme.files.associations": {

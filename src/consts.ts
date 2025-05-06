@@ -107,7 +107,6 @@ export function toOriginalDatum(items: InternalDatum[], forExport?: boolean) {
       (item) => item.value === graphType
     );
     if (!graphTypeObj) throw new Error("graphType not found: " + graphType);
-    console.log(fnType, graphTypeObj);
     if (getFnType(fnType).default) {
       delete (<any>item).fnType;
     }
@@ -153,12 +152,6 @@ export const getFnType = (fnType: string = "linear") =>
 
 /** graphType 字段选项 */
 export const getAllowedGraphType = (fnType: string) => {
-  console.log(
-    fnType,
-    fnTypeArr.find(({ value }) => value === fnType),
-    fnTypeArr.find(({ value }) => value === fnType)?.allowedGraphType
-  );
-
   const fnTypeObj = fnTypeArr.find(({ value }) => value === fnType);
   if (!fnTypeObj) throw new Error("fnType not found: " + fnType);
   return fnTypeObj.allowedGraphType;
