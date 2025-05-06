@@ -41,4 +41,14 @@ const profile = useProfile();
 .datumFolder {
   border-bottom: var(--s-color-outline-variant) 1px solid;
 }
+
+.plot-data.add-data {
+  position: relative;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  margin-bottom: 50px;
+  display: flex;
+  gap: 5px;
+  cursor: pointer;
+}
 </style>

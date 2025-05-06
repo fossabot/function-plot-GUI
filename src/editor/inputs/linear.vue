@@ -6,11 +6,37 @@
     </div>
     <s-fold :folded="props.folded">
       <s-divider>{{ t("title.moreOptions") }}</s-divider>
-      <p>
-        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Tempora ab hic
-        accusamus iure natus expedita laborum ea nam, reiciendis obcaecati animi
-        voluptatem nisi assumenda ipsam nihil fuga minima? Id, ab?
-      </p>
+      <div class="input-inner-optional">
+        <div class="fields">
+          <span class="label">颜色</span>
+          <s-text-field
+            class="input monospace"
+            label="颜色"
+            v-model="self.color"
+          ></s-text-field>
+          <span class="label">采样数</span>
+          <s-text-field
+            class="input monospace"
+            type="number"
+            label="采样数"
+            v-model="self.nSamples"
+            :min="1"
+            @blur="if (!self.nSamples) self.nSamples = undefined;"
+          ></s-text-field>
+        </div>
+        <div class="switches">
+          <s-checkbox type="checkbox" v-model.lazy="self.closed">
+            闭合并填充
+          </s-checkbox>
+          <s-checkbox type="checkbox" v-model.lazy="self.skipTip">
+            不显示指示条
+            <s-tooltip>
+              <s-icon class="help" name="search" slot="trigger"></s-icon>
+              鼠标经过时标出的点及其坐标
+            </s-tooltip>
+          </s-checkbox>
+        </div>
+      </div>
     </s-fold>
   </div>
 </template>
@@ -29,29 +55,5 @@ const props = defineProps<{
 const self = toRef(props, "self");
 
 import FilledTextfield from "@/ui/components/filled-textfield.vue";
+import "./inputs.scss";
 </script>
-
-<style lang="scss">
-.input-inner {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-
-  .field.main-fn {
-    display: flex;
-    align-items: center;
-    font-size: 25px;
-    .label {
-      margin: 0 0.1em 0 0;
-      width: 1.8em;
-      margin-left: 0;
-      text-align: right;
-    }
-    .fn {
-      font-size: 24px;
-      width: 0;
-      flex-grow: 1;
-    }
-  }
-}
-</style>

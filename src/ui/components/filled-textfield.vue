@@ -45,7 +45,6 @@ const isEmpty = computed(() => value.value === "");
     display: block;
     width: 0;
     flex-grow: 1;
-    padding: 0.4em 0.45em 0.3em 0.45em;
     caret-color: var(--s-color-primary);
     line-height: 1.2;
     z-index: 1;
@@ -54,8 +53,13 @@ const isEmpty = computed(() => value.value === "");
     color: var(--s-color-outline);
     position: absolute;
     line-height: 1.2;
-    transition: opacity 0.1s;
-    padding: 0.35em 0.45em 0.3em 0.45em;
+  }
+  input,
+  label {
+    padding: 0.4em 0.45em 0.3em 0.45em;
+  }
+  &.styled label {
+    transform: translateY(-0.05em);
   }
   label.lifted {
     opacity: 0;

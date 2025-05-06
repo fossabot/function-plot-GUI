@@ -1,0 +1,68 @@
+.input-inner {
+  display: flex;
+  flex-direction: column;
+  --input-inner-gap: 8px;
+  gap: var(--input-inner-gap);
+
+  .field.main-fn {
+    font-size: 25px;
+    display: flex;
+    align-items: center;
+    .label {
+      margin: 0 0.1em 0 0;
+      width: 1.8em;
+      margin-left: 0;
+      text-align: right;
+    }
+    .fn {
+      font-size: 24px;
+      width: 0;
+      flex-grow: 1;
+    }
+  }
+
+  s-fold {
+    margin: -8px -15px 0 -15px;
+  }
+  s-divider {
+    margin: var(--input-inner-gap) 15px;
+    padding: var(--input-inner-gap) 0;
+  }
+  .input-inner-optional {
+    font-size: 16px;
+    .fields {
+      display: grid;
+      grid-template-columns: max-content minmax(auto, 15em);
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 15px;
+      gap: var(--input-inner-gap);
+      s-text-field {
+        width: 100%;
+        font-size: inherit;
+        &.styled {
+          font-size: 1.1em;
+        }
+      }
+      .label {
+        justify-self: start;
+      }
+      .input {
+        justify-self: end;
+      }
+    }
+    .switches {
+      display: flex;
+      padding: 0 15px 0 5px;
+      margin-top: var(--input-inner-gap);
+      column-gap: 2em;
+      align-items: center;
+      flex-wrap: wrap;
+      .help {
+        width: 1.2em;
+        color: inherit;
+        margin-left: 0.3em;
+      }
+    }
+  }
+}

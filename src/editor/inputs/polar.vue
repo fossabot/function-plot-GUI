@@ -2,13 +2,12 @@
   <div class="input-inner">
     <div class="field main-fn">
       <span class="label styled">ρ=</span>
-      <s-text-field
+      <FilledTextfield
         class="styled fn"
         ref="inputBox"
         label="f(θ)"
         v-model="self.r"
-      >
-      </s-text-field>
+      />
     </div>
   </div>
   <s-fold :folded="props.folded">
@@ -23,6 +22,7 @@
 
 <script setup lang="ts">
 import { PrivateDataTypes } from "@/types/data";
+import FilledTextfield from "@/ui/components/filled-textfield.vue";
 import { toRef } from "vue";
 import { useI18n } from "vue-i18n";
 const { t } = useI18n();
