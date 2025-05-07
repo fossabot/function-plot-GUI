@@ -8,11 +8,15 @@
       <s-divider>{{ t("title.moreOptions") }}</s-divider>
       <div class="input-inner-optional">
         <div class="fields">
+          <span class="label">定义域</span>
+          <Domain :self="self" />
           <span class="label">
-            颜色 <HelpIcon> 支持颜色名称 / RGB(A) / HEX </HelpIcon>
+            颜色 <HelpIcon> 支持颜色名称 / RGB(A) / HEX，留空将自动着色 </HelpIcon>
           </span>
           <ColorPicker v-model="self.color" />
-          <span class="label">采样数</span>
+          <span class="label"
+            >采样数 <HelpIcon> 留空则根据图像宽度动态调整 </HelpIcon>
+          </span>
           <s-text-field
             class="input monospace"
             type="number"
@@ -27,8 +31,8 @@
             闭合并填充
           </s-checkbox>
           <s-checkbox type="checkbox" v-model.lazy="self.skipTip">
-            不显示指示条
-            <HelpIcon> 鼠标经过时标出的点及其坐标 </HelpIcon>
+            隐藏悬浮指示条
+            <HelpIcon> 隐藏鼠标经过时标出的点与坐标信息 </HelpIcon>
           </s-checkbox>
         </div>
       </div>
@@ -52,5 +56,6 @@ const self = toRef(props, "self");
 import FilledTextfield from "./subblocks/function.vue";
 import HelpIcon from "./subblocks/helpIcon.vue";
 import ColorPicker from "./subblocks/colorPicker.vue";
+import Domain from "./subblocks/domain.vue";
 import "./inputs.scss";
 </script>

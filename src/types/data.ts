@@ -13,6 +13,7 @@ export namespace PrivateDataTypes {
     skipTip: boolean;
     nSamples: number | undefined;
     closed: boolean;
+    range: [number, number];
   };
 
   export const allowedGraphTypes = {
@@ -81,6 +82,8 @@ export namespace PrivateDataTypes {
     | Vector
     | Text;
 
+  export type Functions = Linear | Implicit | Parametric | Polar;
+
   export type Full = Linear &
     Implicit &
     Parametric &
@@ -105,16 +108,28 @@ export function toPublicData(data: PrivateData): FunctionPlotDatum {
         color: "",
       }
     );
-  return omitAttr(cloneDeep(data), {
-    key: () => true,
-    fnType: "linear",
-    graphType: "interval",
-    skipTip: false,
-    closed: false,
-    hidden: false,
-    color: "",
-    nSamples: undefined,
-  });
+  return omitAttr(
+    cloneDeep({
+      ...data,
+      range: ((): [number, number] | undefined => {
+        if (!("range" in data)) return undefined;
+        let [v1, v2] = data.range;
+        if (v1 === -Infinity && v2 === Infinity) return undefined;
+        return data.range;
+      })(),
+    }),
+    {
+      key: () => true,
+      fnType: "linear",
+      graphType: "interval",
+      skipTip: false,
+      closed: false,
+      hidden: false,
+      color: "",
+      nSamples: undefined,
+      range: (range) => range === undefined,
+    }
+  );
 }
 
 export function toPrivateData(input: Object) {
@@ -129,6 +144,7 @@ export function toPrivateData(input: Object) {
     skipTip: false,
     closed: false,
     nSamples: undefined,
+    range: () => [-Infinity, Infinity] as [number, number],
   });
   switch (data.fnType) {
     case "linear":

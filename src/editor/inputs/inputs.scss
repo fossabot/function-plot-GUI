@@ -34,7 +34,7 @@
     padding: 0 15px;
     .fields {
       display: grid;
-      grid-template-columns: max-content minmax(auto, 20em);
+      grid-template-columns: max-content minmax(auto, 18em);
       justify-content: space-between;
       align-items: center;
       gap: var(--input-inner-gap);
@@ -42,9 +42,6 @@
     s-text-field {
       width: 100%;
       font-size: inherit;
-      &.styled {
-        font-size: 1.1em;
-      }
     }
     .label {
       justify-self: start;
