@@ -1,6 +1,6 @@
 <template>
   <s-text-field class="input monospace" label="颜色" v-model.trim="color">
-    <s-popup slot="end" align="right" ref="popup" @show="pickerKey = Symbol()">
+    <s-popup slot="end" ref="popup" @show="pickerKey = Symbol()">
       <s-icon-button
         slot="trigger"
         class="colorpicker-button"
@@ -8,18 +8,20 @@
       >
         <SIconPalette />
       </s-icon-button>
-      <ColorPicker
-        :color="processedColor"
-        sucker-hide
-        @changeColor="changeColor"
-        :key="pickerKey"
-      />
+      <div class="colorpicker-popup-shell">
+        <ColorPicker
+          :color="processedColor"
+          sucker-hide
+          @changeColor="changeColor"
+          :key="pickerKey"
+        />
+      </div>
     </s-popup>
   </s-text-field>
 </template>
 
 <script lang="ts" setup>
-import { nameToHex } from "./coloUtils";
+import { hexToRgba, nameToHex } from "./coloUtils";
 import SIconPalette from "@/ui/icons/palette.vue";
 import { computed, ref } from "vue";
 import { ColorPicker } from "vue-color-kit";
@@ -33,9 +35,11 @@ interface ColorPickerArgs {
 }
 
 const processedColor = computed(() => {
-  const colorstr = color.value.trim() || "#4682B4";
-  if (colorstr.startsWith("#") || colorstr.startsWith("rgb")) return colorstr;
-  return nameToHex(colorstr) ?? colorstr;
+  let colorstr = color.value.trim() || "#4682B4";
+  colorstr = nameToHex(colorstr) ?? colorstr;
+  if (colorstr.startsWith("rgb")) return colorstr;
+  if (colorstr.startsWith("#")) return hexToRgba(colorstr);
+  return colorstr;
 });
 
 function changeColor(newColor: ColorPickerArgs) {

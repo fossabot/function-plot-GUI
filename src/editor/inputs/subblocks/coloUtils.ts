@@ -1,7 +1,24 @@
 export function nameToHex(name: string) {
+  if (name.startsWith("#") || name.startsWith("rgb")) return undefined;
   const hex = colorNames[name.toLowerCase() as keyof typeof colorNames];
   if (hex) return hex;
   return undefined;
+}
+
+export function hexToRgba(hex: string) {
+  if (hex.startsWith("#")) {
+    hex = hex.slice(1);
+  }
+  if (hex.length === 3 || hex.length === 4)
+    hex = [...hex].map((c) => c + c).join("");
+  if (hex.length === 6) hex += "FF";
+  const bigint = parseInt(hex, 16);
+  const r = (bigint >> 24) & 255;
+  const g = (bigint >> 16) & 255;
+  const b = (bigint >> 8) & 255;
+  const a = bigint & 255;
+  if (a === 255) return `rgb(${r}, ${g}, ${b})`;
+  return `rgba(${r}, ${g}, ${b}, ${a / 255})`;
 }
 
 const colorNames = {
