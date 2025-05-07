@@ -1,8 +1,8 @@
 <template>
   <s-scroll-view>
     <div id="options">
+      <!-- global -->
       <s-divider>{{ t("options.global") }}</s-divider>
-
       <div class="option">
         <span class="label">{{ t("options.grid") }}</span>
         <s-switch
@@ -18,6 +18,7 @@
         ></s-text-field>
       </div>
 
+      <!-- xAxis -->
       <s-divider>{{ t("options.horizontal") }}</s-divider>
       <div class="option">
         <span class="label">{{ t("options.axis.reverse") }}</span>
@@ -45,6 +46,7 @@
         ></s-text-field>
       </div>
 
+      <!-- yAxis -->
       <s-divider>{{ t("options.vertical") }}</s-divider>
       <div class="option">
         <span class="label">{{ t("options.axis.reverse") }}</span>
