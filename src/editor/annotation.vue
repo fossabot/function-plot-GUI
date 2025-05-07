@@ -96,9 +96,22 @@ function handleValueBlur() {
   self.value.value = Number(self.value.value);
 }
 
+import { Snackbar } from "sober";
 function deleteAnnotation() {
-  emitter.emit("require-full-update", "annotations axis change");
+  const backup = props.self;
   profile.annotations.splice(props.index, 1);
+  emitter.emit("require-full-update", "annotations axis change");
+  profile.datum.splice(props.index, 1);
+  Snackbar.builder({
+    text: t("editor.delete.success"),
+    action: {
+      text: t("editor.delete.undo"),
+      click: () => {
+        profile.annotations.splice(props.index, 0, backup);
+        emitter.emit("require-full-update", "annotations axis change");
+      },
+    },
+  });
 }
 </script>
 
@@ -136,6 +149,7 @@ function deleteAnnotation() {
   }
   .text {
     font-size: 16px;
+    flex-grow: 2;
   }
 }
 
