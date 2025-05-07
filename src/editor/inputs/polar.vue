@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 import { PrivateDataTypes } from "@/types/data";
-import FilledTextfield from "@/ui/components/filled-textfield.vue";
+import FilledTextfield from "@/editor/inputs/subblocks/function.vue";
 import { toRef } from "vue";
 import { useI18n } from "vue-i18n";
 const { t } = useI18n();

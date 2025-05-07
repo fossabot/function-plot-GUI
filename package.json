@@ -22,6 +22,7 @@
     "sober": "^1.1.1",
     "utf8": "^3.0.0",
     "vue": "^3.5.13",
+    "vue-color-kit": "^1.0.6",
     "vue-draggable-plus": "^0.6.0",
     "vue-i18n": "^10.0.7"
   },

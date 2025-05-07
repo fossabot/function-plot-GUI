@@ -28,41 +28,41 @@
     margin: var(--input-inner-gap) 15px;
     padding: var(--input-inner-gap) 0;
   }
+
   .input-inner-optional {
     font-size: 16px;
+    padding: 0 15px;
     .fields {
       display: grid;
       grid-template-columns: max-content minmax(auto, 15em);
       justify-content: space-between;
       align-items: center;
-      padding: 0 15px;
       gap: var(--input-inner-gap);
-      s-text-field {
-        width: 100%;
-        font-size: inherit;
-        &.styled {
-          font-size: 1.1em;
-        }
-      }
-      .label {
-        justify-self: start;
-      }
-      .input {
-        justify-self: end;
+    }
+    s-text-field {
+      width: 100%;
+      font-size: inherit;
+      &.styled {
+        font-size: 1.1em;
       }
     }
+    .label {
+      justify-self: start;
+      display: flex;
+    }
+    .input {
+      justify-self: end;
+    }
+
     .switches {
       display: flex;
-      padding: 0 15px 0 5px;
       margin-top: var(--input-inner-gap);
       column-gap: 2em;
       align-items: center;
       flex-wrap: wrap;
-      .help {
-        width: 1.2em;
-        color: inherit;
-        margin-left: 0.3em;
-      }
+    }
+    s-checkbox {
+      margin-left: -10px;
     }
   }
 }

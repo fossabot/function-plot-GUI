@@ -25,7 +25,7 @@ import { toRef } from "vue";
 import { useI18n } from "vue-i18n";
 const { t } = useI18n();
 
-import FilledTextfield from "@/ui/components/filled-textfield.vue";
+import FilledTextfield from "@/editor/inputs/subblocks/function.vue";
 
 const props = defineProps<{
   folded: boolean;

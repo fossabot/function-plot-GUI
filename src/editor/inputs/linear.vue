@@ -8,12 +8,10 @@
       <s-divider>{{ t("title.moreOptions") }}</s-divider>
       <div class="input-inner-optional">
         <div class="fields">
-          <span class="label">颜色</span>
-          <s-text-field
-            class="input monospace"
-            label="颜色"
-            v-model="self.color"
-          ></s-text-field>
+          <span class="label">
+            颜色 <HelpIcon> 鼠标经过时标出的点及其坐标 </HelpIcon>
+          </span>
+          <ColorPicker v-model="self.color" />
           <span class="label">采样数</span>
           <s-text-field
             class="input monospace"
@@ -30,10 +28,7 @@
           </s-checkbox>
           <s-checkbox type="checkbox" v-model.lazy="self.skipTip">
             不显示指示条
-            <s-tooltip>
-              <s-icon class="help" name="search" slot="trigger"></s-icon>
-              鼠标经过时标出的点及其坐标
-            </s-tooltip>
+            <HelpIcon> 鼠标经过时标出的点及其坐标 </HelpIcon>
           </s-checkbox>
         </div>
       </div>
@@ -54,6 +49,8 @@ const props = defineProps<{
 }>();
 const self = toRef(props, "self");
 
-import FilledTextfield from "@/ui/components/filled-textfield.vue";
+import FilledTextfield from "./subblocks/function.vue";
+import HelpIcon from "./subblocks/helpIcon.vue";
+import ColorPicker from "./subblocks/colorPicker.vue";
 import "./inputs.scss";
 </script>
