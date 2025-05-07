@@ -8,6 +8,11 @@
       <s-divider>{{ t("data.more.dividerTitle") }}</s-divider>
       <div class="input-inner-optional">
         <div class="fields">
+          <span class="label"> 切线与割线 </span>
+          <s-popup class="derivate-popup input" align="right">
+            <s-button type="outlined" slot="trigger"> 设置面板 </s-button>
+            <DerivatePane :self="self"/>
+          </s-popup>
           <span class="label"> {{ t("data.more.range") }} </span>
           <Domain :self="self" />
           <span class="label">
@@ -41,7 +46,7 @@
 
 <script setup lang="ts">
 import { PrivateDataTypes } from "@/types/data";
-import { toRef } from "vue";
+import {  toRef } from "vue";
 import { useI18n } from "vue-i18n";
 import { I18nSchema } from "@/i18n";
 const { t } = useI18n<{ message: I18nSchema }>();
@@ -57,5 +62,8 @@ import FilledTextfield from "./subblocks/function.vue";
 import HelpIcon from "./subblocks/helpIcon.vue";
 import ColorPicker from "./subblocks/colorPicker.vue";
 import Domain from "./subblocks/domain.vue";
+import DerivatePane from "./subblocks/derivatePane.vue";
 import "./inputs.scss";
+
 </script>
+

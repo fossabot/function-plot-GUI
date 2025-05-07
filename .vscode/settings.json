@@ -20,7 +20,7 @@
       "base": "mock",
       "color": "cyan-800",
       "lightColor": "light-green-700",
-      "folderNames": ["inputs"]
+      "folderNames": ["inputs", "subblocks"]
     }
   ],
   "material-icon-theme.files.associations": {

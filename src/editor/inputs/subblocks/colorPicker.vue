@@ -14,7 +14,7 @@
         <s-icon name="close"></s-icon>
       </s-icon-button>
     </Transition>
-    <s-popup slot="end" ref="popup" @show="pickerKey = Symbol()">
+    <s-popup slot="end" @show="pickerKey = Symbol()" align="right">
       <s-icon-button
         slot="trigger"
         class="colorpicker-button"
