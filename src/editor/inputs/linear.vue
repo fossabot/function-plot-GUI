@@ -9,7 +9,7 @@
       <div class="input-inner-optional">
         <div class="fields">
           <span class="label">
-            颜色 <HelpIcon> 鼠标经过时标出的点及其坐标 </HelpIcon>
+            颜色 <HelpIcon> 支持颜色名称 / RGB(A) / HEX </HelpIcon>
           </span>
           <ColorPicker v-model="self.color" />
           <span class="label">采样数</span>

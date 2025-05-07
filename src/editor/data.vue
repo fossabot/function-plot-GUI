@@ -173,7 +173,7 @@ watch(fnType, (newFnType) => {
 }
 .plot-data.hidden {
   opacity: 0.6;
-  filter: contrast(0.6) saturate(0.8);
+  filter: saturate(0.8);
 }
 .datumFolder {
   border-bottom: var(--s-color-outline-variant) 1px solid;

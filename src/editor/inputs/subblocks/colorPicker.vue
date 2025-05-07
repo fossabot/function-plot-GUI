@@ -1,6 +1,6 @@
 <template>
-  <s-text-field class="input monospace" label="颜色" v-model="color">
-    <s-popup slot="end" align="right">
+  <s-text-field class="input monospace" label="颜色" v-model.trim="color">
+    <s-popup slot="end" align="right" ref="popup" @show="pickerKey = Symbol()">
       <s-icon-button
         slot="trigger"
         class="colorpicker-button"
@@ -8,13 +8,20 @@
       >
         <SIconPalette />
       </s-icon-button>
-      <ColorPicker :color="color" sucker-hide @changeColor="changeColor" />
+      <ColorPicker
+        :color="processedColor"
+        sucker-hide
+        @changeColor="changeColor"
+        :key="pickerKey"
+      />
     </s-popup>
   </s-text-field>
 </template>
 
 <script lang="ts" setup>
+import { nameToHex } from "./coloUtils";
 import SIconPalette from "@/ui/icons/palette.vue";
+import { computed, ref } from "vue";
 import { ColorPicker } from "vue-color-kit";
 
 const color = defineModel<string>({ required: true });
@@ -25,7 +32,19 @@ interface ColorPickerArgs {
   hsv: { h: number; s: number; v: number };
 }
 
+const processedColor = computed(() => {
+  const colorstr = color.value.trim() || "#4682B4";
+  if (colorstr.startsWith("#") || colorstr.startsWith("rgb")) return colorstr;
+  return nameToHex(colorstr) ?? colorstr;
+});
+
 function changeColor(newColor: ColorPickerArgs) {
+  if (color.value.startsWith("rgb")) {
+    const { r, g, b, a } = newColor.rgba;
+    if (a < 1) color.value = `rgba(${r}, ${g}, ${b}, ${a})`;
+    else color.value = `rgb(${r}, ${g}, ${b})`;
+    return;
+  }
   let { hex } = newColor;
   if (newColor.rgba.a < 1) {
     hex =
@@ -37,6 +56,8 @@ function changeColor(newColor: ColorPickerArgs) {
   }
   color.value = hex;
 }
+
+const pickerKey = ref(Symbol());
 </script>
 
 <style lang="scss">
