@@ -51,7 +51,8 @@ input[type="number"] {
 }
 
 .monospace,
-.monospace::part(input) {
+.monospace::part(input),
+.monospace-inner::part(input) {
   font-family: var(--font-mono);
 }
 

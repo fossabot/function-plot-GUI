@@ -1,5 +1,19 @@
 <template>
-  <s-text-field class="input monospace" label="颜色" v-model.trim="color">
+  <s-text-field
+    class="input monospace-inner"
+    :label="t('data.more.color')"
+    v-model.trim="color"
+  >
+    <Transition name="fade">
+      <s-icon-button
+        slot="end"
+        class="colorpicker-button"
+        v-if="color !== ''"
+        @click="color = ''"
+      >
+        <s-icon name="close"></s-icon>
+      </s-icon-button>
+    </Transition>
     <s-popup slot="end" ref="popup" @show="pickerKey = Symbol()">
       <s-icon-button
         slot="trigger"
@@ -25,6 +39,10 @@ import { hexToRgba, nameToHex } from "./coloUtils";
 import SIconPalette from "@/ui/icons/palette.vue";
 import { computed, ref } from "vue";
 import { ColorPicker } from "vue-color-kit";
+
+import { useI18n } from "vue-i18n";
+import { I18nSchema } from "@/i18n";
+const { t } = useI18n<{ message: I18nSchema }>();
 
 const color = defineModel<string>({ required: true });
 
@@ -188,6 +206,17 @@ const pickerKey = ref(Symbol());
         border-radius: 3px;
       }
     }
+  }
+}
+
+.fade {
+  &-enter-active,
+  &-leave-active {
+    transition: opacity 0.1s;
+  }
+  &-enter-from,
+  &-leave-to {
+    opacity: 0;
   }
 }
 </style>

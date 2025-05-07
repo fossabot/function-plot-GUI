@@ -26,7 +26,7 @@ const isEmpty = computed(() => value.value === "");
   background-color: var(--s-color-surface-container-high);
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
-  border-bottom: var(--s-color-outline) solid 0.1em;
+  border-bottom: var(--s-color-outline-variant) solid 0.1em;
   transition:
     background-color 0.2s,
     border-bottom-color 0.2s;
@@ -48,6 +48,7 @@ const isEmpty = computed(() => value.value === "");
     caret-color: var(--s-color-primary);
     line-height: 1.2;
     z-index: 1;
+    color:var(--s-color)
   }
   label {
     color: var(--s-color-outline);
