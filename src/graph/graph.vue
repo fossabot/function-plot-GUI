@@ -9,7 +9,7 @@
         >
           <SIconRefresh class="spin" />
         </s-icon-button>
-        {{ t("buttons.reset") }}
+        {{ t("graph.reload") }}
       </s-tooltip>
       <s-tooltip align="right" v-if="errorMsg !== undefined">
         <s-icon-button slot="trigger" style="color: var(--s-color-warning)">
@@ -23,7 +23,8 @@
 
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
-const { t } = useI18n();
+import { I18nSchema } from "@/i18n";
+const { t } = useI18n<{ message: I18nSchema }>();
 
 import SIconRefresh from "@/ui/icons/refresh.vue";
 import SIconWarn from "@/ui/icons/warn.vue";

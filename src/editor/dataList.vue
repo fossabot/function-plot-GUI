@@ -17,7 +17,7 @@
     </VueDraggable>
     <div class="plot-data add-data" @click="profile.addData">
       <s-icon name="add" />
-      {{ t("buttons.add") }}
+      {{ t('editor.add') }}
       <s-ripple attached></s-ripple>
     </div>
   </s-scroll-view>
@@ -25,7 +25,8 @@
 
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
-const { t } = useI18n();
+import { I18nSchema } from "@/i18n";
+const { t } = useI18n<{ message: I18nSchema }>();
 
 import { VueDraggable } from "vue-draggable-plus";
 

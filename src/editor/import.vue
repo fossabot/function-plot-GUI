@@ -4,28 +4,31 @@
       <s-fab slot="trigger">
         <SIconImport />
       </s-fab>
-      {{ t("buttons.import") }}
+      {{ t("editor.import") }}
     </s-tooltip>
-    <div slot="headline" class="dialog-title">{{ t("title.source") }}</div>
+    <div slot="headline" class="dialog-title">
+      {{ t("editor.importRelated.title") }}
+    </div>
     <s-text-field
       slot="text"
-      label="JSON5 / JSON"
+      :label="t('editor.importRelated.placeholder')"
       multiLine
       v-model.lazy="importStr"
       class="monospace"
     ></s-text-field>
     <s-button slot="action" type="text">
-      {{ t("buttons.cancel") }}
+      {{ t("editor.importRelated.cancel") }}
     </s-button>
     <s-button slot="action" type="text" @click="handleImport">
-      {{ t("buttons.confirm") }}
+      {{ t("editor.importRelated.confirm") }}
     </s-button>
   </s-dialog>
 </template>
 
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
-const { t } = useI18n();
+import { I18nSchema } from "@/i18n";
+const { t } = useI18n<{ message: I18nSchema }>();
 
 import SIconImport from "@/ui/icons/import.vue";
 
@@ -59,12 +62,12 @@ function handleImport() {
       profile.options = newOptions;
       emitter.emit("require-full-update", "Data import");
       Snackbar.builder({
-        text: t("title.importSuccess"),
+        text: t("editor.importRelated.success"),
         type: "success",
       });
     } catch (e) {
       Snackbar.builder({
-        text: t("title.importFail"),
+        text: t("editor.importRelated.fail"),
         type: "error",
       });
     }

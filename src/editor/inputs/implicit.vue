@@ -23,7 +23,8 @@
 import { PrivateDataTypes } from "@/types/data";
 import { toRef } from "vue";
 import { useI18n } from "vue-i18n";
-const { t } = useI18n();
+import { I18nSchema } from "@/i18n";
+const { t } = useI18n<{ message: I18nSchema }>();
 
 import FilledTextfield from "@/editor/inputs/subblocks/function.vue";
 

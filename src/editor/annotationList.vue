@@ -17,7 +17,7 @@
     </VueDraggable>
     <div class="plot-data add-data" @click="profile.addAnnotation">
       <s-icon name="add" />
-      {{ t("buttons.add") }}
+      {{ t("editor.add") }}
       <s-ripple attached></s-ripple>
     </div>
   </s-scroll-view>
@@ -25,7 +25,8 @@
 
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
-const { t } = useI18n();
+import { I18nSchema } from "@/i18n";
+const { t } = useI18n<{ message: I18nSchema }>();
 
 import AnimatedList from "@/ui/animated/animatedList.vue";
 import AnimatedListItem from "@/ui/animated/animatedListItem.vue";

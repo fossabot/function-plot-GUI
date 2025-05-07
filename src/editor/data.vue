@@ -3,24 +3,24 @@
     <div class="selectors">
       <!-- fnType Picker -->
       <s-picker
-        :label="t('inputs.fnType')"
+        :label="t('data.main.fnType')"
         v-model.lazy="fnType"
         :key="selectKey"
       >
         <s-picker-item v-for="type in fnTypeArr" :value="type.value">
-          {{ t(type.label) }}
+          {{ t("data.fnType." + type.value) }}
         </s-picker-item>
       </s-picker>
 
       <!-- graphType Picker -->
       <s-picker
-        :label="t('inputs.graphType')"
+        :label="t('data.main.graphType')"
         v-model.lazy="props.self.graphType"
         v-show="props.self.graphType !== 'text'"
         :key="selectKey"
       >
         <s-picker-item v-for="type in allowedGraphType" :value="type.value">
-          {{ t(type.label) }}
+          {{ t("data.graphType." + type.value) }}
         </s-picker-item>
       </s-picker>
 
@@ -37,7 +37,7 @@
           >
             <SIconDelete />
           </s-icon-button>
-          {{ t("buttons.del") }}
+          {{ t("data.topButton.delete") }}
         </s-tooltip>
         <!-- Hide -->
         <s-tooltip>
@@ -48,14 +48,14 @@
           >
             <SIconHide />
           </s-icon-button>
-          {{ t("buttons.hide") }}
+          {{ t("data.topButton.hide") }}
         </s-tooltip>
         <!-- Fold -->
         <s-tooltip>
           <s-icon-button slot="trigger" @click="folded = !folded">
             <s-icon :name="folded ? 'chevron_down' : 'chevron_up'"> </s-icon>
           </s-icon-button>
-          {{ t(folded ? "buttons.expand" : "buttons.collapse") }}
+          {{ t(`data.topButton.${folded ? "more" : "less"}`) }}
         </s-tooltip>
         <!-- Drag -->
         <span class="datablock-drag drag-icon">
@@ -76,7 +76,8 @@
 </template>
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
-const { t, locale } = useI18n();
+import { I18nSchema } from "@/i18n";
+const { locale, t } = useI18n<{ message: I18nSchema }>();
 
 import { fnTypeArr, getAllowedGraphType } from "../consts";
 import { ref, computed, toRef } from "vue";
@@ -114,9 +115,9 @@ function deleteDatum() {
   const backup = props.self;
   profile.datum.splice(props.index, 1);
   Snackbar.builder({
-    text: t("title.deleteSuccess"),
+    text: t("editor.delete.success"),
     action: {
-      text: t("buttons.undo"),
+      text: t("editor.delete.undo"),
       click: () => {
         profile.datum.splice(props.index, 0, backup);
       },

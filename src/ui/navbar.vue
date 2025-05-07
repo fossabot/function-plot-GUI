@@ -5,7 +5,8 @@
     </s-icon-button>
     <div slot="headline">
       <span class="nav-title">
-        function-plot-GUI <span class="version"> v0.4 </span>
+        function-plot-GUI
+        <span class="version"> v{{ version }} </span>
       </span>
     </div>
 
@@ -17,20 +18,20 @@
           :name="theme.index - 1 ? 'light_mode' : 'dark_mode'"
         ></s-icon>
       </s-icon-button>
-      {{ t("buttons.toogleTheme") }}
+      {{ t("nav.toogleTheme") }}
     </s-tooltip>
 
     <s-picker
       slot="action"
       v-model.lazy="locale"
       id="language"
-      :label="t('inputs.language')"
+      :label="t('nav.language')"
     >
       <s-tooltip slot="trigger">
         <s-icon-button slot="trigger">
           <SIconLanguage />
         </s-icon-button>
-        {{ t("buttons.language") }}
+        {{ t("nav.language") }}
       </s-tooltip>
 
       <s-picker-item value="zh-CN" selected>简体中文</s-picker-item>
@@ -40,7 +41,7 @@
       <s-icon-button slot="trigger" @click="openGithub">
         <SIconGtihub />
       </s-icon-button>
-      {{ t("buttons.repo") }}
+      {{ t("nav.repo") }}
     </s-tooltip>
   </s-appbar>
 </template>
@@ -48,8 +49,10 @@
 <script setup lang="ts">
 import { watch } from "vue";
 import { useI18n } from "vue-i18n";
+import { I18nSchema } from "@/i18n";
+const { locale, t } = useI18n<{ message: I18nSchema }>();
 
-const { locale, t } = useI18n();
+import { version } from "@/../package.json";
 
 watch(locale, () => {
   document.documentElement.setAttribute("lang", locale.value);

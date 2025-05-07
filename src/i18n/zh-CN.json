@@ -1,0 +1,103 @@
+{
+  "nav": {
+    "toogleTheme": "切换主题",
+    "language": "语言",
+    "repo": "GitHub 仓库"
+  },
+  "editor": {
+    "functions": "图线列表",
+    "annotations": "标线列表",
+    "graphOptions": "全局选项",
+    "add": "添加",
+    "import": "导入",
+    "importRelated": {
+      "title": "导入数据",
+      "placeholder": "JSON / JSON5 格式编码的数据",
+      "cancel": "取消",
+      "confirm": "导入",
+      "success": "导入成功",
+      "fail": "导入失败"
+    },
+    "delete": {
+      "success": "已删除",
+      "undo": "撤销"
+    }
+  },
+  "output": {
+    "title": "输出代码",
+    "copy": {
+      "tip": "复制代码",
+      "success": "复制成功",
+      "fail": "复制失败"
+    },
+    "expand": "展开",
+    "collapse": "收起"
+  },
+  "data": {
+    "fnType": {
+      "linear": "一般",
+      "implicit": "隐函数",
+      "parametric": "参数方程",
+      "polar": "极坐标",
+      "points": "点集",
+      "vector": "向量",
+      "text": "文本"
+    },
+    "graphType": {
+      "interval": "微矩形",
+      "polyline": "多段线",
+      "scatter": "散点",
+      "text": "文本"
+    },
+    "topButton": {
+      "delete": "删除图线",
+      "hide": "隐藏图线",
+      "more": "更多选项",
+      "less": "收起更多选项"
+    },
+    "main": {
+      "fnType": "图形类型",
+      "graphType": "绘制方式"
+    },
+    "more": {
+      "dividerTitle": "更多选项",
+      "range": "定义域",
+      "rangeMin": "最小值",
+      "rangeMax": "最大值",
+      "color": "颜色",
+      "colorHelp": "支持颜色名称 / RGB(A) / HEX，留空将自动着色",
+      "nSamples": "采样数",
+      "closed": "闭合并填充",
+      "skipTip": "隐藏悬浮提示",
+      "skipTipHelp": "隐藏鼠标经过时标出的点与坐标信息"
+    }
+  },
+  "annotation": {
+    "topButton": {
+      "delete": "删除标线",
+      "addText": "添加文本",
+      "removeText": "移除文本"
+    },
+    "horizontal": "水平",
+    "vertical": "竖直",
+    "text": "文本",
+    "value": "值"
+  },
+  "options": {
+    "grid": "网格线",
+    "title": "图表标题",
+    "global": "全局选项",
+    "horizontal": "横轴选项",
+    "vertical": "纵轴选项",
+    "axis": {
+      "reverse": "反向",
+      "grow": "增长方式",
+      "linear": "线性",
+      "log": "对数",
+      "caption": "轴标题"
+    }
+  },
+  "graph": {
+    "reload": "重载"
+  }
+}

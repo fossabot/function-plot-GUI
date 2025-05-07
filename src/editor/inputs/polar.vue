@@ -25,7 +25,8 @@ import { PrivateDataTypes } from "@/types/data";
 import FilledTextfield from "@/editor/inputs/subblocks/function.vue";
 import { toRef } from "vue";
 import { useI18n } from "vue-i18n";
-const { t } = useI18n();
+import { I18nSchema } from "@/i18n";
+const { t } = useI18n<{ message: I18nSchema }>();
 
 const props = defineProps<{
   folded: boolean;

@@ -4,18 +4,22 @@
       class="domain-input styled-inner"
       type="number"
       v-model="value1"
-      label="最小值"
+      :label="t('data.more.rangeMin')"
     ></s-text-field>
     <s-text-field
       class="domain-input styled-inner"
       type="number"
       v-model="value2"
-      label="最大值"
+      :label="t('data.more.rangeMax')"
     ></s-text-field>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
+import { I18nSchema } from "@/i18n";
+const { t } = useI18n<{ message: I18nSchema }>();
+
 import { PrivateDataTypes } from "@/types/data";
 import { ref, watch } from "vue";
 const props = defineProps<{ self: PrivateDataTypes.Functions }>();

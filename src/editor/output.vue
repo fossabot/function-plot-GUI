@@ -1,20 +1,20 @@
 <template>
   <div id="output">
-    <span id="outputTitle">{{ t("title.output") }} </span>
+    <span id="outputTitle">{{ t("output.title") }} </span>
     <div id="outputBtns">
       <s-button type="text" @click="folded = !folded" id="outputFoldButton">
         <s-icon
           slot="start"
           :name="folded ? 'chevron_up' : 'chevron_down'"
         ></s-icon>
-        {{ t(folded ? "buttons.expand" : "buttons.collapse") }}
+        {{ t(`output.${folded ? "expand" : "collapse"}`) }}
       </s-button>
 
       <s-tooltip align="right">
         <s-icon-button slot="trigger" @click="copyCode">
           <SIconCopy />
         </s-icon-button>
-        {{ t("buttons.copy") }}
+        {{ t("output.copy.tip") }}
       </s-tooltip>
     </div>
     <s-fold :folded="folded">
@@ -27,7 +27,8 @@
 
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
-const { t } = useI18n();
+import { I18nSchema } from "@/i18n";
+const { t } = useI18n<{ message: I18nSchema }>();
 
 import SIconCopy from "@/ui/icons/copy.vue";
 
@@ -79,7 +80,7 @@ function copyCode() {
   try {
     navigator.clipboard.writeText(formatted.value);
     Snackbar.builder({
-      text: t("title.copySuccess"),
+      text: t("output.copy.success"),
       type: "success",
     });
   } catch (e) {
@@ -87,7 +88,7 @@ function copyCode() {
     if (window.location.href.match(/^http:\/\//))
       Snackbar.builder({
         text:
-          t("title.copyFail") +
+          t("output.copy.fail") +
           ": Pages over HTTP are not allowed to use clipboard API",
         type: "error",
       });

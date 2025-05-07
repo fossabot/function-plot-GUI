@@ -19,7 +19,7 @@
           >
             <SIconDelete />
           </s-icon-button>
-          {{ t("buttons.del") }}
+          {{ t("annotation.topButton.delete") }}
         </s-tooltip>
         <s-tooltip>
           <s-icon-button
@@ -29,7 +29,7 @@
           >
             <SIconTextfield />
           </s-icon-button>
-          {{ t("annotation.text") }}
+          {{ t(`annotation.topButton.${showText ? "remove" : "add"}Text`) }}
         </s-tooltip>
         <span class="annotation-drag drag-icon">
           <SIconDrag />
@@ -62,7 +62,8 @@
 
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
-const { t } = useI18n();
+import { I18nSchema } from "@/i18n";
+const { t } = useI18n<{ message: I18nSchema }>();
 
 import SIconDelete from "@/ui/icons/delete.vue";
 import SIconDrag from "@/ui/icons/drag.vue";
