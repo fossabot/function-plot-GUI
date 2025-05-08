@@ -36,6 +36,12 @@ export namespace PrivateDataTypes {
     };
   }
 
+  export const defaultRange = {
+    linear: [-Infinity, Infinity],
+    parametric: [0, 2 * Math.PI],
+    polar: [-Math.PI, Math.PI],
+  } as const;
+
   /** Normal functions: y=f(x) */
   export type Linear = Function & {
     fnType: "linear";
@@ -133,8 +139,10 @@ export function toPublicData(data: PrivateData): FunctionPlotDatum {
       ...data,
       range: ((): [number, number] | undefined => {
         if (!("range" in data)) return undefined;
-        let [v1, v2] = data.range;
-        if (v1 === -Infinity && v2 === Infinity) return undefined;
+        let [min, max] = data.range;
+        let [defaultMin, defaultMax] =
+          PrivateDataTypes.defaultRange[data.fnType];
+        if (min === defaultMin && max === defaultMax) return undefined;
         return data.range;
       })(),
       derivative: (() => {
@@ -222,7 +230,7 @@ export function toPrivateData(input: Object) {
                 }),
           skipTip: false,
           nSamples: undefined,
-          range: () => [-Infinity, Infinity] as [number, number],
+          range: () => [...PrivateDataTypes.defaultRange.linear],
           ...getFunctionGlobals(),
         }
       );
@@ -239,7 +247,7 @@ export function toPrivateData(input: Object) {
         graphType: "polyline",
         r: "",
         nSamples: undefined,
-        range: () => [-Infinity, Infinity] as [number, number],
+        range: () => [...PrivateDataTypes.defaultRange.polar],
         ...getFunctionGlobals(),
       });
     case "parametric":
@@ -249,7 +257,7 @@ export function toPrivateData(input: Object) {
         x: "",
         y: "",
         nSamples: undefined,
-        range: () => [-Infinity, Infinity] as [number, number],
+        range: () => [...PrivateDataTypes.defaultRange.parametric],
         ...getFunctionGlobals(),
       });
     case "points":

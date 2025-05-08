@@ -22,19 +22,28 @@ const { t } = useI18n<{ message: I18nSchema }>();
 
 import { PrivateDataTypes } from "@/types/data";
 import { ref, watch } from "vue";
-const props = defineProps<{ self: PrivateDataTypes.Functions }>();
-const infToUndefined = (value: number) =>
-  value === Infinity || value === -Infinity ? "" : value;
-const undefinedToInf = (value: number | "" | undefined, sign: number) =>
-  value === "" || value === undefined ? sign * Infinity : value;
-const value1 = ref<number | "">(infToUndefined(props.self.range[0]));
-const value2 = ref<number | "">(infToUndefined(props.self.range[1]));
+const props = defineProps<{
+  self:
+    | PrivateDataTypes.Linear
+    | PrivateDataTypes.Parametric
+    | PrivateDataTypes.Polar;
+  defaultMin?: number;
+  defaultMax?: number;
+}>();
+const [defaultMin, defaultMax] =
+  PrivateDataTypes.defaultRange[props.self.fnType];
+const defToUndefined = (value: number) =>
+  value === defaultMin || value === defaultMax ? "" : value;
+const undefinedToDef = (value: number | "" | undefined, defValue: number) =>
+  value === "" || value === undefined ? defValue : value;
+const value1 = ref<number | "">(defToUndefined(props.self.range[0]));
+const value2 = ref<number | "">(defToUndefined(props.self.range[1]));
 
 watch(value1, (newVal) => {
-  props.self.range[0] = undefinedToInf(newVal, -1);
+  props.self.range[0] = undefinedToDef(newVal, defaultMin);
 });
 watch(value2, (newVal) => {
-  props.self.range[1] = undefinedToInf(newVal, 1);
+  props.self.range[1] = undefinedToDef(newVal, defaultMax);
 });
 </script>
 
