@@ -10,14 +10,7 @@
       />
     </div>
   </div>
-  <s-fold :folded="props.folded">
-    <s-divider>{{ t("title.moreOptions") }}</s-divider>
-    <p>
-      Lorem ipsum dolor, sit amet consectetur adipisicing elit. Tempora ab hic
-      accusamus iure natus expedita laborum ea nam, reiciendis obcaecati animi
-      voluptatem nisi assumenda ipsam nihil fuga minima? Id, ab?
-    </p>
-  </s-fold>
+
 </template>
 
 <script setup lang="ts">

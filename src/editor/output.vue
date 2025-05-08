@@ -17,11 +17,11 @@
         {{ t("output.copy.tip") }}
       </s-tooltip>
     </div>
-    <s-fold :folded="folded">
+    <AnimatedFold :folded="folded">
       <s-scroll-view id="formattedCode">
         <pre ref="formattedCodePre">{{ formatted }}</pre>
       </s-scroll-view>
-    </s-fold>
+    </AnimatedFold>
   </div>
 </template>
 
@@ -42,6 +42,8 @@ import prettierPluginEstree from "prettier/plugins/estree";
 import { ref, watch } from "vue";
 import { useProfile } from "@/states";
 const profile = useProfile();
+
+import AnimatedFold from "@/ui/animated/animatedFold.vue";
 
 import { FunctionPlotOptions } from "function-plot";
 const formatted = ref("");

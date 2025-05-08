@@ -8,14 +8,14 @@
       />
       <span class="label styled"> =0 </span>
     </div>
-    <s-fold :folded="props.folded">
+    <AnimatedFold :folded="props.folded">
       <s-divider>{{ t("title.moreOptions") }}</s-divider>
       <p>
         Lorem ipsum dolor, sit amet consectetur adipisicing elit. Tempora ab hic
         accusamus iure natus expedita laborum ea nam, reiciendis obcaecati animi
         voluptatem nisi assumenda ipsam nihil fuga minima? Id, ab?
       </p>
-    </s-fold>
+    </AnimatedFold>
   </div>
 </template>
 
@@ -27,6 +27,8 @@ import { I18nSchema } from "@/i18n";
 const { t } = useI18n<{ message: I18nSchema }>();
 
 import FilledTextfield from "@/editor/inputs/subblocks/function.vue";
+import AnimatedFold from "@/ui/animated/animatedFold.vue";
+
 
 const props = defineProps<{
   folded: boolean;

@@ -52,7 +52,7 @@
           </s-segmented-button-item>
         </s-segmented-button>
       </div>
-      <s-fold :folded="derivFollowMouse" class="derivate-x-coord-fold">
+      <AnimatedFold :folded="derivFollowMouse" class="derivate-x-coord-fold">
         <div class="field x-coord-field">
           <div class="label">{{ t("data.derivate.sepcify") }}</div>
           <s-text-field
@@ -62,7 +62,7 @@
             v-model="derivateX"
           ></s-text-field>
         </div>
-      </s-fold>
+      </AnimatedFold>
     </div>
 
     <!-- secant -->
@@ -133,6 +133,7 @@ import FunctionField from "./function.vue";
 import AnimatedList from "@/ui/animated/animatedList.vue";
 import AnimatedListItem from "@/ui/animated/animatedListItem.vue";
 import SIconDelete from "@/ui/icons/delete.vue";
+import AnimatedFold from "@/ui/animated/animatedFold.vue";
 
 import { useI18n } from "vue-i18n";
 import { I18nSchema } from "@/i18n";

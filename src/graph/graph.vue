@@ -74,9 +74,26 @@ onMounted(async () => {
   while (!shellRef.value) await waitForTruthy(plotRef);
   const handleUpdate = throttle(() => {
     const target = plotRef.value;
-
     try {
       if (!target) throw new Error("plotRef is null");
+      if (
+        profile.datum.some((data) => {
+          const isEmpty = (str: string) => str === undefined || str === "";
+          const someEmpty = (...strs: string[]) => strs.some(isEmpty);
+          switch (data.fnType) {
+            case "linear":
+            case "implicit":
+              return someEmpty(data.fn);
+            case "parametric":
+              return someEmpty(data.x, data.y);
+            case "polar":
+              return someEmpty(data.r);
+            default:
+              return false;
+          }
+        })
+      )
+        throw new Error("Empty data found");
       const data = profile.getPublicDatum();
       const annotations = profile.getPublicAnnotations();
       const options = profile.getPublicOptions();

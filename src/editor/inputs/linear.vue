@@ -4,7 +4,7 @@
       <span class="label styled">y=</span>
       <filledTextfield class="styled fn" label="f(x)" v-model="self.fn" />
     </div>
-    <s-fold :folded="props.folded">
+    <AnimatedFold :folded="props.folded" class="fold">
       <s-divider>{{ t("data.more.dividerTitle") }}</s-divider>
       <div class="input-inner-optional">
         <div class="fields">
@@ -53,7 +53,7 @@
           </s-checkbox>
         </div>
       </div>
-    </s-fold>
+    </AnimatedFold>
   </div>
 </template>
 
@@ -76,5 +76,6 @@ import HelpIcon from "./subblocks/helpIcon.vue";
 import ColorPicker from "./subblocks/colorPicker.vue";
 import Domain from "./subblocks/domain.vue";
 import DerivatePane from "./subblocks/derivatePane.vue";
+import AnimatedFold from "@/ui/animated/animatedFold.vue";
 import "./inputs.scss";
 </script>
