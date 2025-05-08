@@ -1,107 +1,152 @@
 <template>
-  <div id="graphRender" ref="plotRef"></div>
-  <div class="buttons" id="topright">
-    <s-tooltip align="right">
-      <s-icon-button
-        slot="trigger"
-        @click="emitter.emit('require-full-update', 'manual')"
-      >
-        <SIconRefresh class="spin" />
-      </s-icon-button>
-      {{ t("buttons.reset") }}
-    </s-tooltip>
-    <s-tooltip align="right" v-if="errorMsg !== undefined">
-      <s-icon-button slot="trigger" style="color: var(--s-color-warning)">
-        <SIconWarn class="bouncein" />
-      </s-icon-button>
-      <pre class="tooltipMsgPre">{{ errorMsg }}</pre>
-    </s-tooltip>
+  <div id="graph" ref="shellRef">
+    <div id="graphRender" ref="plotRef"></div>
+    <div class="buttons" id="topright">
+      <s-tooltip align="right">
+        <s-icon-button
+          slot="trigger"
+          @click="emitter.emit('require-full-update', 'manual')"
+        >
+          <SIconRefresh class="spin" />
+        </s-icon-button>
+        {{ t("graph.reload") }}
+      </s-tooltip>
+      <s-tooltip align="right" v-if="errorMsg !== undefined">
+        <s-icon-button slot="trigger" style="color: var(--s-color-warning)">
+          <SIconWarn class="bouncein" />
+        </s-icon-button>
+        <pre class="tooltipMsgPre">{{ errorMsg }}</pre>
+      </s-tooltip>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
-const { t } = useI18n();
+import { I18nSchema } from "@/i18n";
+const { t } = useI18n<{ message: I18nSchema }>();
 
 import SIconRefresh from "@/ui/icons/refresh.vue";
 import SIconWarn from "@/ui/icons/warn.vue";
 
-import { onMounted, onUnmounted, ref, watch, WatchHandle } from "vue";
-import { throttle } from "lodash-es";
-import type { FunctionPlotDatum } from "function-plot";
-import { getFnType } from "../consts";
+import { onMounted, onUnmounted, Ref, ref, watch, WatchHandle } from "vue";
+import throttle from "lodash-es/throttle";
+import type { FunctionPlotOptions } from "function-plot";
 
 import { useProfile } from "@/states";
 const profile = useProfile();
 
 import emitter from "@/mitt";
-const fullUpdateState = defineModel<boolean>();
+const lastIsError = defineModel<boolean>({ required: true });
 
 const plotRef = ref<HTMLDivElement>();
 const errorMsg = ref<string | undefined>(undefined);
 
-function findError(graphData: FunctionPlotDatum[]) {
-  for (const [index, dataItem] of graphData.entries()) {
-    const fnType = getFnType(dataItem.fnType);
-    for (const input of fnType.inputs) if (!dataItem[input.value]) return index;
-    for (const coord of fnType.coord ?? [])
-      if (!dataItem[coord.value] && !coord.optional) return index;
-  }
-  return 0;
-}
-
 import { useElementSize } from "@vueuse/core";
-const { width, height } = useElementSize(plotRef);
+const shellRef = ref<HTMLDivElement>();
+const { width, height } = useElementSize(shellRef);
 
-let unwatchHandler: WatchHandle | null = null;
 const emit = defineEmits(["require-post-update"]);
 import functionPlot from "function-plot";
-onMounted(() => {
+
+const waitForTruthy = (ref: Ref<any>) => {
+  return new Promise((resolve) => {
+    const revokeWatch = watch(
+      ref,
+      (newVal) => {
+        if (newVal) {
+          resolve(newVal);
+          revokeWatch();
+        }
+      },
+      { immediate: true }
+    );
+  });
+};
+
+const unwatchHandlers: WatchHandle[] = [];
+onUnmounted(() => {
+  unwatchHandlers.forEach((unwatch) => unwatch());
+});
+
+onMounted(async () => {
+  while (!plotRef.value) await waitForTruthy(plotRef);
+  while (!shellRef.value) await waitForTruthy(plotRef);
   const handleUpdate = throttle(() => {
-    if (import.meta.env.DEV) console.log("graph update");
-    const graphData = profile.getOriginalData();
-    const flag = findError(graphData);
-    if (flag) {
-      errorMsg.value = `Invalid input in function ${flag + 1}`;
-      return;
-    }
+    const target = plotRef.value;
     try {
-      if (!plotRef.value) throw new Error("plotRef is null");
-      functionPlot({
-        target: plotRef.value,
-        data: graphData,
-        width: width.value,
-        height: height.value,
-        annotations: profile.getOriginalAnnotaion(),
-        ...profile.getOriginalOptions(),
-      });
-      if (fullUpdateState.value) {
-        fullUpdateState.value = false;
+      if (!target) throw new Error("plotRef is null");
+      if (
+        profile.datum.some((data) => {
+          const isEmpty = (str: string) => str === undefined || str === "";
+          const someEmpty = (...strs: string[]) => strs.some(isEmpty);
+          switch (data.fnType) {
+            case "linear":
+            case "implicit":
+              return someEmpty(data.fn);
+            case "parametric":
+              return someEmpty(data.x, data.y);
+            case "polar":
+              return someEmpty(data.r);
+            default:
+              return false;
+          }
+        })
+      )
+        throw new Error("Empty data found");
+      const data = profile.getPublicDatum();
+      const annotations = profile.getPublicAnnotations();
+      const options = profile.getPublicOptions();
+      const fullOptions: FunctionPlotOptions = {
+        target,
+        data,
+        annotations,
+        width: width.value - 20,
+        height: height.value - 20,
+        ...options,
+      };
+      console.log("Call functionPlot", fullOptions);
+      functionPlot(fullOptions);
+      if (lastIsError.value) {
+        lastIsError.value = false;
         emit("require-post-update", "once after error");
       } else errorMsg.value = undefined;
     } catch (e) {
-      if (import.meta.env.DEV) console.error(e);
-      if (!fullUpdateState.value) emitter.emit("require-full-update", "error");
+      console.error(e);
+      lastIsError.value = true;
       errorMsg.value = (e as Error).message;
     }
-  }, 250);
-  unwatchHandler = watch([width, height, profile], handleUpdate, {
-    immediate: true,
-  });
-});
+  }, 200);
 
-onUnmounted(() => {
-  if (unwatchHandler) unwatchHandler();
+  unwatchHandlers.push(watch(profile, handleUpdate, { immediate: true }));
+
+  let lastWidth = shellRef.value.clientWidth,
+    lastHeight = shellRef.value.clientHeight;
+  const isClose = (num1: number, num2: number, threshold: number = 2) =>
+    Math.abs(num1 - num2) < threshold;
+  unwatchHandlers.push(
+    watch([width, height], ([newWidth, newHeight]) => {
+      if (!newWidth || !newHeight) return;
+      newWidth = Math.round(newWidth);
+      newHeight = Math.round(newHeight);
+      if (isClose(newWidth, lastWidth) && isClose(newHeight, lastHeight))
+        return;
+      [lastWidth, lastHeight] = [newWidth, newHeight];
+      handleUpdate();
+    })
+  );
 });
 </script>
 
 <style>
 #graphRender {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  left: 10px;
-  bottom: 10px;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  width: fit-content;
+  height: fit-content;
   margin: auto;
   color: black;
   user-select: none;
@@ -165,28 +210,8 @@ s-icon.spin {
 }
 
 s-icon.bouncein {
-  animation: bouncein var(--s-motion-duration-medium4)
-    var(--s-motion-easing-emphasized);
-}
-
-@keyframes rotate {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes bouncein {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.3);
-  }
-  100% {
-    transform: scale(1);
-  }
+  animation:
+    bouncein var(--s-motion-duration-medium4) var(--s-motion-easing-emphasized),
+    breathe 2s infinite;
 }
 </style>

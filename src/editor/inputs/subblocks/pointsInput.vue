@@ -1,7 +1,6 @@
 <template>
   <VueDraggable
     class="coordarr-wrapper styled"
-    v-if="fnType.coordArr"
     v-model="privateData"
     :animation="200"
     handle="span.coordarr-drag"
@@ -12,34 +11,34 @@
           <span class="coordarr-drag">
             <SIconDragAlt />
           </span>
-          <span class="coord-label">{{
-            t(fnType.coordArr.label) + fnType.coordArr.fir
-          }}</span>
+          <span class="coord-label">(</span>
           <s-text-field
             type="number"
             class="styled"
             v-model="data.payload[0]"
-            :label="t(fnType.coordArr.placeholder[0])"
+            label="x"
           >
           </s-text-field>
-          <span class="coord-label">{{ fnType.coordArr.sep }}</span>
+          <span class="coord-label">,</span>
           <s-text-field
             type="number"
             class="styled"
             v-model="data.payload[1]"
-            :label="t(fnType.coordArr.placeholder[1])"
+            label="y"
           >
           </s-text-field>
-          <span class="coord-label">{{ fnType.coordArr.fin }}</span>
-          <s-icon-button @click="privateData.splice(index, 1)">
-            <SIconDelete />
-          </s-icon-button>
+          <span class="coord-label">)</span>
+          <s-tooltip>
+            <s-icon-button slot="trigger" @click="privateData.splice(index, 1)">
+              <SIconDelete />
+            </s-icon-button>
+            {{ t("data.points.delete") }}
+          </s-tooltip>
         </div>
       </AnimatedListItem>
     </AnimatedList>
   </VueDraggable>
   <s-button
-    v-if="fnType.coordArr"
     type="text"
     class="add-coord"
     @click="
@@ -49,53 +48,57 @@
       })
     "
   >
-    <s-icon slot="start" name="add"></s-icon> {{ t("buttons.addPoint") }}
+    <s-icon slot="start" name="add"></s-icon> {{ t("data.points.add") }}
   </s-button>
 </template>
 
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
-const { t } = useI18n();
+import { I18nSchema } from "@/i18n";
+const { t } = useI18n<{ message: I18nSchema }>();
 
-import { InputProps } from "../../consts";
-import { onMounted, ref, watch } from "vue";
+import { ref, watch } from "vue";
 import { VueDraggable } from "vue-draggable-plus";
 
 import SIconDragAlt from "@/ui/icons/dragalt.vue";
 import SIconDelete from "@/ui/icons/delete.vue";
 
-import AnimatedList from "@/ui/animatedList/animatedList.vue";
-import AnimatedListItem from "@/ui/animatedList/animatedListItem.vue";
+import AnimatedList from "@/ui/animated/animatedList.vue";
+import AnimatedListItem from "@/ui/animated/animatedListItem.vue";
 
-const { dataItem, fnType } = defineProps<InputProps>();
+const points = defineModel<[number, number][]>({
+  required: true,
+});
 
 type PrivateData = {
   id: number;
   payload: [number, number];
 };
-const privateData = ref<PrivateData[]>([]);
-onMounted(() => {
-  privateData.value =
-    dataItem[fnType.coordArr!.value]?.map((payload) => ({
-      id: Math.random(),
-      payload,
-    })) ?? [];
-  watch(
-    privateData,
-    () => {
-      dataItem[fnType.coordArr!.value] = privateData.value.map(
-        ({ payload }) => payload
-      );
-    },
-    { deep: true }
-  );
-});
+const privateData = ref<PrivateData[]>(
+  points.value.map((payload) => ({
+    id: Math.random(),
+    payload,
+  }))
+);
+watch(
+  privateData,
+  () => {
+    points.value = privateData.value.map(({ payload }) => payload);
+  },
+  { deep: true }
+);
 </script>
 
-<style>
+<style lang="scss">
 .coordarr {
   position: relative;
   align-items: center;
+  display: flex;
+  gap: 0.3em;
+  font-size: 16px;
+  .coord-label {
+    font-size: 20px;
+  }
 }
 
 .coordarr-wrapper {
@@ -103,7 +106,7 @@ onMounted(() => {
   flex-direction: column;
 }
 
-.input-box.coord.coordarr{
+.input-box.coord.coordarr {
   margin-top: 10px;
 }
 
@@ -118,6 +121,7 @@ onMounted(() => {
   background: var(--s-color-outline-variant);
   z-index: 999;
 }
+
 .add-coord {
   margin-left: 25px;
   width: fit-content;

@@ -1,12 +1,19 @@
 <template>
-  <div class="animatedListItem" :class="$props.class">
-    <div class="animatedListItemInner">
+  <div class="animatedListItem" :class="props.class">
+    <div class="animatedListItemInner" :class="props.classInner">
       <slot></slot>
     </div>
   </div>
 </template>
 
-<style>
+<script lang="ts" setup>
+const props = defineProps<{
+  class?: string;
+  classInner?: string;
+}>();
+</script>
+
+<style lang="scss" scoped>
 .animatedListItem {
   display: grid;
   grid-template-rows: 1fr;
@@ -17,8 +24,10 @@
 .animatedListItemInner {
   min-height: 0;
 }
-.list-trans-enter-from,
-.list-trans-leave-to {
-  grid-template-rows: 0fr;
+.list-trans {
+  &-enter-from,
+  &-leave-to {
+    grid-template-rows: 0fr;
+  }
 }
 </style>

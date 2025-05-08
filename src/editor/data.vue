@@ -1,37 +1,34 @@
-<!--
-ToDo: Refactor data editor to sigle component per fnType, instead of generating elements from consts
-      The UI is so deeply coupled with the data structure that it makes nosense to make a component for 'general' data
--->
 <template>
-  <div
-    class="plot-data"
-    ref="block"
-    :class="{ hidden: dataItem.hidden }"
-    v-if="dataItem"
-  >
+  <div class="plot-data" :class="{ hidden: props.self.hidden }">
     <div class="selectors">
+      <!-- fnType Picker -->
       <s-picker
-        :label="t('inputs.fnType')"
-        v-model.lazy="dataItem.fnType"
-        @change="fnTypeChange(dataItem)"
+        :label="t('data.main.fnType')"
+        v-model.lazy="fnType"
         :key="selectKey"
       >
         <s-picker-item v-for="type in fnTypeArr" :value="type.value">
-          {{ t(type.label) }}
+          {{ t("data.fnType." + type.value) }}
         </s-picker-item>
       </s-picker>
+
+      <!-- graphType Picker -->
       <s-picker
-        :label="t('inputs.graphType')"
-        v-model.lazy="dataItem.graphType"
-        v-if="dataItem.graphType !== 'text'"
+        :label="t('data.main.graphType')"
+        v-model.lazy="props.self.graphType"
+        v-show="props.self.graphType !== 'text'"
         :key="selectKey"
       >
         <s-picker-item v-for="type in allowedGraphType" :value="type.value">
-          {{ t(type.label) }}
+          {{ t("data.graphType." + type.value) }}
         </s-picker-item>
       </s-picker>
+
       <div style="flex-grow: 1"></div>
+
+      <!-- Buttons -->
       <div class="dataBlockBtns">
+        <!-- Delete -->
         <s-tooltip>
           <s-icon-button
             slot="trigger"
@@ -40,153 +37,123 @@ ToDo: Refactor data editor to sigle component per fnType, instead of generating 
           >
             <SIconDelete />
           </s-icon-button>
-          {{ t("buttons.del") }}
+          {{ t("data.topButton.delete") }}
         </s-tooltip>
+        <!-- Hide -->
         <s-tooltip>
           <s-icon-button
             slot="trigger"
-            @click="dataItem.hidden = !dataItem.hidden"
-            :type="dataItem.hidden ? 'filled-tonal' : 'standard'"
+            @click="props.self.hidden = !props.self.hidden"
+            :type="props.self.hidden ? 'filled-tonal' : 'standard'"
           >
             <SIconHide />
           </s-icon-button>
-          {{ t("buttons.hide") }}
+          {{ t("data.topButton.hide") }}
         </s-tooltip>
+        <!-- Fold -->
         <s-tooltip>
-          <s-icon-button
-            slot="trigger"
-            @click="
-              blockFolded = !blockFolded;
-              console.log(foldShell);
-            "
-          >
-            <s-icon :name="blockFolded ? 'chevron_down' : 'chevron_up'">
-            </s-icon>
+          <s-icon-button slot="trigger" @click="folded = !folded">
+            <s-icon :name="folded ? 'chevron_down' : 'chevron_up'"> </s-icon>
           </s-icon-button>
-          {{ t(blockFolded ? "buttons.expand" : "buttons.collapse") }}
+          {{ t(`data.topButton.${folded ? "more" : "less"}`) }}
         </s-tooltip>
+        <!-- Drag -->
         <span class="datablock-drag drag-icon">
           <SIconDrag />
         </span>
       </div>
     </div>
 
-    <div class="inputs">
-      <StrInputs :dataItem="dataItem" :fnType="fnType" />
-      <CoordInputs
-        v-if="fnType.coord"
-        :dataItem="dataItem"
-        :fnType="fnType"
-        :blockFolded="false"
-      />
-      <CoordArrInputs
-        v-if="fnType.coordArr"
-        :dataItem="dataItem"
-        :fnType="fnType"
-      />
-      <SwitchInputs
-        v-if="fnType.switches"
-        :dataItem="dataItem"
-        :fnType="fnType"
-        :blockFolded="false"
+    <div class="relative">
+      <component
+        :is="components[props.self.fnType]"
+        :self="<PrivateDataTypes.Full>props.self"
+        :index="props.index"
+        :folded="folded"
       />
     </div>
-    <s-fold :folded="blockFolded">
-      <div class="inputs optional">
-        <s-divider>{{ t("title.moreOptions") }}</s-divider>
-        <CoordInputs
-          v-if="fnType.coord"
-          :dataItem="dataItem"
-          :fnType="fnType"
-          :blockFolded="true"
-        />
-        <OptInputs
-          v-if="fnType.optInput"
-          :dataItem="dataItem"
-          :fnType="fnType"
-        />
-        <SwitchInputs
-          v-if="fnType.switches"
-          :dataItem="dataItem"
-          :fnType="fnType"
-          :blockFolded="true"
-        />
-      </div>
-    </s-fold>
   </div>
 </template>
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
-const { t, locale } = useI18n();
+import { I18nSchema } from "@/i18n";
+const { locale, t } = useI18n<{ message: I18nSchema }>();
 
-import {
-  fnTypeArr,
-  getAllowedGraphType,
-  inputTypeArr,
-  getFnType,
-  InternalDatum,
-} from "../consts";
-import { ref, computed } from "vue";
-import StrInputs from "./inputs/strInputs.vue";
-import CoordInputs from "./inputs/coordInputs.vue";
-import SwitchInputs from "./inputs/switchInputs.vue";
-import CoordArrInputs from "./inputs/coordArrInputs.vue";
-import OptInputs from "./inputs/optInputs.vue";
+import { fnTypeArr, getAllowedGraphType } from "../consts";
+import { ref, computed, toRef } from "vue";
+
+import linear from "./inputs/linear.vue";
+import implicit from "./inputs/implicit.vue";
+import parametric from "./inputs/parametric.vue";
+import polar from "./inputs/polar.vue";
+import points from "./inputs/points.vue";
+import vector from "./inputs/vector.vue";
+import text from "./inputs/text.vue";
+
+const components = {
+  linear,
+  implicit,
+  parametric,
+  polar,
+  points,
+  vector,
+  text,
+} as const;
 
 import SIconDelete from "@/ui/icons/delete.vue";
 import SIconHide from "@/ui/icons/hide.vue";
 import SIconDrag from "@/ui/icons/drag.vue";
 
-const dataItem = defineModel<InternalDatum>();
-const props = defineProps<{ index: number }>();
-const block = ref<HTMLDivElement>();
-const blockFolded = ref(true);
-
-const foldShell = ref<HTMLElementTagNameMap["s-fold"]>();
+const props = defineProps<{ index: number; self: PrivateData }>();
+const folded = ref(true);
 
 import { Snackbar } from "sober";
 import { useProfile } from "@/states";
 const profile = useProfile();
+
 function deleteDatum() {
-  const backup = cloneDeep(dataItem.value)!;
-  profile.data.splice(props.index, 1);
+  const backup = props.self;
+  profile.datum.splice(props.index, 1);
   Snackbar.builder({
-    text: t("title.deleteSuccess"),
+    text: t("editor.delete.success"),
     action: {
-      text: t("buttons.undo"),
+      text: t("editor.delete.undo"),
       click: () => {
-        profile.data.splice(props.index, 0, backup);
+        profile.datum.splice(props.index, 0, backup);
       },
     },
   });
 }
 
-function fnTypeChange(dataItem: InternalDatum) {
-  console.log(dataItem);
-  inputTypeArr.forEach((key) => delete dataItem[key]);
-  if (dataItem.fnType === "text") {
-    dataItem.graphType = "text";
-  } else {
-    if (dataItem.graphType === "text" || dataItem.fnType === "implicit")
-      delete dataItem.graphType;
-    dataItem.graphType = getAllowedGraphType(dataItem.fnType)[0].value;
-    if (dataItem.fnType === "vector") dataItem.vector = [0, 0];
-    if (dataItem.fnType === "points") dataItem.points = [];
-    if (block.value)
-      block.value.querySelectorAll("input").forEach((ele) => (ele.value = ""));
-  }
-}
-
-import { cloneDeep } from "lodash-es";
-
-const fnType = computed(() => getFnType(dataItem.value?.fnType));
-const allowedGraphType = computed(() =>
-  getAllowedGraphType(dataItem.value?.fnType)
-);
+const allowedGraphType = computed(() => getAllowedGraphType(props.self.fnType));
 
 import { watch } from "vue";
+import { PrivateData, PrivateDataTypes, toPrivateData } from "@/types/data";
 const selectKey = ref(0);
 watch(locale, () => selectKey.value++);
+
+const self = toRef(profile.datum, props.index);
+
+const fnType = ref(props.self.fnType);
+watch(fnType, (newFnType) => {
+  const newGraphType = (<readonly string[]>(
+    PrivateDataTypes.allowedGraphTypes[newFnType]
+  )).includes(props.self.graphType)
+    ? props.self.graphType
+    : PrivateDataTypes.allowedGraphTypes[newFnType][0];
+  self.value = toPrivateData({
+    key: self.value.key,
+    fnType: newFnType,
+    graphType: newGraphType,
+  });
+});
+watch(
+  () => self.value.graphType,
+  (newGraphType) => {
+    if (newGraphType === "scatter" && "closed" in self.value)
+      self.value.closed = false;
+  }
+);
 </script>
 
 <style>
@@ -207,14 +174,14 @@ watch(locale, () => selectKey.value++);
 .plot-data {
   position: relative;
   padding: 20px 15px;
-  overflow-x: hidden;
+  overflow: hidden;
   transition:
     opacity 0.15s,
     filter 0.15s;
 }
 .plot-data.hidden {
   opacity: 0.6;
-  filter: contrast(0.6) saturate(0.8);
+  filter: saturate(0.8);
 }
 .datumFolder {
   border-bottom: var(--s-color-outline-variant) 1px solid;

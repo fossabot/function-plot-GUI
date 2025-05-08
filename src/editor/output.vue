@@ -1,33 +1,34 @@
 <template>
   <div id="output">
-    <span id="outputTitle">{{ t("title.output") }} </span>
+    <span id="outputTitle">{{ t("output.title") }} </span>
     <div id="outputBtns">
       <s-button type="text" @click="folded = !folded" id="outputFoldButton">
         <s-icon
           slot="start"
           :name="folded ? 'chevron_up' : 'chevron_down'"
         ></s-icon>
-        {{ t(folded ? "buttons.expand" : "buttons.collapse") }}
+        {{ t(`output.${folded ? "expand" : "collapse"}`) }}
       </s-button>
 
       <s-tooltip align="right">
         <s-icon-button slot="trigger" @click="copyCode">
           <SIconCopy />
         </s-icon-button>
-        {{ t("buttons.copy") }}
+        {{ t("output.copy.tip") }}
       </s-tooltip>
     </div>
-    <s-fold :folded="folded">
+    <AnimatedFold :folded="folded">
       <s-scroll-view id="formattedCode">
         <pre ref="formattedCodePre">{{ formatted }}</pre>
       </s-scroll-view>
-    </s-fold>
+    </AnimatedFold>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
-const { t } = useI18n();
+import { I18nSchema } from "@/i18n";
+const { t } = useI18n<{ message: I18nSchema }>();
 
 import SIconCopy from "@/ui/icons/copy.vue";
 
@@ -42,17 +43,20 @@ import { ref, watch } from "vue";
 import { useProfile } from "@/states";
 const profile = useProfile();
 
+import AnimatedFold from "@/ui/animated/animatedFold.vue";
+
+import { FunctionPlotOptions } from "function-plot";
 const formatted = ref("");
 watch(
   profile,
   () => {
-    const code = JSON5.stringify({
-      data: profile.getOriginalData(true),
-      ...(profile.annotations.length
-        ? { annotations: profile.getOriginalAnnotaion() }
-        : {}),
-      ...profile.getOriginalOptions(),
-    });
+    const resultObj: Omit<FunctionPlotOptions, "target"> = {
+      data: profile.getPublicDatum(true),
+      ...profile.getPublicOptions(),
+    };
+    if (profile.annotations.length)
+      resultObj.annotations = profile.getPublicAnnotations();
+    const code = JSON5.stringify(resultObj);
     const url =
       window.location.href.match(/https?:\/\/[^/]+\//) +
       "?code=" +
@@ -72,12 +76,13 @@ watch(
 const folded = ref(true);
 
 import { Snackbar } from "sober";
+
 const formattedCodePre = ref<HTMLPreElement>();
 function copyCode() {
   try {
     navigator.clipboard.writeText(formatted.value);
     Snackbar.builder({
-      text: t("title.copySuccess"),
+      text: t("output.copy.success"),
       type: "success",
     });
   } catch (e) {
@@ -85,7 +90,7 @@ function copyCode() {
     if (window.location.href.match(/^http:\/\//))
       Snackbar.builder({
         text:
-          t("title.copyFail") +
+          t("output.copy.fail") +
           ": Pages over HTTP are not allowed to use clipboard API",
         type: "error",
       });

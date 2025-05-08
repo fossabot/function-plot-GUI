@@ -1,10 +1,10 @@
 <template>
   <div class="plot-data annotation">
     <div class="selectors">
-      <s-segmented-button v-model.lazy="props.annotation.axis">
-        <s-segmented-button-item value="y">{{
-          t("annotation.horizontal")
-        }}</s-segmented-button-item>
+      <s-segmented-button v-model.lazy="self.variable">
+        <s-segmented-button-item value="y">
+          {{ t("annotation.horizontal") }}
+        </s-segmented-button-item>
         <s-segmented-button-item value="x">
           {{ t("annotation.vertical") }}
         </s-segmented-button-item>
@@ -19,7 +19,7 @@
           >
             <SIconDelete />
           </s-icon-button>
-          {{ t("buttons.del") }}
+          {{ t("annotation.topButton.delete") }}
         </s-tooltip>
         <s-tooltip>
           <s-icon-button
@@ -29,7 +29,7 @@
           >
             <SIconTextfield />
           </s-icon-button>
-          {{ t("annotation.text") }}
+          {{ t(`annotation.topButton.${showText ? "remove" : "add"}Text`) }}
         </s-tooltip>
         <span class="annotation-drag drag-icon">
           <SIconDrag />
@@ -37,19 +37,23 @@
       </div>
     </div>
 
-    <div class="annotation-texts" :class="{ showText }">
-      <s-text-field
-        class="styled annotation-value"
-        type="number"
-        v-model="props.annotation.value"
-        :label="props.annotation.axis + '='"
-      ></s-text-field>
+    <div class="annotation-fields" :class="{ showText }">
+      <div class="label-and-value">
+        <span class="label styled"> {{ self.variable + "=" }} </span>
+        <s-text-field
+          class="styled-inner value"
+          type="number"
+          v-model="self.value"
+          :label="t('annotation.value')"
+          @blur="handleValueBlur"
+        ></s-text-field>
+      </div>
       <Transition name="anntextslide">
         <s-text-field
           v-if="showText"
-          class="annotation-textfield"
+          class="text"
           :label="t('annotation.text')"
-          v-model="props.annotation.text"
+          v-model="self.text"
         ></s-text-field>
       </Transition>
     </div>
@@ -57,80 +61,119 @@
 </template>
 
 <script setup lang="ts">
-import { InternalAnnotation } from "@/consts";
 import { useI18n } from "vue-i18n";
-const { t } = useI18n();
-
-const props = defineProps<{
-  index: number;
-  annotation: InternalAnnotation;
-}>();
-
-import emitter from "@/mitt";
-import { ref, watch } from "vue";
-watch([() => props.annotation.axis, () => props.annotation.text], () =>
-  emitter.emit("require-full-update", "annotations axis change")
-);
+import { I18nSchema } from "@/i18n";
+const { t } = useI18n<{ message: I18nSchema }>();
 
 import SIconDelete from "@/ui/icons/delete.vue";
 import SIconDrag from "@/ui/icons/drag.vue";
 import SIconTextfield from "@/ui/icons/textfield.vue";
 
 import { useProfile } from "@/states";
+import { PrivateAnnotation } from "@/types/annotation";
+
+import { ref, toRef, watch } from "vue";
+
 const profile = useProfile();
-function deleteAnnotation() {
-  emitter.emit("require-full-update", "annotations axis change");
-  profile.annotations.splice(props.index, 1);
+const props = defineProps<{
+  index: number;
+  self: PrivateAnnotation;
+}>();
+const self = toRef(props, "self");
+
+const showText = ref(self.value.text !== "");
+watch(showText, (value) => {
+  if (!value) self.value.text = "";
+});
+
+import emitter from "@/mitt";
+
+watch([() => self.value.variable, () => self.value.text], () =>
+  emitter.emit("require-full-update", "annotations axis change")
+);
+
+function handleValueBlur() {
+  self.value.value = Number(self.value.value);
 }
 
-const showText = ref(props.annotation.text !== "");
-
-watch(showText, (value) => {
-  if (!value) props.annotation.text = "";
-});
+import { Snackbar } from "sober";
+function deleteAnnotation() {
+  const backup = props.self;
+  profile.annotations.splice(props.index, 1);
+  emitter.emit("require-full-update", "annotations axis change");
+  profile.datum.splice(props.index, 1);
+  Snackbar.builder({
+    text: t("editor.delete.success"),
+    action: {
+      text: t("editor.delete.undo"),
+      click: () => {
+        profile.annotations.splice(props.index, 0, backup);
+        emitter.emit("require-full-update", "annotations axis change");
+      },
+    },
+  });
+}
 </script>
 
-<style>
+<style lang="scss">
 .plot-data.annotation {
   display: flex;
   flex-direction: column;
 }
-.annotation-value {
-  font-size: 20px;
-}
-.annotation-textfield {
-  font-size: 16px;
-}
-.annotation-texts {
+
+.annotation-fields {
   display: flex;
+  align-items: center;
   gap: 10px;
   padding-top: 8px;
   overflow: hidden;
-}
-.annotation-texts s-text-field {
-  width: 0;
-  flex-grow: 1;
-}
-</style>
 
-<style>
-.anntextslide-enter-from,
-.anntextslide-leave-to {
-  flex-grow: 0 !important;
-  margin-left: -10px;
+  s-text-field {
+    width: 0;
+    flex-grow: 1;
+  }
+  .label-and-value {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    gap: 3px;
+    .label {
+      font-size: 25px;
+      width: 1.9em;
+      text-align: right;
+      margin-bottom: -0.1em;
+    }
+    .value {
+      font-size: 22px;
+    }
+  }
+  .text {
+    font-size: 16px;
+    flex-grow: 2;
+  }
 }
 
-.anntextslide-leave-active {
-  transition:
-    flex-grow var(--s-motion-duration-medium1) var(--s-motion-easing-emphasized),
-    margin-left var(--s-motion-duration-medium1)
-      var(--s-motion-easing-emphasized) 0.2s;
-}
+.anntextslide {
+  &-enter-from,
+  &-leave-to {
+    flex-grow: 0 !important;
+    margin-left: -10px;
+  }
 
-.anntextslide-enter-active {
-  transition:
-    flex-grow var(--s-motion-duration-medium1) var(--s-motion-easing-emphasized),
-    margin-left var(--s-motion-duration-medium1)
-      var(--s-motion-easing-emphasized);
+  &-leave-active {
+    transition:
+      flex-grow var(--s-motion-duration-medium1)
+        var(--s-motion-easing-emphasized),
+      margin-left var(--s-motion-duration-medium1)
+        var(--s-motion-easing-emphasized) 0.2s;
+  }
+
+  &-enter-active {
+    transition:
+      flex-grow var(--s-motion-duration-medium1)
+        var(--s-motion-easing-emphasized),
+      margin-left var(--s-motion-duration-medium1)
+        var(--s-motion-easing-emphasized);
+  }
 }
 </style>

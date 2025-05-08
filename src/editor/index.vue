@@ -17,7 +17,8 @@
 
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
-const { t } = useI18n();
+import { I18nSchema } from "@/i18n";
+const { t } = useI18n<{ message: I18nSchema }>();
 
 import ImportBtn from "./import.vue";
 import DataList from "./dataList.vue";
@@ -31,9 +32,9 @@ const currentTab = ref("0");
 const currentTabIndex = computed(() => Number(currentTab.value));
 const transitionName = ref("");
 const tabs = [
-  { caption: "title.functions", component: DataList },
-  { caption: "title.annotations", component: AnnotaionList },
-  { caption: "title.graphOptions", component: GraphOptions },
+  { caption: "editor.functions", component: DataList },
+  { caption: "editor.annotations", component: AnnotaionList },
+  { caption: "editor.graphOptions", component: GraphOptions },
 ];
 watch(currentTabIndex, (newVal, oldVal) => {
   if (newVal > oldVal) transitionName.value = "slide-left";

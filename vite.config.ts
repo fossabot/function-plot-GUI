@@ -46,13 +46,7 @@ export default defineConfig({
             "prettier/plugins/babel",
             "prettier/plugins/estree",
           ],
-          vender: [
-            "vue",
-            "lodash-es",
-            "pinia",
-            "vue-i18n",
-            "vue-draggable-plus",
-          ],
+          vender: ["vue", "pinia", "vue-i18n", "vue-draggable-plus"],
         },
       },
     },
@@ -64,6 +58,9 @@ export default defineConfig({
         replacement: resolve(__dirname, "./src"),
       },
     ],
+  },
+  esbuild: {
+    drop: process.env.NODE_ENV === "production" ? ["console", "debugger"] : [],
   },
   server: {
     allowedHosts: [process.env.DEVHOST ?? "localhost"],

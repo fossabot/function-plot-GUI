@@ -108,15 +108,6 @@ s-page {
   overflow: hidden;
 }
 
-.plot-data.add-data {
-  position: relative;
-  padding-top: 15px;
-  padding-bottom: 15px;
-  margin-bottom: 50px;
-  display: flex;
-  gap: 5px;
-}
-
 .data-import {
   position: absolute;
   bottom: 20px;

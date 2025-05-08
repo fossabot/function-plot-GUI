@@ -1,0 +1,129 @@
+{
+  "nav": {
+    "toogleTheme": "Toggle Theme",
+    "language": "Language",
+    "repo": "GitHub Repository"
+  },
+  "editor": {
+    "functions": "Function List",
+    "annotations": "Annotation List",
+    "graphOptions": "Global Options",
+    "add": "Add",
+    "import": "Import",
+    "importRelated": {
+      "title": "Import Data",
+      "placeholder": "Data in JSON / JSON5 format",
+      "cancel": "Cancel",
+      "confirm": "Import",
+      "success": "Import Successful",
+      "fail": "Import Failed"
+    },
+    "delete": {
+      "success": "Deleted",
+      "undo": "Undo"
+    }
+  },
+  "output": {
+    "title": "Output Code",
+    "copy": {
+      "tip": "Copy Code",
+      "success": "Copied",
+      "fail": "Copy Failed"
+    },
+    "expand": "Expand",
+    "collapse": "Collapse"
+  },
+  "data": {
+    "fnType": {
+      "linear": "Linear",
+      "implicit": "Implicit",
+      "parametric": "Parametric",
+      "polar": "Polar",
+      "points": "Points",
+      "vector": "Vector",
+      "text": "Text"
+    },
+    "graphType": {
+      "interval": "Interval",
+      "polyline": "Polyline",
+      "scatter": "Scatter",
+      "text": "Text"
+    },
+    "topButton": {
+      "delete": "Delete Function",
+      "hide": "Hide Function",
+      "more": "More Options",
+      "less": "Less Options"
+    },
+    "main": {
+      "fnType": "Type",
+      "graphType": "Renderer",
+      "vector": "Vector Size",
+      "offset": "Offset",
+      "text": "Text",
+      "location": "Text Position"
+    },
+    "more": {
+      "dividerTitle": "More Options",
+      "range": "Domain",
+      "rangeMin": "Min Value",
+      "rangeMax": "Max Value",
+      "color": "Color",
+      "colorHelp": "Supports color name / RGB(A) / HEX. Leave blank for auto coloring",
+      "nSamples": "Sample Count",
+      "closed": "Close and Fill",
+      "skipTip": "Hide Hover Tips",
+      "skipTipHelp": "Hide point and coordinate info on mouse hover",
+      "skipTipWarn": "When 'Hide Hover Tips' is enabled, tangent and secant lines will not follow the mouse"
+    },
+    "derivateAndSecants": "Tangents & Secants",
+    "derivateAndSecantsPane": "Open panel",
+    "derivate": {
+      "title": "Tangent Settings",
+      "enable": "Enable Tangent Display",
+      "point": "Position",
+      "followMouse": "Dynamic",
+      "manual": "Specify Point",
+      "sepcify": "Point Abscissa",
+      "xcoord": "Abscissa"
+    },
+    "secant": {
+      "title": "Secant Settings",
+      "enable": "Enable Secant Display",
+      "followMouse": "Dynamic",
+      "add": "Add Secant"
+    },
+    "points": {
+      "add": "Add Point",
+      "delete": "Delete Point"
+    }
+  },
+  "annotation": {
+    "topButton": {
+      "delete": "Delete Annotation",
+      "addText": "Add Text",
+      "removeText": "Remove Text"
+    },
+    "horizontal": "Horizontal",
+    "vertical": "Vertical",
+    "text": "Text",
+    "value": "Value"
+  },
+  "options": {
+    "grid": "Grid Lines",
+    "title": "Chart Title",
+    "global": "Global Options",
+    "horizontal": "Horizontal Axis Options",
+    "vertical": "Vertical Axis Options",
+    "axis": {
+      "reverse": "Reverse",
+      "grow": "Growth Type",
+      "linear": "Linear",
+      "log": "Logarithmic",
+      "caption": "Axis Caption"
+    }
+  },
+  "graph": {
+    "reload": "Reload"
+  }
+}
