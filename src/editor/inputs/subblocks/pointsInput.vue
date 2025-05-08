@@ -28,9 +28,12 @@
           >
           </s-text-field>
           <span class="coord-label">)</span>
-          <s-icon-button @click="privateData.splice(index, 1)">
-            <SIconDelete />
-          </s-icon-button>
+          <s-tooltip>
+            <s-icon-button slot="trigger" @click="privateData.splice(index, 1)">
+              <SIconDelete />
+            </s-icon-button>
+            {{ t("data.points.delete") }}
+          </s-tooltip>
         </div>
       </AnimatedListItem>
     </AnimatedList>
@@ -45,7 +48,7 @@
       })
     "
   >
-    <s-icon slot="start" name="add"></s-icon> {{ t("buttons.addPoint") }}
+    <s-icon slot="start" name="add"></s-icon> {{ t("data.points.add") }}
   </s-button>
 </template>
 
@@ -86,11 +89,16 @@ watch(
 );
 </script>
 
-<style>
+<style lang="scss">
 .coordarr {
   position: relative;
   align-items: center;
   display: flex;
+  gap: 0.3em;
+  font-size: 16px;
+  .coord-label {
+    font-size: 20px;
+  }
 }
 
 .coordarr-wrapper {
@@ -113,6 +121,7 @@ watch(
   background: var(--s-color-outline-variant);
   z-index: 999;
 }
+
 .add-coord {
   margin-left: 25px;
   width: fit-content;

@@ -147,6 +147,13 @@ watch(fnType, (newFnType) => {
     graphType: newGraphType,
   });
 });
+watch(
+  () => self.value.graphType,
+  (newGraphType) => {
+    if (newGraphType === "scatter" && "closed" in self.value)
+      self.value.closed = false;
+  }
+);
 </script>
 
 <style>

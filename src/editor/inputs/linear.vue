@@ -2,7 +2,7 @@
   <div class="input-inner">
     <div class="field main-fn">
       <span class="label styled">y=</span>
-      <FilledTextfield class="styled fn" label="f(x)" v-model="self.fn" />
+      <FunctionField class="styled fn" label="f(x)" v-model="self.fn" />
     </div>
     <AnimatedFold :folded="props.folded">
       <s-divider>{{ t("data.more.dividerTitle") }}</s-divider>
@@ -39,7 +39,11 @@
         </div>
         <div class="switches">
           <!-- closed -->
-          <s-checkbox type="checkbox" v-model.lazy="self.closed">
+          <s-checkbox
+            type="checkbox"
+            v-model.lazy="self.closed"
+            :disabled="self.graphType === 'scatter'"
+          >
             {{ t("data.more.closed") }}
           </s-checkbox>
           <!-- skipTip -->
@@ -77,10 +81,10 @@ const props = defineProps<{
 }>();
 const self = toRef(props, "self");
 
-import FilledTextfield from "./subblocks/function.vue";
+import FunctionField from "./subblocks/function.vue";
 import HelpIcon from "./subblocks/helpIcon.vue";
 import ColorPicker from "./subblocks/colorPicker.vue";
 import Domain from "./subblocks/domain.vue";
 import DerivatePane from "./subblocks/derivatePane.vue";
-import AnimatedFold from "@/ui/animated/animatedFold.vue"
+import AnimatedFold from "@/ui/animated/animatedFold.vue";
 </script>

@@ -61,5 +61,8 @@
     s-checkbox {
       margin-left: -10px;
     }
+    s-checkbox[disabled] {
+      color: var(--s-color-outline);
+    }
   }
 }

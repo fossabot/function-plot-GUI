@@ -80,7 +80,7 @@
       "point": "Position",
       "followMouse": "Dynamic",
       "manual": "Specify Point",
-      "sepcify":"Point Abscissa",
+      "sepcify": "Point Abscissa",
       "xcoord": "Abscissa"
     },
     "secant": {
@@ -88,6 +88,10 @@
       "enable": "Enable Secant Display",
       "followMouse": "Dynamic",
       "add": "Add Secant"
+    },
+    "points": {
+      "add": "Add Point",
+      "delete": "Delete Point"
     }
   },
   "annotation": {

@@ -2,11 +2,11 @@
   <div class="input-inner">
     <div class="field main-fn">
       <span class="label styled">x=</span>
-      <FilledTextfield class="styled fn" label="f(t)" v-model="self.x" />
+      <FunctionField class="styled fn" label="f(t)" v-model="self.x" />
     </div>
     <div class="field main-fn">
       <span class="label styled">y=</span>
-      <FilledTextfield class="styled fn" label="g(t)" v-model="self.y" />
+      <FunctionField class="styled fn" label="g(t)" v-model="self.y" />
     </div>
     <AnimatedFold :folded="props.folded">
       <s-divider>{{ t("data.more.dividerTitle") }}</s-divider>
@@ -34,7 +34,11 @@
         </div>
         <div class="switches">
           <!-- closed -->
-          <s-checkbox type="checkbox" v-model.lazy="self.closed">
+          <s-checkbox
+            type="checkbox"
+            v-model.lazy="self.closed"
+            :disabled="self.graphType === 'scatter'"
+          >
             {{ t("data.more.closed") }}
           </s-checkbox>
         </div>
@@ -50,7 +54,7 @@ import { useI18n } from "vue-i18n";
 import { I18nSchema } from "@/i18n";
 const { t } = useI18n<{ message: I18nSchema }>();
 
-import FilledTextfield from "@/editor/inputs/subblocks/function.vue";
+import FunctionField from "@/editor/inputs/subblocks/function.vue";
 import HelpIcon from "./subblocks/helpIcon.vue";
 import ColorPicker from "./subblocks/colorPicker.vue";
 import Domain from "./subblocks/domain.vue";

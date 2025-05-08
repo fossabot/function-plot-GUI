@@ -1,7 +1,7 @@
 <template>
   <div class="input-inner">
     <div class="field main-fn">
-      <FilledTextfield class="styled fn" label="f(x, y)" v-model="self.fn" />
+      <FunctionField class="styled fn" label="f(x, y)" v-model="self.fn" />
       <span class="label styled"> =0 </span>
     </div>
     <AnimatedFold :folded="props.folded">
@@ -17,7 +17,11 @@
         </div>
         <div class="switches">
           <!-- closed -->
-          <s-checkbox type="checkbox" v-model.lazy="self.closed">
+          <s-checkbox
+            type="checkbox"
+            v-model.lazy="self.closed"
+            :disabled="self.graphType === 'scatter'"
+          >
             {{ t("data.more.closed") }}
           </s-checkbox>
         </div>
@@ -40,7 +44,7 @@ const props = defineProps<{
 }>();
 const self = toRef(props, "self");
 
-import FilledTextfield from "@/editor/inputs/subblocks/function.vue";
+import FunctionField from "@/editor/inputs/subblocks/function.vue";
 import AnimatedFold from "@/ui/animated/animatedFold.vue";
 import ColorPicker from "./subblocks/colorPicker.vue";
 import HelpIcon from "./subblocks/helpIcon.vue";

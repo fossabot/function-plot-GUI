@@ -2,7 +2,7 @@
   <div class="input-inner">
     <div class="field main-fn">
       <span class="label styled">ρ=</span>
-      <FilledTextfield
+      <FunctionField
         class="styled fn"
         ref="inputBox"
         label="f(θ)"
@@ -35,7 +35,11 @@
         </div>
         <div class="switches">
           <!-- closed -->
-          <s-checkbox type="checkbox" v-model.lazy="self.closed">
+          <s-checkbox
+            type="checkbox"
+            v-model.lazy="self.closed"
+            :disabled="self.graphType === 'scatter'"
+          >
             {{ t("data.more.closed") }}
           </s-checkbox>
         </div>
@@ -46,7 +50,7 @@
 
 <script setup lang="ts">
 import { PrivateDataTypes } from "@/types/data";
-import FilledTextfield from "@/editor/inputs/subblocks/function.vue";
+import FunctionField from "@/editor/inputs/subblocks/function.vue";
 import { toRef } from "vue";
 import { useI18n } from "vue-i18n";
 import { I18nSchema } from "@/i18n";

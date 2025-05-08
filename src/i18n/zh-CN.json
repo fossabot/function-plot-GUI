@@ -80,7 +80,7 @@
       "point": "切点位置",
       "followMouse": "跟随鼠标",
       "manual": "指定切点",
-      "sepcify":"切点横坐标",
+      "sepcify": "切点横坐标",
       "xcoord": "横坐标"
     },
     "secant": {
@@ -88,6 +88,10 @@
       "enable": "启用割线显示",
       "followMouse": "跟随鼠标",
       "add": "添加割线"
+    },
+    "points": {
+      "add": "添加点",
+      "delete": "删除点"
     }
   },
   "annotation": {
