@@ -10,8 +10,10 @@
         <div class="fields">
           <span class="label"> 切线与割线 </span>
           <s-popup class="derivate-popup input" align="right">
-            <s-button type="outlined" slot="trigger"> 设置面板 </s-button>
-            <DerivatePane :self="self"/>
+            <s-button type="outlined" slot="trigger">
+              设置面板 <s-icon name="chevron_right" slot="end"></s-icon>
+            </s-button>
+            <DerivatePane :self="self" />
           </s-popup>
           <span class="label"> {{ t("data.more.range") }} </span>
           <Domain :self="self" />
@@ -37,6 +39,16 @@
           <s-checkbox type="checkbox" v-model.lazy="self.skipTip">
             {{ t("data.more.skipTip") }}
             <HelpIcon> {{ t("data.more.skipTipHelp") }} </HelpIcon>
+            <HelpIcon
+              v-if="
+                self.skipTip &&
+                (self.derivative?.updateOnMouseMove ||
+                  self.secants.some((s) => s.updateOnMouseMove))
+              "
+              type="warn"
+            >
+              “隐藏悬浮提示”启用时，切线与割线跟随鼠标不生效
+            </HelpIcon>
           </s-checkbox>
         </div>
       </div>
@@ -46,7 +58,7 @@
 
 <script setup lang="ts">
 import { PrivateDataTypes } from "@/types/data";
-import {  toRef } from "vue";
+import { toRef } from "vue";
 import { useI18n } from "vue-i18n";
 import { I18nSchema } from "@/i18n";
 const { t } = useI18n<{ message: I18nSchema }>();
@@ -64,6 +76,4 @@ import ColorPicker from "./subblocks/colorPicker.vue";
 import Domain from "./subblocks/domain.vue";
 import DerivatePane from "./subblocks/derivatePane.vue";
 import "./inputs.scss";
-
 </script>
-

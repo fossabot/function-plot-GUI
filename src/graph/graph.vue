@@ -193,28 +193,8 @@ s-icon.spin {
 }
 
 s-icon.bouncein {
-  animation: bouncein var(--s-motion-duration-medium4)
-    var(--s-motion-easing-emphasized);
-}
-
-@keyframes rotate {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes bouncein {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.3);
-  }
-  100% {
-    transform: scale(1);
-  }
+  animation:
+    bouncein var(--s-motion-duration-medium4) var(--s-motion-easing-emphasized),
+    breathe 2s infinite;
 }
 </style>

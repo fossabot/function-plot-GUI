@@ -119,7 +119,7 @@
 
 <script lang="ts" setup>
 import { PrivateDataTypes } from "@/types/data";
-import { computed, reactive, ref, toRef } from "vue";
+import { computed, reactive, ref, toRef, watchEffect } from "vue";
 import FunctionField from "./function.vue";
 
 import AnimatedList from "@/ui/animated/animatedList.vue";
@@ -133,15 +133,42 @@ const props = defineProps<{
 const tab = ref("derivate");
 const self = toRef(props, "self");
 
-const derivateEnabled = ref(false);
-const derivateFn = ref("");
-const derivFollowMouseStr = ref("followMouse");
+const initDerivate = self.value.derivative ?? {
+  fn: "",
+  updateOnMouseMove: true,
+  x0: "" as number | "",
+};
+
+const derivateEnabled = ref(self.value.derivative !== undefined);
+const derivateFn = ref(initDerivate.fn);
+const derivFollowMouseStr = ref(
+  initDerivate.updateOnMouseMove ? "followMouse" : "manual"
+);
 const derivFollowMouse = computed(
   () => derivFollowMouseStr.value === "followMouse"
 );
-const derivateX = ref(0);
+const derivateX = ref<number | "">(initDerivate.x0 ?? "");
+const derivateReady = computed(
+  (): undefined | PrivateDataTypes.LinearPart.Derivative => {
+    if (!derivateEnabled.value) return undefined;
+    if (derivFollowMouse.value)
+      return {
+        fn: derivateFn.value,
+        updateOnMouseMove: true,
+      };
+    return {
+      fn: derivateFn.value,
+      updateOnMouseMove: false,
+      x0: derivateX.value || 0,
+    };
+  }
+);
+watchEffect(() => {
+  self.value.derivative = derivateReady.value;
+});
 
-const secantEnabled = ref(false);
+const initSecant = self.value.secants;
+const secantEnabled = ref(initSecant.length > 0);
 const secantArr = reactive<
   {
     key: number;
@@ -149,7 +176,34 @@ const secantArr = reactive<
     x1: number | "";
     x2: number | "";
   }[]
->([]);
+>(
+  initSecant.map((item) => ({
+    key: Math.random(),
+    followMouse: item.updateOnMouseMove,
+    x1: item.x0,
+    x2: item.x1 || "",
+  }))
+);
+const secantReady = computed((): PrivateDataTypes.LinearPart.Secant[] => {
+  if (!secantEnabled.value) return [];
+  return secantArr.flatMap((item) => {
+    if (item.x1 === "") return [];
+    if (item.followMouse)
+      return {
+        x0: item.x1,
+        updateOnMouseMove: true,
+      };
+    if (item.x2 === "") return [];
+    return {
+      x0: item.x1,
+      x1: item.x2,
+      updateOnMouseMove: false,
+    };
+  });
+});
+watchEffect(() => {
+  self.value.secants = secantReady.value;
+});
 </script>
 
 <style lang="scss">
@@ -157,6 +211,9 @@ const secantArr = reactive<
   width: 25em;
   s-tab {
     background-color: var(--s-color-surface-container-low);
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    overflow: hidden;
   }
   .tab-text {
     display: flex;
@@ -172,7 +229,7 @@ const secantArr = reactive<
     &-leave-active {
       transition:
         opacity 0.1s,
-        margin-left 0.5s cubic-bezier(0, 1, 0, 1);
+        margin-left 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
     }
     &-leave-to,
     &-enter-from {

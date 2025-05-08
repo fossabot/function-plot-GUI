@@ -1,4 +1,4 @@
-import { FunctionPlotDatum } from "function-plot";
+import { FunctionPlotDatum, FunctionPlotDatumSecant } from "function-plot";
 import { omitAttr, amendAttr } from "./utils";
 import cloneDeep from "lodash-es/cloneDeep";
 
@@ -26,11 +26,26 @@ export namespace PrivateDataTypes {
     text: ["text"],
   } as const;
 
+  export namespace LinearPart {
+    export type Derivative = {
+      fn: string;
+      x0?: number;
+      updateOnMouseMove: boolean;
+    };
+    export type Secant = {
+      x0: number;
+      x1?: number;
+      updateOnMouseMove: boolean;
+    };
+  }
+
   /** Normal functions: y=f(x) */
   export type Linear = Function & {
     fnType: "linear";
     graphType: (typeof allowedGraphTypes)["linear"][number];
     fn: string;
+    secants: LinearPart.Secant[];
+    derivative: undefined | LinearPart.Derivative;
   };
   /** Implicit functions: F(x,y)=0 */
   export type Implicit = Function & {
@@ -108,6 +123,7 @@ export function toPublicData(data: PrivateData): FunctionPlotDatum {
         color: "",
       }
     );
+
   return omitAttr(
     cloneDeep({
       ...data,
@@ -116,6 +132,25 @@ export function toPublicData(data: PrivateData): FunctionPlotDatum {
         let [v1, v2] = data.range;
         if (v1 === -Infinity && v2 === Infinity) return undefined;
         return data.range;
+      })(),
+      derivative: (() => {
+        if (!("derivative" in data) || data.derivative === undefined)
+          return undefined;
+        const { updateOnMouseMove } = data.derivative;
+        return omitAttr(data.derivative, {
+          x0: () => updateOnMouseMove,
+          updateOnMouseMove: false,
+        }) as FunctionPlotDatumSecant;
+      })(),
+      secants: (() => {
+        if (!("secants" in data) || data.secants.length === 0) return undefined;
+        return data.secants.map((secant) => {
+          const { updateOnMouseMove } = secant;
+          return omitAttr(secant, {
+            x1: () => updateOnMouseMove,
+            updateOnMouseMove: false,
+          }) as FunctionPlotDatumSecant;
+        });
       })(),
     }),
     {
@@ -127,7 +162,9 @@ export function toPublicData(data: PrivateData): FunctionPlotDatum {
       hidden: false,
       color: "",
       nSamples: undefined,
-      range: (range) => range === undefined,
+      range: (val) => val === undefined,
+      derivative: (val) => val === undefined,
+      secants: (val) => val === undefined,
     }
   );
 }
@@ -147,17 +184,49 @@ export function toPrivateData(input: Object) {
     range: () => [-Infinity, Infinity] as [number, number],
   });
   switch (data.fnType) {
+    case "text":
+    // @ts-ignore expected case fallthrough
+    case undefined:
+      if ("text" in data && typeof data.text === "string")
+        return amendAttr<PrivateDataTypes.Text>(data, {
+          fnType: "text",
+          graphType: "text",
+          text: "",
+          location: () => [0, 0],
+          ...getGlobals(),
+        });
+    // else: fallthrough to linear
     case "linear":
-    case "implicit":
-      return amendAttr<PrivateDataTypes.Linear | PrivateDataTypes.Implicit>(
-        data,
+      return amendAttr<PrivateDataTypes.Linear>(
+        data as Partial<PrivateDataTypes.Linear>,
         {
           fnType: "linear",
           graphType: "interval",
           fn: "",
+          secants: ({ secants = [] }) =>
+            secants.map((secant) =>
+              amendAttr(secant, {
+                x0: 0,
+                x1: 1,
+                updateOnMouseMove: false,
+              })
+            ),
+          derivative: ({ derivative = {} }) =>
+            amendAttr(derivative, {
+              fn: "",
+              x0: 0,
+              updateOnMouseMove: false,
+            }),
           ...getFunctionGlobals(),
         }
       );
+    case "implicit":
+      return amendAttr<PrivateDataTypes.Implicit>(data, {
+        fnType: "implicit",
+        graphType: "interval",
+        fn: "",
+        ...getFunctionGlobals(),
+      });
     case "polar":
       return amendAttr<PrivateDataTypes.Polar>(data, {
         fnType: "polar",
@@ -189,33 +258,7 @@ export function toPrivateData(input: Object) {
         offset: () => [0, 0],
         ...getGlobals(),
       });
-    case undefined:
-      if ("text" in data && typeof data.text === "string") {
-        return amendAttr<PrivateDataTypes.Text>(data, {
-          fnType: "text",
-          graphType: "text",
-          text: "",
-          location: () => [0, 0],
-          ...getGlobals(),
-        });
-      } else
-        return amendAttr<PrivateDataTypes.Linear>(
-          data as Partial<PrivateDataTypes.Linear>,
-          {
-            fnType: "linear",
-            graphType: "interval",
-            fn: "",
-            ...getFunctionGlobals(),
-          }
-        );
-    case "text":
-      return amendAttr<PrivateDataTypes.Text>(data, {
-        fnType: "text",
-        graphType: "text",
-        text: "",
-        location: () => [0, 0],
-        ...getGlobals(),
-      });
+
     default:
       throw new TypeError(
         `Unknown fnType "${(<any>data).fnType}" in toPrivateData function`
