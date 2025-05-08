@@ -2,12 +2,13 @@
   <div class="input-inner">
     <div class="field main-fn">
       <span class="label styled">y=</span>
-      <filledTextfield class="styled fn" label="f(x)" v-model="self.fn" />
+      <FilledTextfield class="styled fn" label="f(x)" v-model="self.fn" />
     </div>
-    <AnimatedFold :folded="props.folded" class="fold">
+    <AnimatedFold :folded="props.folded">
       <s-divider>{{ t("data.more.dividerTitle") }}</s-divider>
       <div class="input-inner-optional">
         <div class="fields">
+          <!-- Derivate & secants -->
           <span class="label"> {{ t("data.derivateAndSecants") }} </span>
           <s-popup class="derivate-popup input" align="right">
             <s-button type="outlined" slot="trigger">
@@ -16,13 +17,16 @@
             </s-button>
             <DerivatePane :self="self" />
           </s-popup>
+          <!-- range -->
           <span class="label"> {{ t("data.more.range") }} </span>
           <Domain :self="self" />
+          <!-- color -->
           <span class="label">
             {{ t("data.more.color") }}
             <HelpIcon> {{ t("data.more.colorHelp") }} </HelpIcon>
           </span>
           <ColorPicker v-model="self.color" />
+          <!-- nSamples -->
           <span class="label"> {{ t("data.more.nSamples") }} </span>
           <s-text-field
             class="input monospace-inner"
@@ -34,9 +38,11 @@
           ></s-text-field>
         </div>
         <div class="switches">
+          <!-- closed -->
           <s-checkbox type="checkbox" v-model.lazy="self.closed">
             {{ t("data.more.closed") }}
           </s-checkbox>
+          <!-- skipTip -->
           <s-checkbox type="checkbox" v-model.lazy="self.skipTip">
             {{ t("data.more.skipTip") }}
             <HelpIcon> {{ t("data.more.skipTipHelp") }} </HelpIcon>

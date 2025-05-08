@@ -1,20 +1,27 @@
 <template>
   <div class="input-inner">
     <div class="field main-fn">
-      <FilledTextfield
-        class="styled fn"
-        label="F(x, y)"
-        v-model="self.fn"
-      />
+      <FilledTextfield class="styled fn" label="f(x, y)" v-model="self.fn" />
       <span class="label styled"> =0 </span>
     </div>
     <AnimatedFold :folded="props.folded">
-      <s-divider>{{ t("title.moreOptions") }}</s-divider>
-      <p>
-        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Tempora ab hic
-        accusamus iure natus expedita laborum ea nam, reiciendis obcaecati animi
-        voluptatem nisi assumenda ipsam nihil fuga minima? Id, ab?
-      </p>
+      <s-divider>{{ t("data.more.dividerTitle") }}</s-divider>
+      <div class="input-inner-optional">
+        <div class="fields">
+          <!-- color -->
+          <span class="label">
+            {{ t("data.more.color") }}
+            <HelpIcon> {{ t("data.more.colorHelp") }} </HelpIcon>
+          </span>
+          <ColorPicker v-model="self.color" />
+        </div>
+        <div class="switches">
+          <!-- closed -->
+          <s-checkbox type="checkbox" v-model.lazy="self.closed">
+            {{ t("data.more.closed") }}
+          </s-checkbox>
+        </div>
+      </div>
     </AnimatedFold>
   </div>
 </template>
@@ -26,14 +33,16 @@ import { useI18n } from "vue-i18n";
 import { I18nSchema } from "@/i18n";
 const { t } = useI18n<{ message: I18nSchema }>();
 
-import FilledTextfield from "@/editor/inputs/subblocks/function.vue";
-import AnimatedFold from "@/ui/animated/animatedFold.vue";
-
-
 const props = defineProps<{
   folded: boolean;
   self: PrivateDataTypes.Implicit;
   index: number;
 }>();
 const self = toRef(props, "self");
+
+import FilledTextfield from "@/editor/inputs/subblocks/function.vue";
+import AnimatedFold from "@/ui/animated/animatedFold.vue";
+import ColorPicker from "./subblocks/colorPicker.vue";
+import HelpIcon from "./subblocks/helpIcon.vue";
+import "./inputs.scss";
 </script>
