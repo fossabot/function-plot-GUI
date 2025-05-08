@@ -8,10 +8,11 @@
       <s-divider>{{ t("data.more.dividerTitle") }}</s-divider>
       <div class="input-inner-optional">
         <div class="fields">
-          <span class="label"> 切线与割线 </span>
+          <span class="label"> {{ t("data.derivateAndSecants") }} </span>
           <s-popup class="derivate-popup input" align="right">
             <s-button type="outlined" slot="trigger">
-              设置面板 <s-icon name="chevron_right" slot="end"></s-icon>
+              {{ t("data.derivateAndSecantsPane") }}
+              <s-icon name="chevron_right" slot="end"></s-icon>
             </s-button>
             <DerivatePane :self="self" />
           </s-popup>
@@ -47,7 +48,7 @@
               "
               type="warn"
             >
-              “隐藏悬浮提示”启用时，切线与割线跟随鼠标不生效
+              {{ t("data.more.skipTipWarn") }}
             </HelpIcon>
           </s-checkbox>
         </div>

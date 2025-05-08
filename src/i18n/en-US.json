@@ -69,7 +69,25 @@
       "nSamples": "Sample Count",
       "closed": "Close and Fill",
       "skipTip": "Hide Hover Tips",
-      "skipTipHelp": "Hide point and coordinate info on mouse hover"
+      "skipTipHelp": "Hide point and coordinate info on mouse hover",
+      "skipTipWarn": "When 'Hide Hover Tips' is enabled, tangent and secant lines will not follow the mouse"
+    },
+    "derivateAndSecants": "Tangents and Secants",
+    "derivateAndSecantsPane": "Open panel",
+    "derivate": {
+      "title": "Tangent Settings",
+      "enable": "Enable Tangent Display",
+      "point": "Position",
+      "followMouse": "Dynamic",
+      "manual": "Specify Point",
+      "sepcify":"Point Abscissa",
+      "xcoord": "Abscissa"
+    },
+    "secant": {
+      "title": "Secant Settings",
+      "enable": "Enable Secant Display",
+      "followMouse": "Dynamic",
+      "add": "Add Secant"
     }
   },
   "annotation": {

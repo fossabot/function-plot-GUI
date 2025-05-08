@@ -3,7 +3,7 @@
     <s-tab mode="fixed" v-model.lazy="tab">
       <s-tab-item value="derivate">
         <div slot="text" class="tab-text">
-          切线设置
+          {{ t("data.derivate.title") }}
           <Transition name="badge">
             <s-badge class="tab-badge" v-if="derivateEnabled"></s-badge>
           </Transition>
@@ -11,7 +11,7 @@
       </s-tab-item>
       <s-tab-item value="secant">
         <div slot="text" class="tab-text">
-          割线设置
+          {{ t("data.secant.title") }}
           <Transition name="badge">
             <s-badge class="tab-badge" v-if="secantEnabled"></s-badge>
           </Transition>
@@ -26,7 +26,7 @@
       :class="{ enabled: derivateEnabled }"
     >
       <div class="field no-opacity">
-        <div class="label">启用切线显示</div>
+        <div class="label">{{ t("data.derivate.enable") }}</div>
         <s-switch type="checkbox" v-model.lazy="derivateEnabled"></s-switch>
       </div>
       <div class="field main-fn">
@@ -34,23 +34,23 @@
         <FunctionField class="styled fn" label="f'(x)" v-model="derivateFn" />
       </div>
       <div class="field">
-        <div class="label">切点位置</div>
+        <div class="label">{{ t("data.derivate.point") }}</div>
         <s-segmented-button v-model.lazy="derivFollowMouseStr">
           <s-segmented-button-item value="followMouse">
-            跟随鼠标
+            {{ t("data.derivate.followMouse") }}
           </s-segmented-button-item>
           <s-segmented-button-item value="manual">
-            指定切点
+            {{ t("data.derivate.manual") }}
           </s-segmented-button-item>
         </s-segmented-button>
       </div>
       <s-fold :folded="derivFollowMouse" class="derivate-x-coord-fold">
         <div class="field x-coord-field">
-          <div class="label">切点横坐标</div>
+          <div class="label">{{ t("data.derivate.sepcify") }}</div>
           <s-text-field
-            class="x-coord styled"
+            class="x-coord styled-inner"
             type="number"
-            label="x"
+            :label="t('data.derivate.xcoord')"
             v-model="derivateX"
           ></s-text-field>
         </div>
@@ -60,7 +60,7 @@
     <!-- secant -->
     <div class="content" v-else :class="{ enabled: secantEnabled }">
       <div class="field no-opacity">
-        <div class="label">启用割线显示</div>
+        <div class="label">{{ t("data.secant.enable") }}</div>
         <s-switch type="checkbox" v-model.lazy="secantEnabled"></s-switch>
       </div>
       <div class="secants">
@@ -72,7 +72,7 @@
                 v-model="item.followMouse"
                 class="secant-checkbox"
               >
-                跟随鼠标
+                {{ t("data.secant.followMouse") }}
               </s-checkbox>
               <s-text-field
                 class="sec-coord styled-inner"
@@ -111,7 +111,7 @@
           })
         "
       >
-        <s-icon slot="start" name="add" /> 添加
+        <s-icon slot="start" name="add" /> {{ t("data.secant.add") }}
       </s-button>
     </div>
   </div>
@@ -125,6 +125,10 @@ import FunctionField from "./function.vue";
 import AnimatedList from "@/ui/animated/animatedList.vue";
 import AnimatedListItem from "@/ui/animated/animatedListItem.vue";
 import SIconDelete from "@/ui/icons/delete.vue";
+
+import { useI18n } from "vue-i18n";
+import { I18nSchema } from "@/i18n";
+const { t } = useI18n<{ message: I18nSchema }>();
 
 const props = defineProps<{
   self: PrivateDataTypes.Linear;
@@ -270,9 +274,11 @@ watchEffect(() => {
       width: 2.2em;
     }
   }
-  .x-coord.styled {
+  .x-coord.styled-inner {
+    max-width: 12em;
+  }
+  .x-coord.styled-inner::part(input) {
     font-size: 20px;
-    max-width: 10em;
   }
   .derivate-x-coord-fold {
     margin-top: -0.8em;

@@ -69,7 +69,25 @@
       "nSamples": "采样数",
       "closed": "闭合并填充",
       "skipTip": "隐藏悬浮提示",
-      "skipTipHelp": "隐藏鼠标经过时标出的点与坐标信息"
+      "skipTipHelp": "隐藏鼠标经过时标出的点与坐标信息",
+      "skipTipWarn": "“隐藏悬浮提示”启用时，切线与割线跟随鼠标不生效"
+    },
+    "derivateAndSecants": "切线与割线",
+    "derivateAndSecantsPane": "设置面板",
+    "derivate": {
+      "title": "切线设置",
+      "enable": "启用切线显示",
+      "point": "切点位置",
+      "followMouse": "跟随鼠标",
+      "manual": "指定切点",
+      "sepcify":"切点横坐标",
+      "xcoord": "横坐标"
+    },
+    "secant": {
+      "title": "割线设置",
+      "enable": "启用割线显示",
+      "followMouse": "跟随鼠标",
+      "add": "添加割线"
     }
   },
   "annotation": {
