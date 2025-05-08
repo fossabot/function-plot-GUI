@@ -39,7 +39,7 @@
       </div>
       <div class="field main-fn">
         <span class="label wide styled">y'=</span>
-        <FunctionField class="styled fn" label="f'(x)" v-model="derivateFn" />
+        <FunctionField class="fn" label="f'(x)" v-model="derivateFn" />
       </div>
       <div class="field">
         <div class="label">{{ t("data.derivate.point") }}</div>
@@ -127,7 +127,7 @@
 
 <script lang="ts" setup>
 import { PrivateDataTypes } from "@/types/data";
-import { computed, reactive, ref, toRef, watchEffect } from "vue";
+import { computed, reactive, ref, toRef, watch, watchEffect } from "vue";
 import FunctionField from "./function.vue";
 
 import AnimatedList from "@/ui/animated/animatedList.vue";
@@ -177,6 +177,10 @@ const derivateReady = computed(
     };
   }
 );
+watch(derivateFn, (val) => {
+  if (val !== "" && !derivateEnabled.value) derivateEnabled.value = true;
+  if (val === "" && derivateEnabled.value) derivateEnabled.value = false;
+});
 watchEffect(() => {
   self.value.derivative = derivateReady.value;
 });
