@@ -60,7 +60,8 @@
       "graphType": "Renderer",
       "vector": "Vector Size",
       "offset": "Offset",
-      "text": "Text"
+      "text": "Text",
+      "location": "Text Position"
     },
     "more": {
       "dividerTitle": "More Options",
@@ -75,7 +76,7 @@
       "skipTipHelp": "Hide point and coordinate info on mouse hover",
       "skipTipWarn": "When 'Hide Hover Tips' is enabled, tangent and secant lines will not follow the mouse"
     },
-    "derivateAndSecants": "Tangents and Secants",
+    "derivateAndSecants": "Tangents & Secants",
     "derivateAndSecantsPane": "Open panel",
     "derivate": {
       "title": "Tangent Settings",

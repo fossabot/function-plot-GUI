@@ -197,7 +197,10 @@ export function toPrivateData(input: Object) {
     case "text":
     // @ts-ignore expected case fallthrough
     case undefined:
-      if ("text" in data && typeof data.text === "string")
+      if (
+        data.fnType === "text" ||
+        ("text" in data && typeof data.text === "string")
+      )
         return amendAttr<PrivateDataTypes.Text>(data, {
           fnType: "text",
           graphType: "text",

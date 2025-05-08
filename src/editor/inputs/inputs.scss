@@ -34,7 +34,8 @@
     grid-template-columns: max-content minmax(auto, 18em);
     justify-content: space-between;
     align-items: center;
-    gap: var(--input-inner-gap);
+    row-gap: var(--input-inner-gap);
+    column-gap: 1.5em;
   }
 
   .input-inner-optional {
