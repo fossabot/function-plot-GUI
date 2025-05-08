@@ -211,12 +211,14 @@ export function toPrivateData(input: Object) {
                 updateOnMouseMove: false,
               })
             ),
-          derivative: ({ derivative = {} }) =>
-            amendAttr(derivative, {
-              fn: "",
-              x0: 0,
-              updateOnMouseMove: false,
-            }),
+          derivative: ({ derivative }) =>
+            !derivative
+              ? undefined
+              : amendAttr(derivative, {
+                  fn: "",
+                  x0: 0,
+                  updateOnMouseMove: false,
+                }),
           ...getFunctionGlobals(),
         }
       );
