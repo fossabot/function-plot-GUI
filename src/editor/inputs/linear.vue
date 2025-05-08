@@ -2,7 +2,7 @@
   <div class="input-inner">
     <div class="field main-fn">
       <span class="label styled">y=</span>
-      <FunctionField class="styled fn" label="f(x)" v-model="self.fn" />
+      <FunctionField class="fn" label="f(x)" v-model="self.fn" />
     </div>
     <AnimatedFold :folded="props.folded">
       <s-divider>{{ t("data.more.dividerTitle") }}</s-divider>

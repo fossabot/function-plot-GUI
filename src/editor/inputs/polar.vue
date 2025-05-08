@@ -3,7 +3,7 @@
     <div class="field main-fn">
       <span class="label styled">ρ=</span>
       <FunctionField
-        class="styled fn"
+        class="fn"
         ref="inputBox"
         label="f(θ)"
         v-model="self.r"

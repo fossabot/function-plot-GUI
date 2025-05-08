@@ -3,10 +3,7 @@
     <label :class="{ lifted: !isEmpty }">{{ props.label }}</label>
     <input
       @focus="isFocus = true"
-      @blur="
-        isFocus = false;
-        refreshInput();
-      "
+      @blur="isFocus = false"
       type="text"
       v-model="value"
       ref="inputRef"
@@ -15,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 
 const value = defineModel<string>({ required: true });
 const props = defineProps<{
@@ -29,9 +26,12 @@ function refreshInput() {
   // On Chromium browsers, ligatures over 3 characters are not displayed until force refresh
   // Manually setting the value won't trigger Vue's reactivity system, no performance issue
   if (!inputRef.value) return;
+  const { selectionStart, selectionEnd } = inputRef.value;
   inputRef.value.value = value.value + "\u200B";
   inputRef.value.value = value.value;
+  inputRef.value.setSelectionRange(selectionStart, selectionEnd);
 }
+watch(value, refreshInput);
 </script>
 
 <style lang="scss">
@@ -45,6 +45,7 @@ function refreshInput() {
     border-bottom-color 0.2s;
   padding: 0;
   display: flex;
+  font-family: var(--font-math);
   &.focus {
     background-color: var(--s-color-surface-container-highest);
     border-bottom-color: var(--s-color-primary);

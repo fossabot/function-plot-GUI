@@ -1,7 +1,7 @@
 <template>
   <div class="input-inner">
     <div class="field main-fn">
-      <FunctionField class="styled fn" label="f(x, y)" v-model="self.fn" />
+      <FunctionField class="fn" label="f(x, y)" v-model="self.fn" />
       <span class="label styled"> =0 </span>
     </div>
     <AnimatedFold :folded="props.folded">
@@ -20,7 +20,6 @@
           <s-checkbox
             type="checkbox"
             v-model.lazy="self.closed"
-            :disabled="self.graphType === 'scatter'"
           >
             {{ t("data.more.closed") }}
           </s-checkbox>

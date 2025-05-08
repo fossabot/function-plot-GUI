@@ -42,10 +42,15 @@ input[type="number"] {
   src: url("/fonts/KaTeX_AllInOne.woff2");
 }
 
+@font-face {
+  font-family: "KaTeX_Neg";
+  src: url("/fonts/KaTeX_AllInOne_Neg.woff2");
+}
+
 .styled,
 .styled::part(input),
 .styled-inner::part(input) {
-  font-family: var(--font-math);
+  font-family: "KaTeX_Neg", var(--font-math);
   font-variant-ligatures: common-ligatures discretionary-ligatures contextual
     historical-ligatures;
 }
