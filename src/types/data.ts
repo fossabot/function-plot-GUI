@@ -10,10 +10,7 @@ export namespace PrivateDataTypes {
     hidden: boolean;
   };
   type Function = Global & {
-    skipTip: boolean;
-    nSamples: number | undefined;
     closed: boolean;
-    range: [number, number];
   };
 
   export const allowedGraphTypes = {
@@ -46,6 +43,9 @@ export namespace PrivateDataTypes {
     fn: string;
     secants: LinearPart.Secant[];
     derivative: undefined | LinearPart.Derivative;
+    range: [number, number];
+    nSamples: number | undefined;
+    skipTip: boolean;
   };
   /** Implicit functions: F(x,y)=0 */
   export type Implicit = Function & {
@@ -59,12 +59,16 @@ export namespace PrivateDataTypes {
     graphType: (typeof allowedGraphTypes)["parametric"][number];
     x: string;
     y: string;
+    range: [number, number];
+    nSamples: number | undefined;
   };
   /** Polar functions: r=f(t) */
   export type Polar = Function & {
     fnType: "polar";
     graphType: (typeof allowedGraphTypes)["polar"][number];
     r: string;
+    range: [number, number];
+    nSamples: number | undefined;
   };
   /** Points */
   export type Points = Global & {
@@ -178,10 +182,7 @@ export function toPrivateData(input: Object) {
   });
   const getFunctionGlobals = () => ({
     ...getGlobals(),
-    skipTip: false,
     closed: false,
-    nSamples: undefined,
-    range: () => [-Infinity, Infinity] as [number, number],
   });
   switch (data.fnType) {
     case "text":
@@ -219,6 +220,9 @@ export function toPrivateData(input: Object) {
                   x0: 0,
                   updateOnMouseMove: false,
                 }),
+          skipTip: false,
+          nSamples: undefined,
+          range: () => [-Infinity, Infinity] as [number, number],
           ...getFunctionGlobals(),
         }
       );
@@ -234,6 +238,8 @@ export function toPrivateData(input: Object) {
         fnType: "polar",
         graphType: "polyline",
         r: "",
+        nSamples: undefined,
+        range: () => [-Infinity, Infinity] as [number, number],
         ...getFunctionGlobals(),
       });
     case "parametric":
@@ -242,6 +248,8 @@ export function toPrivateData(input: Object) {
         graphType: "polyline",
         x: "",
         y: "",
+        nSamples: undefined,
+        range: () => [-Infinity, Infinity] as [number, number],
         ...getFunctionGlobals(),
       });
     case "points":
