@@ -44,5 +44,4 @@ import FilledTextfield from "@/editor/inputs/subblocks/function.vue";
 import AnimatedFold from "@/ui/animated/animatedFold.vue";
 import ColorPicker from "./subblocks/colorPicker.vue";
 import HelpIcon from "./subblocks/helpIcon.vue";
-import "./inputs.scss";
 </script>

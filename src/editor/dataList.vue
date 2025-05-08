@@ -36,6 +36,8 @@ import DataItem from "./data.vue";
 
 import { useProfile } from "@/states";
 const profile = useProfile();
+
+import "./inputs/inputs.scss";
 </script>
 
 <style>

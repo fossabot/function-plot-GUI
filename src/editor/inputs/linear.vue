@@ -82,6 +82,5 @@ import HelpIcon from "./subblocks/helpIcon.vue";
 import ColorPicker from "./subblocks/colorPicker.vue";
 import Domain from "./subblocks/domain.vue";
 import DerivatePane from "./subblocks/derivatePane.vue";
-import AnimatedFold from "@/ui/animated/animatedFold.vue";
-import "./inputs.scss";
+import AnimatedFold from "@/ui/animated/animatedFold.vue"
 </script>
