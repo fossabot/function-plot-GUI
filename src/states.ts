@@ -33,7 +33,7 @@ export const useProfile = defineStore("profile", () => {
   const importedDatum = importedProfile?.data;
   const processedDatum = importedDatum
     ? importedDatum.map(toPrivateData)
-    : [toPrivateData({ fn: "x^2" })];
+    : [toPrivateData({ fn: "x^2", graphType: "polyline" })];
 
   const datum = ref(processedDatum);
 
@@ -42,7 +42,8 @@ export const useProfile = defineStore("profile", () => {
       .filter(({ hidden }) => !(hidden && forExport))
       .map((data) => (data.hidden ? getInvisible() : toPublicData(data)));
 
-  const addData = () => datum.value.push(toPrivateData({}));
+  const addData = () =>
+    datum.value.push(toPrivateData({ graphType: "polyline" }));
 
   const importedAnnotations = importedProfile?.annotations;
   const processedAnnotations = importedAnnotations
