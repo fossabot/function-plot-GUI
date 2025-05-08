@@ -5,7 +5,11 @@
         <div slot="text" class="tab-text">
           {{ t("data.derivate.title") }}
           <Transition name="badge">
-            <s-badge class="tab-badge" v-if="derivateEnabled"></s-badge>
+            <s-badge
+              class="tab-badge"
+              v-if="derivateEnabled"
+              :class="{ error: derivateReady === undefined }"
+            ></s-badge>
           </Transition>
         </div>
       </s-tab-item>
@@ -13,7 +17,11 @@
         <div slot="text" class="tab-text">
           {{ t("data.secant.title") }}
           <Transition name="badge">
-            <s-badge class="tab-badge" v-if="secantEnabled"></s-badge>
+            <s-badge
+              class="tab-badge"
+              v-if="secantEnabled"
+              :class="{ error: secantReady.length === 0 }"
+            ></s-badge>
           </Transition>
         </div>
       </s-tab-item>
@@ -154,16 +162,17 @@ const derivFollowMouse = computed(
 const derivateX = ref<number | "">(initDerivate.x0 ?? "");
 const derivateReady = computed(
   (): undefined | PrivateDataTypes.LinearPart.Derivative => {
-    if (!derivateEnabled.value) return undefined;
+    if (!derivateEnabled.value || !derivateFn.value) return undefined;
     if (derivFollowMouse.value)
       return {
         fn: derivateFn.value,
         updateOnMouseMove: true,
       };
+    if (derivateX.value === "") return undefined;
     return {
       fn: derivateFn.value,
       updateOnMouseMove: false,
-      x0: derivateX.value || 0,
+      x0: derivateX.value,
     };
   }
 );
@@ -227,6 +236,9 @@ watchEffect(() => {
     background-color: var(--s-color-success);
     color: var(--s-color-on-success);
     margin-left: 0.8em;
+    &.error {
+      background-color: var(--s-color-error);
+    }
   }
   .badge {
     &-enter-active,
