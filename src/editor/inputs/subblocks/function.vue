@@ -1,6 +1,8 @@
 <template>
   <div class="filled-textfield" :class="{ focus: isFocus }">
-    <label :class="{ lifted: !isEmpty }">{{ props.label }}</label>
+    <label :class="{ lifted: !isEmpty }">{{
+      isEmpty ? props.label : value
+    }}</label>
     <input
       @focus="isFocus = true"
       @blur="isFocus = false"
@@ -62,7 +64,7 @@ watch(value, refreshInput);
     caret-color: var(--s-color-primary);
     line-height: 1.2;
     z-index: 1;
-    color: var(--s-color);
+    color: transparent;
   }
   label {
     color: var(--s-color-outline);
@@ -77,7 +79,7 @@ watch(value, refreshInput);
     transform: translateY(-0.05em);
   }
   label.lifted {
-    opacity: 0;
+    color: var(--s-color);
   }
 }
 </style>
