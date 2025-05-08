@@ -1,10 +1,17 @@
 <template>
-  <div class="animatedListItem" :class="$props.class">
-    <div class="animatedListItemInner">
+  <div class="animatedListItem" :class="props.class">
+    <div class="animatedListItemInner" :class="props.classInner">
       <slot></slot>
     </div>
   </div>
 </template>
+
+<script lang="ts" setup>
+const props = defineProps<{
+  class?: string;
+  classInner?: string;
+}>();
+</script>
 
 <style>
 .animatedListItem {
