@@ -177,6 +177,7 @@ export function toPublicData(data: PrivateData): FunctionPlotDatum {
       range: (val) => val === undefined,
       derivative: (val) => val === undefined,
       secants: (val) => val === undefined,
+      offset: ([x, y]) => !x && !y,
     }
   );
 }

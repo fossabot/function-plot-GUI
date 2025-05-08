@@ -57,7 +57,10 @@
     },
     "main": {
       "fnType": "图形类型",
-      "graphType": "绘制方式"
+      "graphType": "绘制方式",
+      "vector": "向量大小",
+      "offset": "起点坐标",
+      "text": "文本"
     },
     "more": {
       "dividerTitle": "更多选项",

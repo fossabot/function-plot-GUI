@@ -29,16 +29,18 @@
     padding: var(--input-inner-gap) 0;
   }
 
+  .fields {
+    display: grid;
+    grid-template-columns: max-content minmax(auto, 18em);
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--input-inner-gap);
+  }
+
   .input-inner-optional {
     font-size: 16px;
     padding: 0 15px;
-    .fields {
-      display: grid;
-      grid-template-columns: max-content minmax(auto, 18em);
-      justify-content: space-between;
-      align-items: center;
-      gap: var(--input-inner-gap);
-    }
+
     s-text-field {
       width: 100%;
       font-size: inherit;
@@ -64,5 +66,17 @@
     s-checkbox[disabled] {
       color: var(--s-color-outline);
     }
+  }
+
+  .tuple {
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+    gap: 0.2em;
+  }
+  .tuple-input {
+    width: 0;
+    flex-grow: 1;
+    font-size: 22px;
   }
 }

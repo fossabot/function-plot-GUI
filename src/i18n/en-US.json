@@ -56,8 +56,11 @@
       "less": "Less Options"
     },
     "main": {
-      "fnType": "Function Type",
-      "graphType": "Renderer"
+      "fnType": "Type",
+      "graphType": "Renderer",
+      "vector": "Vector Size",
+      "offset": "Offset",
+      "text": "Text"
     },
     "more": {
       "dividerTitle": "More Options",
