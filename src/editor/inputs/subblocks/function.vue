@@ -3,9 +3,13 @@
     <label :class="{ lifted: !isEmpty }">{{ props.label }}</label>
     <input
       @focus="isFocus = true"
-      @blur="isFocus = false"
+      @blur="
+        isFocus = false;
+        refreshInput();
+      "
       type="text"
       v-model="value"
+      ref="inputRef"
     />
   </div>
 </template>
@@ -19,6 +23,15 @@ const props = defineProps<{
 }>();
 const isFocus = ref(false);
 const isEmpty = computed(() => value.value === "");
+
+const inputRef = ref<HTMLInputElement | null>(null);
+function refreshInput() {
+  // On Chromium browsers, ligatures over 3 characters are not displayed until force refresh
+  // Manually setting the value won't trigger Vue's reactivity system, no performance issue
+  if (!inputRef.value) return;
+  inputRef.value.value = value.value + "\u200B";
+  inputRef.value.value = value.value;
+}
 </script>
 
 <style lang="scss">
@@ -48,7 +61,7 @@ const isEmpty = computed(() => value.value === "");
     caret-color: var(--s-color-primary);
     line-height: 1.2;
     z-index: 1;
-    color:var(--s-color)
+    color: var(--s-color);
   }
   label {
     color: var(--s-color-outline);
