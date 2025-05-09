@@ -1,8 +1,8 @@
 <template>
   <div class="filled-textfield" :class="{ focus: isFocus }">
-    <label :class="{ lifted: !isEmpty }">{{
-      isEmpty ? props.label : value
-    }}</label>
+    <label :class="{ lifted: !isEmpty }" class="function-label">
+      <component v-for="item in labelContent" :is="item"></component>
+    </label>
     <input
       @focus="isFocus = true"
       @blur="isFocus = false"
@@ -13,7 +13,8 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="tsx">
+/* @jsxImportSource vue */
 import { computed, ref, watch } from "vue";
 
 const value = defineModel<string>({ required: true });
@@ -34,6 +35,23 @@ function refreshInput() {
   inputRef.value.setSelectionRange(selectionStart, selectionEnd);
 }
 watch(value, refreshInput);
+
+import { tokenize } from "./functionTokenize";
+const labelContent = computed(() =>
+  isEmpty.value
+    ? [<span>{props.label}</span>]
+    : tokenize(value.value).map((token) => (
+        <span
+          class={[
+            token.type,
+            "function-label-item",
+            token.level ? "level-" + token.level : undefined,
+          ]}
+        >
+          {token.raw}
+        </span>
+      ))
+);
 </script>
 
 <style lang="scss">
@@ -70,6 +88,7 @@ watch(value, refreshInput);
     color: var(--s-color-outline);
     position: absolute;
     line-height: 1.2;
+    white-space: pre;
   }
   input,
   label {
@@ -80,6 +99,33 @@ watch(value, refreshInput);
   }
   label.lifted {
     color: var(--s-color);
+  }
+}
+
+.function-label {
+  .function-label-item {
+    display: inline-block;
+  }
+  .identifier {
+    color: var(--s-color-primary);
+  }
+  .operator {
+    color: var(--s-color-secondary);
+    opacity: 0.8;
+  }
+  .bracket {
+    color: var(--s-color-secondary);
+  }
+  @for $i from 1 through 5 {
+    .bracket.level-#{$i} {
+      transform: scaleY(#{0.8 + $i * 0.2});
+    }
+  }
+  .unknown {
+    color: var(--s-color-error);
+  }
+  .function {
+    color: var(--s-color-tertiary);
   }
 }
 </style>

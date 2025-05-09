@@ -9,25 +9,16 @@ const fns = [
   "cosh",
   "tanh",
   "abs",
-];
+  "sqrt",
+  "log",
+].sort((a, b) => b.length - a.length);
 
 const ops = ["+", "-", "*", "/", "^", ","];
 
 const lBracket = "(";
 const rBracket = ")";
 
-const extraIdentifiers = ["theta"];
-
-const isOperator = (token: string): boolean => ops.includes(token);
-const hasFunction = (str: string): string | undefined => {
-  for (const fn of fns) if (str.startsWith(fn)) return fn;
-};
-const hasIdentifier = (str: string): string | undefined => {
-  for (const id of extraIdentifiers) if (str.startsWith(id)) return id;
-  const ch = str[0];
-  if (ch >= "a" && ch <= "z") return ch;
-  if (ch >= "A" && ch <= "Z") return ch;
-};
+const extraIdentifiers = ["x", "theta"];
 
 type Token = {
   index: number;
@@ -38,6 +29,7 @@ type Token = {
     | "bracket"
     | "number"
     | "identifier"
+    | "space"
     | "unknown";
   level?: number;
 };
@@ -61,7 +53,11 @@ type Tokenizer = (
   index: number
 ) => EaterResult;
 
-function tokenizeHelper(str: string, tokenizer: Tokenizer) {
+function tokenizeHelper(
+  str: string,
+  tokenizer: Tokenizer,
+  ...postProcess: ((tokens: Token[]) => void)[]
+): Token[] {
   const length = str.length;
   let increment = 1;
   let tokens: Token[] = [];
@@ -86,17 +82,45 @@ function tokenizeHelper(str: string, tokenizer: Tokenizer) {
     increment = currentIncrement;
     if (token) tokens.push(token);
   }
+  for (const fn of postProcess) fn(tokens);
   return tokens;
 }
 
-const bracketStack: {
-  raw: "(" | ")";
-  tokenIndex: number;
-}[] = [];
+const isOperator = (token: string): boolean => ops.includes(token);
+const hasFunction = (str: string): string | undefined => {
+  for (const fn of fns) if (str.startsWith(fn)) return fn;
+};
+const hasIdentifier = (str: string): string | undefined => {
+  for (const id of extraIdentifiers) if (str.startsWith(id)) return id;
+  // const ch = str[0];
+  // if (ch >= "a" && ch <= "z") return ch;
+  // if (ch >= "A" && ch <= "Z") return ch;
+};
+const hasNumber = (str: string): string | undefined => {
+  const match = str.match(/^\d+(\.\d+)?([Ee][+-]\d+)?/);
+  if (match) return match[0];
+};
+const hasSpace = (str: string): string | undefined => {
+  const match = str.match(/^\s+/);
+  if (match) return match[0];
+};
 
-const tokenizer: Tokenizer = (eat, rest, tokens, _index) => {
+const tokenizer: Tokenizer = (eat, rest) => {
   const ch = rest[0];
-  if (ch === " ") return eat(1);
+  const sapce = hasSpace(rest);
+  if (sapce) {
+    return eat(sapce, {
+      raw: sapce,
+      type: "space",
+    });
+  }
+  const num = hasNumber(rest);
+  if (num) {
+    return eat(num, {
+      raw: num,
+      type: "number",
+    });
+  }
   const fn = hasFunction(rest);
   if (fn)
     return eat(fn, {
@@ -108,21 +132,17 @@ const tokenizer: Tokenizer = (eat, rest, tokens, _index) => {
       raw: ch,
       type: "operator",
     });
-  if (ch === lBracket) {
-    bracketStack.push({
-      raw: lBracket,
-      tokenIndex: tokens.length,
-    });
+  if (ch === lBracket)
     return eat(1, {
       raw: lBracket,
       type: "bracket",
     });
-  }
-  if (ch === rBracket)
+  if (ch === rBracket) {
     return eat(1, {
       raw: rBracket,
       type: "bracket",
     });
+  }
   const id = hasIdentifier(rest);
   if (id)
     return eat(id, {
@@ -135,4 +155,40 @@ const tokenizer: Tokenizer = (eat, rest, tokens, _index) => {
   });
 };
 
-console.log(tokenizeHelper("sin(x) + cos(y)", tokenizer));
+function processBrackets(tokens: Token[]) {
+  let bracketLevel = 0;
+  const bracketStack: {
+    raw: "(" | ")";
+    token: Token;
+  }[] = [];
+  tokens.forEach((token) => {
+    if (token.type !== "bracket") return;
+    if (token.raw === lBracket) {
+      bracketLevel = 0;
+      bracketStack.push({
+        raw: lBracket,
+        token,
+      });
+    } else {
+      const lastBracket = bracketStack.pop();
+      if (lastBracket) {
+        bracketLevel++;
+        lastBracket.token.level = bracketLevel;
+        token.level = bracketLevel;
+      } else {
+        token.type = "unknown";
+      }
+    }
+  });
+}
+
+const tokens = tokenizeHelper(
+  "2.5*(sin(x) + cos(y)+(2.6e-2*(1+3)))",
+  tokenizer,
+  processBrackets
+);
+
+console.log(tokens);
+
+export const tokenize = (str: string) =>
+  tokenizeHelper(str, tokenizer, processBrackets);
