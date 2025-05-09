@@ -147,8 +147,9 @@ watch(fnType, (newFnType) => {
     graphType: newGraphType,
   });
 });
+
 watch(
-  () => self.value.graphType,
+  () => props.self.graphType,
   (newGraphType) => {
     if (newGraphType === "scatter" && "closed" in self.value)
       self.value.closed = false;
