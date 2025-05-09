@@ -20,6 +20,7 @@ import { computed, ref, watch } from "vue";
 const value = defineModel<string>({ required: true });
 const props = defineProps<{
   label: string;
+  identifiers?: string[];
 }>();
 const isFocus = ref(false);
 const isEmpty = computed(() => value.value === "");
@@ -40,15 +41,18 @@ import { tokenize } from "./functionTokenize";
 const labelContent = computed(() =>
   isEmpty.value
     ? [<span>{props.label}</span>]
-    : tokenize(value.value).map((token) => (
+    : tokenize(value.value, props.identifiers || ["x"]).map((token) => (
         <span
           class={[
             token.type,
+            token.raw,
             "function-label-item",
-            token.level ? "level-" + token.level : undefined,
+            token.level ? "level-" + Math.min(token.level, 5) : undefined,
+            token.err ? "error" : undefined,
+            token.sqrtLevel ? "under-sqrt" : undefined,
           ]}
         >
-          {token.raw}
+          <span class="inner">{token.raw}</span>
         </span>
       ))
 );
@@ -66,6 +70,7 @@ const labelContent = computed(() =>
   padding: 0;
   display: flex;
   font-family: var(--font-math);
+  position: relative;
   &.focus {
     background-color: var(--s-color-surface-container-highest);
     border-bottom-color: var(--s-color-primary);
@@ -80,19 +85,22 @@ const labelContent = computed(() =>
     width: 0;
     flex-grow: 1;
     caret-color: var(--s-color-primary);
-    line-height: 1.2;
     z-index: 1;
     color: transparent;
   }
   label {
+    display: block;
     color: var(--s-color-outline);
     position: absolute;
-    line-height: 1.2;
     white-space: pre;
+    max-width: 100%;
+    box-sizing: border-box;
   }
   input,
   label {
-    padding: 0.4em 0.45em 0.3em 0.45em;
+    padding: 0.2em 0.45em 0.1em 0.45em;
+    line-height: 1.6;
+    overflow: hidden;
   }
   &.styled label {
     transform: translateY(-0.05em);
@@ -103,7 +111,8 @@ const labelContent = computed(() =>
 }
 
 .function-label {
-  .function-label-item {
+  .function-label-item,
+  .function-label-item .inner {
     display: inline-block;
   }
   .identifier {
@@ -111,13 +120,12 @@ const labelContent = computed(() =>
   }
   .operator {
     color: var(--s-color-secondary);
-    opacity: 0.8;
   }
   .bracket {
     color: var(--s-color-secondary);
   }
   @for $i from 1 through 5 {
-    .bracket.level-#{$i} {
+    .bracket.level-#{$i} .inner {
       transform: scaleY(#{0.8 + $i * 0.2});
     }
   }
@@ -126,6 +134,27 @@ const labelContent = computed(() =>
   }
   .function {
     color: var(--s-color-tertiary);
+  }
+  .error .inner {
+    text-decoration: underline var(--s-color-error);
+    text-decoration-thickness: 0.05em;
+    text-underline-offset: 0.1em;
+  }
+  .sqrt {
+    transform: scaleY(1.3) translateY(-1px);
+  }
+  .under-sqrt {
+    background-image: linear-gradient(
+      to bottom,
+      transparent 0.1em,
+      var(--s-color-tertiary) 0.1em,
+      var(--s-color-tertiary) 0.14em,
+      transparent 0.14em,
+      transparent 100%
+    );
+    &.sqrt {
+      transform: none !important;
+    }
   }
 }
 </style>

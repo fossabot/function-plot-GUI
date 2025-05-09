@@ -7,6 +7,7 @@
         ref="inputBox"
         label="f(θ)"
         v-model="self.r"
+        :identifiers="['theta']"
       />
     </div>
     <AnimatedFold :folded="props.folded">
