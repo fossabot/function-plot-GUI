@@ -12,6 +12,10 @@ export type PrivateOptions = {
   yAxis: PrivateAxis;
   grid: boolean;
   title: string;
+  tip: {
+    xLine: boolean;
+    yLine: boolean;
+  };
 };
 
 const defaultAxis = {
@@ -23,12 +27,16 @@ const defaultAxis = {
 export function toPrivateOptions(
   original: Partial<FunctionPlotOptions>
 ): PrivateOptions {
-  const { xAxis, yAxis, title, grid } = original;
+  const { xAxis, yAxis, title, grid, tip = {} } = original;
   return amendAttr<PrivateOptions>(
     { xAxis, yAxis, title, grid },
     {
       xAxis: () => amendAttr<PrivateAxis>(xAxis ?? {}, defaultAxis),
       yAxis: () => amendAttr<PrivateAxis>(yAxis ?? {}, defaultAxis),
+      tip: () => ({
+        xLine: tip?.xLine ?? false,
+        yLine: tip?.yLine ?? false,
+      }),
       title: "",
       grid: false,
     }
@@ -45,11 +53,13 @@ export const toPublicOptions = (
       ...options,
       xAxis: omitAttr(options.xAxis, defaultAxis),
       yAxis: omitAttr(options.yAxis, defaultAxis),
+      tip: omitAttr(options.tip, { xLine: false, yLine: false }),
     },
     {
       title: "",
       grid: false,
       xAxis: checkObjEmpty,
       yAxis: checkObjEmpty,
+      tip: checkObjEmpty,
     }
   );
