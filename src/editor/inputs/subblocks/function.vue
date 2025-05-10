@@ -1,15 +1,17 @@
 <template>
   <div class="filled-textfield" :class="{ focus: isFocus }">
-    <label :class="{ lifted: !isEmpty }" class="function-label">
-      <component v-for="item in labelContent" :is="item"></component>
-    </label>
-    <input
-      @focus="isFocus = true"
-      @blur="isFocus = false"
-      type="text"
-      v-model="value"
-      ref="inputRef"
-    />
+    <div class="filled-textfield-inner">
+      <label :class="{ lifted: !isEmpty }" class="function-label">
+        <component v-for="item in labelContent" :is="item"></component>
+      </label>
+      <input
+        @focus="isFocus = true"
+        @blur="isFocus = false"
+        type="text"
+        v-model="value"
+        ref="inputRef"
+      />
+    </div>
   </div>
 </template>
 
@@ -68,12 +70,33 @@ const labelContent = computed(() =>
     background-color 0.2s,
     border-bottom-color 0.2s;
   padding: 0;
-  display: flex;
   font-family: var(--font-math);
-  position: relative;
+  overflow-x: scroll;
+  cursor: text;
   &.focus {
     background-color: var(--s-color-surface-container-highest);
     border-bottom-color: var(--s-color-primary);
+  }
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    background: transparent;
+  }
+  .filled-textfield-inner {
+    width: fit-content;
+    position: relative;
+    min-width: 100%;
+    overflow-y: hidden;
+  }
+  .filled-textfield-inner::-webkit-scrollbar {
+    display: none;
+    height: 0;
+    width: 0;
+  }
+  label {
+    color: var(--s-color-outline);
+    white-space: pre;
+    width: fit-content;
   }
   input {
     background-color: transparent;
@@ -81,26 +104,21 @@ const labelContent = computed(() =>
     outline: none;
     font-size: inherit;
     font-family: inherit;
-    display: block;
-    width: 0;
-    flex-grow: 1;
     caret-color: var(--s-color-primary);
-    z-index: 1;
     color: transparent;
-  }
-  label {
-    display: block;
-    color: var(--s-color-outline);
     position: absolute;
-    white-space: pre;
-    max-width: 100%;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 100%;
     box-sizing: border-box;
   }
+
   input,
   label {
+    display: block;
     padding: 0.2em 0.45em 0.1em 0.45em;
     line-height: 1.6;
-    overflow: hidden;
   }
   &.styled label {
     transform: translateY(-0.05em);

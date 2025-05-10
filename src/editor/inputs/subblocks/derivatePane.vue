@@ -226,7 +226,7 @@ watchEffect(() => {
 
 <style lang="scss">
 .derivate-pane {
-  width: 25em;
+  width: 28em;
   s-tab {
     background-color: var(--s-color-surface-container-low);
     border-top-left-radius: 3px;
