@@ -13,6 +13,8 @@ const fns = [
   "log",
 ].sort((a, b) => b.length - a.length);
 
+const nums = ["PI", "E"];
+
 const ops = ["+", "-", "*", "/", "^", ","];
 
 const lBracket = "(";
@@ -105,6 +107,7 @@ const hasIdentifier = (
 const hasNumber = (str: string): string | undefined => {
   const match = str.match(/^\d+(\.\d+)?([Ee][+-]\d+)?/);
   if (match) return match[0];
+  for (const num of nums) if (str.startsWith(num)) return num;
 };
 const hasSpace = (str: string): string | undefined => {
   const match = str.match(/^\s+/);
