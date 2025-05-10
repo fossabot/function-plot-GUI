@@ -97,6 +97,8 @@ onMounted(async () => {
       const data = profile.getPublicDatum();
       const annotations = profile.getPublicAnnotations();
       const options = profile.getPublicOptions();
+      if (options.xAxis) delete options.xAxis.domain;
+      if (options.yAxis) delete options.yAxis.domain;
       const fullOptions: FunctionPlotOptions = {
         target,
         data,

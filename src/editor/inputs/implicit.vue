@@ -1,7 +1,12 @@
 <template>
   <div class="input-inner">
     <div class="field main-fn">
-      <FunctionField class="fn" label="f(x, y)" v-model="self.fn" />
+      <FunctionField
+        class="fn"
+        label="f(x,y)"
+        v-model="self.fn"
+        :identifiers="['x', 'y']"
+      />
       <span class="label styled"> =0 </span>
     </div>
     <AnimatedFold :folded="props.folded">
@@ -17,10 +22,7 @@
         </div>
         <div class="switches">
           <!-- closed -->
-          <s-checkbox
-            type="checkbox"
-            v-model.lazy="self.closed"
-          >
+          <s-checkbox type="checkbox" v-model.lazy="self.closed">
             {{ t("data.more.closed") }}
           </s-checkbox>
         </div>
