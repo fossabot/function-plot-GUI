@@ -121,6 +121,11 @@
       "linear": "Linear",
       "log": "Logarithmic",
       "caption": "Axis Caption"
+    },
+    "crosshair": {
+      "title": "Crosshair on Hover",
+      "horizontal": "Horizontal",
+      "vertical": "Vertical"
     }
   },
   "graph": {

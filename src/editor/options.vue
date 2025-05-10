@@ -11,13 +11,13 @@
           class="input"
         ></s-switch>
 
-        <span class="label">悬浮十字线</span>
+        <span class="label">{{ t("options.crosshair.title") }}</span>
         <div class="input checkboxes">
           <s-checkbox v-model.lazy="profile.options.tip.yLine" type="checkbox">
-            横线
+            {{ t("options.crosshair.horizontal") }}
           </s-checkbox>
           <s-checkbox v-model.lazy="profile.options.tip.xLine" type="checkbox">
-            竖线
+            {{ t("options.crosshair.vertical") }}
           </s-checkbox>
         </div>
 

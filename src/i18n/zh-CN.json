@@ -121,6 +121,11 @@
       "linear": "线性",
       "log": "对数",
       "caption": "轴标题"
+    },
+    "crosshair": {
+      "title": "悬浮十字线",
+      "horizontal": "横线",
+      "vertical": "竖线"
     }
   },
   "graph": {
