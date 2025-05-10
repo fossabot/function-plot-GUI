@@ -101,7 +101,6 @@ function deleteAnnotation() {
   const backup = props.self;
   profile.annotations.splice(props.index, 1);
   emitter.emit("require-full-update", "annotations axis change");
-  profile.datum.splice(props.index, 1);
   Snackbar.builder({
     text: t("editor.delete.success"),
     action: {
