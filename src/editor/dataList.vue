@@ -81,6 +81,7 @@ function addData() {
   font-size: inherit;
   color: inherit;
   line-height: 1;
+  flex-shrink: 0;
   transition: color 0.1s;
 
   &::before {
