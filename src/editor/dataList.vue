@@ -1,5 +1,5 @@
 <template>
-  <s-scroll-view>
+  <s-scroll-view ref="scrollView" class="list-view">
     <VueDraggable
       v-model="profile.datum"
       :animation="200"
@@ -11,15 +11,15 @@
           :key="item.key"
           class="datumFolder"
         >
-          <DataItem :self="item" :index="i"  />
+          <DataItem :self="item" :index="i" />
         </AnimatedListItem>
       </AnimatedList>
     </VueDraggable>
-    <div class="plot-data add-data" @click="profile.addData">
+    <button class="plot-data add-data" @click="addData">
       <s-icon name="add" />
-      {{ t('editor.add') }}
+      {{ t("editor.add") }}
       <s-ripple attached></s-ripple>
-    </div>
+    </button>
   </s-scroll-view>
 </template>
 
@@ -38,11 +38,32 @@ import { useProfile } from "@/states";
 const profile = useProfile();
 
 import "./inputs/inputs.scss";
+import { ref } from "vue";
+
+const scrollView = ref<HTMLElementTagNameMap["s-scroll-view"] | null>(null);
+function addData() {
+  profile.addData();
+  setTimeout(() => {
+    if (!scrollView.value) return;
+    const lastInput = (<HTMLInputElement[]>[
+      ...scrollView.value.querySelectorAll(".function-input-real"),
+    ]).at(-1);
+    if (!lastInput) return;
+    lastInput.focus();
+    console.log(lastInput);
+  }, 250);
+}
 </script>
 
-<style>
+<style lang="scss">
 .datumFolder {
   border-bottom: var(--s-color-outline-variant) 1px solid;
+}
+
+.list-view {
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
 }
 
 .plot-data.add-data {
@@ -51,7 +72,44 @@ import "./inputs/inputs.scss";
   padding-bottom: 15px;
   margin-bottom: 50px;
   display: flex;
+  align-items: center;
   gap: 5px;
   cursor: pointer;
+  border-radius: 0;
+  background: transparent;
+  border: none;
+  font-size: inherit;
+  color: inherit;
+  line-height: 1;
+  transition: color 0.1s;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--s-color-primary);
+    opacity: 0;
+    transition: opacity 0.1s;
+  }
+
+  &:hover ::before {
+    opacity: 0 !important;
+  }
+
+  &:focus-visible {
+    outline: none;
+    color: var(--s-color-primary);
+  }
+
+  &:focus-visible::before {
+    opacity: 0.1;
+  }
+
+  s-icon {
+    color: inherit;
+  }
 }
 </style>

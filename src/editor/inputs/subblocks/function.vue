@@ -10,6 +10,7 @@
         type="text"
         v-model="value"
         ref="inputRef"
+        class="function-input-real"
       />
     </div>
   </div>

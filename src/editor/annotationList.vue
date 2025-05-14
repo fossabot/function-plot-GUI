@@ -1,5 +1,5 @@
 <template>
-  <s-scroll-view>
+  <s-scroll-view class="list-view">
     <VueDraggable
       v-model="profile.annotations"
       :animation="200"
@@ -15,11 +15,11 @@
         </AnimatedListItem>
       </AnimatedList>
     </VueDraggable>
-    <div class="plot-data add-data" @click="profile.addAnnotation">
+    <button class="plot-data add-data" @click="profile.addAnnotation">
       <s-icon name="add" />
       {{ t("editor.add") }}
       <s-ripple attached></s-ripple>
-    </div>
+    </button>
   </s-scroll-view>
 </template>
 
