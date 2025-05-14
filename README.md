@@ -12,7 +12,7 @@ Function-plot accepts configuration options via a JavaScript object. Function-Pl
 
 Tools like GeoGebra and Desmos offer more powerful plotting capabilities, additional assistive features, and support for exporting to various image formats. If you're looking for a drawing tool primarily for teaching or learning purposes, they are likely better suited for your needs.
 
-However, GeoGebra and Desmos are not open-source, meaning you can't host them yourself. To embed their graphs in your webpage, you have to use the `iframe` they provide. Relying on external services can introduce higher maintenance costs and potential reliability issues. As an alternative, using function-plot-GUI for configuration and the function-plot library for rendering offers a solid self-hosted solution. Config files can be written in plain-text formats like JSON, JSON5, or YAML, and you can even define custom syntax for rendering directly in Markdown files. The documentation site [LinhoNotes](https://notes.linho.cc/) adopts this approach.
+GeoGebra provides comprehensive deployment options and APIs, but setting it up and integrating it into a web service can be quite complex. Desmos is not open-source, which means you cannot self-host it. If you want to embed its graphs in your own site, you're limited to using the iframe they provide. Relying on external services can introduce additional maintenance overhead and potential instability. Therefore, using Function-Plot-GUI for editing and the function-plot library for rendering is a solid alternative. Configuration files can be written in plain text formats like JSON, JSON5, or YAML — and even embedded directly into Markdown files using custom syntax. The documentation site [LinhoNotes](https://notes.linho.cc/) adopts this approach.
 
 ## Integrating with Your Application
 
@@ -22,6 +22,7 @@ For example, given the following function-plot configuration:
 
 ```js
 functionPlot({
+  target: "example",
   data: [
     {
       fn: "x^2-1",
@@ -30,7 +31,7 @@ functionPlot({
 });
 ```
 
-Convert the options to JSON or JSON5:
+Convert the options to JSON or JSON5, excluding the `target` field:
 
 ```json
 {"data":[{"fn":"x^2-1"}]}
