@@ -1,5 +1,5 @@
 <template>
-  <div class="input-inner vector">
+  <div class="input-inner text">
     <div class="fields">
       <span class="input-title">{{ t("data.main.text") }}</span>
       <s-text-field
@@ -44,7 +44,7 @@
 
 <script setup lang="ts">
 import { PrivateDataTypes } from "@/types/data";
-import { ref, toRef } from "vue";
+import { ref, toRef, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { I18nSchema } from "@/i18n";
 const { t } = useI18n<{ message: I18nSchema }>();
@@ -62,6 +62,9 @@ import ColorPicker from "./subblocks/colorPicker.vue";
 
 const locationX = ref<number | "">(self.value.location[0]);
 const locationY = ref<number | "">(self.value.location[1]);
+
+watch(locationX, (val) => (self.value.location[0] = val || 0));
+watch(locationY, (val) => (self.value.location[1] = val || 0));
 </script>
 
 <style lang="scss">
