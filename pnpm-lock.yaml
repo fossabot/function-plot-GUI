@@ -17,9 +17,6 @@ importers:
       base-64:
         specifier: ^1.0.0
         version: 1.0.0
-      built-in-math-eval:
-        specifier: ^0.3.0
-        version: 0.3.0
       function-plot:
         specifier: ^2.0.0-0
         version: 2.0.0-0
