@@ -3,6 +3,7 @@ import vue from "@vitejs/plugin-vue";
 import vueJsx from "@vitejs/plugin-vue-jsx";
 import { resolve } from "node:path";
 import { visualizer } from "rollup-plugin-visualizer";
+import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 import "dotenv/config";
 
@@ -16,6 +17,7 @@ export default defineConfig({
         },
       },
     }),
+    nodePolyfills(),
     visualizer({
       gzipSize: true,
       brotliSize: true,
@@ -29,20 +31,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          "function-plot": [
-            "function-plot",
-            "built-in-math-eval",
-            "d3-axis",
-            "d3-color",
-            "d3-format",
-            "d3-interpolate",
-            "d3-scale",
-            "d3-selection",
-            "d3-shape",
-            "d3-zoom",
-            "events",
-            "interval-arithmetic-eval",
-          ],
+          "function-plot": ["function-plot"],
           prettier: [
             "prettier",
             "prettier/plugins/babel",
