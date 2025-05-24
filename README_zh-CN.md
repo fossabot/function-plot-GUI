@@ -1,6 +1,6 @@
 # Function-Plot-GUI
 
-[English README](./README.md)
+[English README](./README.md) · [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Linho1219/function-plot-GUI)
 
 实例：<https://plot.linho.cc/>
 
