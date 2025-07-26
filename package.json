@@ -39,11 +39,5 @@
     "typescript": "~5.6.3",
     "vite": "^6.3.5",
     "vue-tsc": "^2.2.12"
-  },
-  "pnpm": {
-    "patchedDependencies": {
-      "function-plot": "patches/function-plot.patch",
-      "sober": "patches/sober.patch"
-    }
   }
 }
