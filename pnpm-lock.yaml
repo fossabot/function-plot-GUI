@@ -9,7 +9,7 @@ patchedDependencies:
     hash: fb8f97d14b4b32cb82e4df4d0ebb76887cbdba0403c2782ef0e78ded510fed08
     path: patches/function-plot.patch
   sober:
-    hash: f371296366903613392deda2903e434059e0c777f0cb16bc8cb0c39bef8d85bb
+    hash: 21ec38e19899040c56bf7b01de62686d0a9abf7cb8d400d9baa1e212e2f8429d
     path: patches/sober.patch
 
 importers:
@@ -44,8 +44,8 @@ importers:
         specifier: ^3.6.2
         version: 3.6.2
       sober:
-        specifier: 1.1.1
-        version: 1.1.1(patch_hash=f371296366903613392deda2903e434059e0c777f0cb16bc8cb0c39bef8d85bb)
+        specifier: 1.1.9
+        version: 1.1.9(patch_hash=21ec38e19899040c56bf7b01de62686d0a9abf7cb8d400d9baa1e212e2f8429d)
       utf8:
         specifier: ^3.0.0
         version: 3.0.0
@@ -1535,8 +1535,8 @@ packages:
     resolution: {integrity: sha512-ZX99e6tRweoUXqR+VBrslhda51Nh5MTQwou5tnUDgbtyM0dBgmhEDtWGP/xbKn6hqfPRHujUNwz5fy/wbbhnpw==}
     engines: {node: '>= 0.4'}
 
-  sober@1.1.1:
-    resolution: {integrity: sha512-RZiX5NpPGQMt5UMzqutx7OsYzvjMObfN8BZAN8PGXe9gA6zhwsF0/8o6eUkLbJifYveUePkfru97poO/CIp9dg==}
+  sober@1.1.9:
+    resolution: {integrity: sha512-0TPbuWGE6JL7SqCRcbKaxPTWNKOwC2K1fvhJdJ+8abgYdpHE9mK6HXxhwTt2OExaWeSpIAFDk4J2eaWfJixGjw==}
 
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
@@ -3289,7 +3289,7 @@ snapshots:
       side-channel-map: 1.0.1
       side-channel-weakmap: 1.0.2
 
-  sober@1.1.1(patch_hash=f371296366903613392deda2903e434059e0c777f0cb16bc8cb0c39bef8d85bb): {}
+  sober@1.1.9(patch_hash=21ec38e19899040c56bf7b01de62686d0a9abf7cb8d400d9baa1e212e2f8429d): {}
 
   source-map-js@1.2.1: {}
 
