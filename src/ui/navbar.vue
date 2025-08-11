@@ -5,7 +5,7 @@
     </s-icon-button>
     <div slot="headline">
       <span class="nav-title">
-        function-plot-GUI
+        Function-Plot-GUI
         <span class="version"> v{{ version }} </span>
       </span>
     </div>
@@ -83,8 +83,8 @@ const theme = useTheme();
 }
 
 .nav-title {
-  font-size: 20px;
   font-weight: bold;
+  color: var(--s-color-on-background);
 }
 .version {
   opacity: 0.5;
