@@ -57,11 +57,9 @@ watch(
     if (profile.annotations.length)
       resultObj.annotations = profile.getPublicAnnotations();
     const code = JSON5.stringify(resultObj);
-    const url =
-      window.location.href.match(/https?:\/\/[^/]+\//) +
-      "?code=" +
+    location.hash =
+      "code=" +
       encodeURIComponent(base64.encode(utf8.encode(code)).replace(/=+$/, ""));
-    window.history.replaceState(null, "", url);
     prettier
       .format(code, {
         parser: "json5",

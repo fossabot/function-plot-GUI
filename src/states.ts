@@ -11,7 +11,8 @@ import { toPrivateOptions, toPublicOptions } from "./types/options";
 
 export const useProfile = defineStore("profile", () => {
   const importedProfile = (() => {
-    const rawCode = window?.location.search.match(/\?code=(.+)$/)?.[1];
+    const rawCode = window?.location.search.match(/[#?]code=([^&#?]+)$/)?.[1];
+    window?.history.replaceState({}, document.title, window.location.pathname);
     if (!rawCode) return null;
     try {
       const obj = JSON5.parse(

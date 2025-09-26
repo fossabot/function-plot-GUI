@@ -43,10 +43,16 @@ functionPlot({
 eyJkYXRhIjpbeyJmbiI6InheMi0xIn1dfQ
 ```
 
-然后作为 `code` 参数传入：
+然后在 hash 部分插入：
 
 ```txt
-https://plot.linho.cc/?code=eyJkYXRhIjpbeyJmbiI6InheMi0xIn1dfQ
+https://plot.linho.cc/#code=eyJkYXRhIjpbeyJmbiI6InheMi0xIn1dfQ
 ```
+
+> 兼容旧版本：作为 `code` 参数传入：
+>
+> ```txt
+> https://plot.linho.cc/?code=eyJkYXRhIjpbeyJmbiI6InheMi0xIn1dfQ
+> ```
 
 打开的网页即可编辑此选项并预览图像。

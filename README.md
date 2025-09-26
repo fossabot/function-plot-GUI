@@ -43,10 +43,16 @@ Then base64 encode it (omit the trailing `=`):
 eyJkYXRhIjpbeyJmbiI6InheMi0xIn1dfQ
 ```
 
-Pass it as the `code` parameter in the URL:
+Insert it in hash:
 
 ```txt
-https://plot.linho.cc/?code=eyJkYXRhIjpbeyJmbiI6InheMi0xIn1dfQ
+https://plot.linho.cc/#code=eyJkYXRhIjpbeyJmbiI6InheMi0xIn1dfQ
 ```
+
+> Deprecated: Pass it as the `code` parameter in the URL:
+>
+> ```txt
+> https://plot.linho.cc/?code=eyJkYXRhIjpbeyJmbiI6InheMi0xIn1dfQ
+> ```
 
 This will open the web editor with the configuration preloaded, allowing you to modify the settings and preview the graph.
