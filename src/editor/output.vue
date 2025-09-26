@@ -85,7 +85,7 @@ function copyCode() {
     });
   } catch (e) {
     if (e instanceof Error) console.error(e);
-    if (window.location.href.match(/^http:\/\//))
+    if (location.href.match(/^http:\/\//))
       Snackbar.builder({
         text:
           t("output.copy.fail") +
